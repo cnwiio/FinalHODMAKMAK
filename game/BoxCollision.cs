@@ -14,6 +14,7 @@ namespace game
     {
         public Vector2 Velocity;
         public IShapeF Bounds { get; }
+        public String LayerName { get; set; } = "default";
         public BoxCollision(RectangleF rectangleF)
         {
             Bounds = rectangleF;
