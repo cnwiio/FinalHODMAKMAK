@@ -29,7 +29,7 @@ namespace game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _BG = Content.Load<Texture2D>("8x8(64pixel)");
-            // TODO: use this.Content to load your game content here
+            base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
