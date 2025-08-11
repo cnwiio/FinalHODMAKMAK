@@ -1,20 +1,29 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.Collisions;
+using MonoGame.Extended.Screens;
 
 namespace game
 {
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        private Texture2D _BG;
+        private ScreenManager _screenManager;
+        // Collision 
+        public CollisionComponent CollisionComponent { get; set; }
+        public List<IEntity> Collision { get; set; } = new List<IEntity>();
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            _screenManager = new ScreenManager();
+            Components.Add(_screenManager);
+            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, 1200, 800));
         }
 
         protected override void Initialize()
@@ -27,8 +36,7 @@ namespace game
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _BG = Content.Load<Texture2D>("8x8(64pixel)");
+            _screenManager.LoadScreen(new ScenePrologue(this)); // temporary
             base.LoadContent();
         }
 
@@ -44,11 +52,6 @@ namespace game
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_BG, new Vector2(0, 0), null, Color.White);
-            _spriteBatch.End(); 
-
             base.Draw(gameTime);
         }
     }
