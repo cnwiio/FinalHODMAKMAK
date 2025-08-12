@@ -9,7 +9,7 @@ using MonoGame.Extended.Screens;
 namespace game
 {
     public class Game1 : Game
-    {
+    {   // from Player
         private GraphicsDeviceManager _graphics;
         private ScreenManager _screenManager;
         // Collision 

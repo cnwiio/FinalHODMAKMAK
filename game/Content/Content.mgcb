@@ -27,8 +27,8 @@
 /build:CliffPic.png
 
 #begin CliffTileSet.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
+/importer:
+/processor:
 /build:CliffTileSet.tsx
 
 #begin GrassPic.png
@@ -44,12 +44,12 @@
 /build:GrassPic.png
 
 #begin GrassTileSet.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
+/importer:
+/processor:
 /build:GrassTileSet.tsx
 
 #begin ScenePrologue.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
+/importer:
+/processor:
 /build:ScenePrologue.tmx
 
