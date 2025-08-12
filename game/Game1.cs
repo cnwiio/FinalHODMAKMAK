@@ -9,10 +9,10 @@ using MonoGame.Extended.Screens;
 namespace game
 {
     public class Game1 : Game
-    {
+    { // monster Branch
         private GraphicsDeviceManager _graphics;
         private ScreenManager _screenManager;
-        // Collision 
+        // Collision j
         public CollisionComponent CollisionComponent { get; set; }
         public List<IEntity> Collision { get; set; } = new List<IEntity>();
 
