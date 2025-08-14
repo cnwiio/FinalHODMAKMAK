@@ -10,7 +10,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using System.Collections.Generic;
 
-namespace game1
+namespace game
 {
     public class MonsterAttackHitbox : IEntity
     {

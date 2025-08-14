@@ -16,7 +16,7 @@ using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.Timers;
 
-namespace game1
+namespace game
 {
 
     public interface IMonster

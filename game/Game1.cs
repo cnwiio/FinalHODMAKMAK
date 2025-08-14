@@ -12,6 +12,7 @@ namespace game
     { // monster Branch
         private GraphicsDeviceManager _graphics;
         private ScreenManager _screenManager;
+        public int MapWidth = 1280, MapHeight = 720;
         // Collision j
         public CollisionComponent CollisionComponent { get; set; }
         public List<IEntity> Collision { get; set; } = new List<IEntity>();
@@ -23,7 +24,7 @@ namespace game
             IsMouseVisible = true;
             _screenManager = new ScreenManager();
             Components.Add(_screenManager);
-            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, 1200, 800));
+            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
         }
 
         protected override void Initialize()
