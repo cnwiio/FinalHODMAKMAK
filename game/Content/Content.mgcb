@@ -53,3 +53,20 @@
 /processor:TiledMapProcessor
 /build:ScenePrologue.tmx
 
+#begin Water_Tileset2Animated.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Water_Tileset2Animated.png
+
+#begin WaterTileset.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:WaterTileset.tsx
+
