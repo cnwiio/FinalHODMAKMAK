@@ -110,11 +110,13 @@ namespace game
             //    (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
             //    (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
             //    ); // Temporary
+            AdjustZoom();
             _tileMaper.UpdateMap(gameTime);
         }
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _tileMaper.DrawMap(_camera);
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, transformMatrix: _camera.GetViewMatrix());
             // Player
             _player.Draw(_spriteBatch);
@@ -131,26 +133,24 @@ namespace game
             {
                 item.Draw(_spriteBatch);
             }
-            _tileMaper.DrawMap(_camera);
             _spriteBatch.End();
         }
         public void AdjustZoom()
         {
             float zoomPerTick = 0.1f;
-            if (_ks.IsKeyDown(Keys.Z))
+            if (_ks.IsKeyDown(Keys.Z) == true)
             {
-                Debug.WriteLine("Zoom In");
                 _camera.ZoomIn(zoomPerTick);
             }
-            if (_ks.IsKeyDown(Keys.X))
+            if (_ks.IsKeyDown(Keys.X) == true)
             {
                 _camera.ZoomOut(zoomPerTick);
             }
-            if (_ks.IsKeyDown(Keys.C))
+            if (_ks.IsKeyDown(Keys.C) == true)
             {
                 _camera.ZoomIn(zoomPerTick * 0.1f);
             }
-            if (_ks.IsKeyDown(Keys.V))
+            if (_ks.IsKeyDown(Keys.V) == true)
             {
                 _camera.ZoomOut(zoomPerTick * 0.1f);
             }
