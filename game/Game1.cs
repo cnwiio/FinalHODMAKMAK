@@ -29,8 +29,8 @@ namespace game
 
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = 1200;
-            _graphics.PreferredBackBufferHeight = 800;
+            _graphics.PreferredBackBufferWidth = MapWidth;
+            _graphics.PreferredBackBufferHeight = MapHeight;
             _graphics.ApplyChanges();
             base.Initialize();
         }

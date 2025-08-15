@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,8 +45,9 @@ namespace game
         public override void LoadContent()
         {
             //Camera
-            var viewportAdapter = new BoxingViewportAdapter(Game.Window, GraphicsDevice, 1200, 800);
+            var viewportAdapter = new BoxingViewportAdapter(Game.Window, GraphicsDevice, game1.MapWidth, game1.MapHeight);
             _camera = new OrthographicCamera(viewportAdapter);
+            AdjustZoom(); 
             // Player
             _playerTexture = new AnimController("Char01", new Vector2(400, 400), 32, 48);
             _playerTexture.LoadFrame(Content);
@@ -104,10 +106,10 @@ namespace game
             }
             // Collision
             _collisionComponent.Update(gameTime);
-            _camera.Position = _player._movement.Position - new Vector2(
-                (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
-                (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
-                ); // Temporary
+            //_camera.Position = _player._movement.Position - new Vector2(
+            //    (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
+            //    (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
+            //    ); // Temporary
             _tileMaper.UpdateMap(gameTime);
         }
         public override void Draw(GameTime gameTime)
@@ -131,6 +133,27 @@ namespace game
             }
             _tileMaper.DrawMap(_camera);
             _spriteBatch.End();
+        }
+        public void AdjustZoom()
+        {
+            float zoomPerTick = 0.1f;
+            if (_ks.IsKeyDown(Keys.Z))
+            {
+                Debug.WriteLine("Zoom In");
+                _camera.ZoomIn(zoomPerTick);
+            }
+            if (_ks.IsKeyDown(Keys.X))
+            {
+                _camera.ZoomOut(zoomPerTick);
+            }
+            if (_ks.IsKeyDown(Keys.C))
+            {
+                _camera.ZoomIn(zoomPerTick * 0.1f);
+            }
+            if (_ks.IsKeyDown(Keys.V))
+            {
+                _camera.ZoomOut(zoomPerTick * 0.1f);
+            }
         }
     }
 }
