@@ -106,10 +106,10 @@ namespace game
             }
             // Collision
             _collisionComponent.Update(gameTime);
-            //_camera.Position = _player._movement.Position - new Vector2(
-            //    (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
-            //    (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
-            //    ); // Temporary
+            _camera.Position = _player._movement.Position - new Vector2(
+                (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
+                (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
+                ); // Temporary
             AdjustZoom();
             _tileMaper.UpdateMap(gameTime);
         }
@@ -117,7 +117,7 @@ namespace game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _tileMaper.DrawMap(_camera);
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, transformMatrix: _camera.GetViewMatrix());
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp ,transformMatrix: _camera.GetViewMatrix());
             // Player
             _player.Draw(_spriteBatch);
             _preventMonster.Draw(_spriteBatch);
