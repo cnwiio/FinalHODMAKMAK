@@ -299,7 +299,7 @@ namespace game
             bool isAwayHome = Vector2.Distance(Position, SpawnPosition) > 500f;
             bool inDetect = Vector2.Distance(Position, TargetPos) <= SreachRadius;
             bool inAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f) && inDetect;
-            bool inWander = Vector2.Distance(Position, TargetPos) > SreachRadius || Vector2.Distance(Position, SpawnPosition) > Width;
+            bool inWander = Vector2.Distance(Position, TargetPos) > SreachRadius && Vector2.Distance(Position, SpawnPosition) > Width;
             bool isAttacking = animSprite.CurrentAnimation == "attack";
 
             if (isAwayHome)
@@ -371,6 +371,8 @@ namespace game
             if (IsReturning)
             {
                 MoveTo(deltaTime, SpawnPosition);
+                Debug.WriteLine("Returning to Spawn Position");
+                Debug.WriteLine(inWander);
                 if (!inWander)
                 {
                     IsReturning = false;
