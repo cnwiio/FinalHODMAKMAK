@@ -1,13 +1,9 @@
 ﻿
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MonoGame.Extended.Animations;
 
-namespace game
+namespace game1
 {
     public class PlayerAnimation
     {
@@ -31,15 +27,15 @@ namespace game
         {
             if (overLoad == 1)
             {
-                if (direction.Y < 0) _animController.ChangeAnim("up"); // Up
-                else if (direction.Y > 0) _animController.ChangeAnim("down"); // Down
-                else if (direction.X < 0) _animController.ChangeAnim("left"); // Left
-                else if (direction.X > 0) _animController.ChangeAnim("right"); // Right
+                if (direction.Y < 0) _animController.SetAnimation("Walk", "up"); // Up
+                else if (direction.Y > 0) _animController.SetAnimation("Walk", "down"); // Down
+                else if (direction.X < 0) _animController.SetAnimation("Walk", "left"); // Left
+                else if (direction.X > 0) _animController.SetAnimation("Walk", "right"); // Right
 
                 if (direction != Vector2.Zero)
                 {
                     _animController.UpdateFrame(gameTime, position);
-                } 
+                }
             }
             else if (overLoad == 2)
             {
@@ -69,13 +65,24 @@ namespace game
             if (overLoad == 1 && _animController != null)
             {
                 // Play "attack" animation and return to idle after finished
-                _animController.ChangeAnim("attack", "idle");
+                _animController.SetAnimation("Walk", "attack");
             }
             else if (overLoad == 2 && _textureChar != null)
             {
                 // For AnimatedTexture: pause at attack row/frame (adjust row number to your sprite sheet)
                 int attackRow = 5; // example, change based on your sprite sheet
                 _textureChar.Pause(0, attackRow);
+            }
+        }
+
+        public void OnAnimationEvent(IAnimationController sender, AnimationEventTrigger trigger)
+        {
+            if (overLoad == 1 && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                if (overLoad == 1)
+                {
+                    _animController.SetAnimation("Walk", "up");
+                }
             }
         }
     }

@@ -53,7 +53,7 @@ namespace game
 
         public void LoadMap(ContentManager content, string tiledMapName)
         {
-            _tiledMap = content.Load<TiledMap>("TileMap/" + tiledMapName);
+            _tiledMap = content.Load<TiledMap>(tiledMapName);
             _tiledMapRenderer = new TiledMapRenderer(game.GraphicsDevice, _tiledMap);
         }
 
@@ -81,7 +81,7 @@ namespace game
             var collisionLayer = _tiledMap.GetLayer<TiledMapObjectLayer>(layerName);
             foreach (var obj in collisionLayer.Objects)
             {
-                //collisionList.Add(new Wall(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height)));
+                collisionList.Add(new Wall(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height)));
             }
             foreach (IEntity obj in collisionList)
             {

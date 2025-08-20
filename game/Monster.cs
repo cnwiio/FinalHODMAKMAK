@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -16,7 +17,7 @@ using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.Timers;
 
-namespace game
+namespace game1
 {
 
     public interface IMonster
@@ -47,20 +48,38 @@ namespace game
                 _monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
         3.
                 foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
-            {
-                monsterMelee.LoadAnim("Char01", monsterMelee.Position, 32, 48, Content);
-                monsterMelee.CreateAnimation();
-                monsterMelee.SetProperty(
-                    speed: 100f,
-                    sreachRadius: 300f,
-                    hp: 3
-                );
-                _collision.Add(monsterMelee.HurtBox);
-            }
+                {
+                    monsterMelee.LoadAnim("Char01", monsterMelee.Position, 32, 48, Content);
+                    monsterMelee.CreateAnimation();
+                    monsterMelee.SetProperty(
+                        speed: 100f,
+                        sreachRadius: 300f,
+                        hp: 3
+                    );
+                    _collision.Add(monsterMelee.HurtBox);
+                }
         4.
+                // Monster
                 foreach (MonsterMelee monster in _monster)
                 {
                     monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                    if (monster.ShakeViewport)
+                    {
+                        camera.ShakeCamera(gameTime);
+                        monster.ShakeViewport = camera.ShakeViewport;
+                    }
+                    // ----Temporary-----
+                    // Will make additional method for monster dead and drop
+                    // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
+                    if (monster.IsDead)
+                    {
+                        monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
+                        monster.DeleteHitBox(1f, _collision, _collisionComponent);
+                        monster.RemoveMonster();
+                        _monster.Remove(monster);
+                        break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
+                    }
+                    //------Temporary--------
                 }
         5.
                 foreach (MonsterMelee monster in _monster)
@@ -69,25 +88,38 @@ namespace game
                     _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.Red,2); // for debug only
                 }
          */
-        public Vector2 Center {  get; set; }
+        // -------------Property-------------
+        public float Speed { get; set; }
+        public float SreachRadius { get; set; }
+        public IEntity HurtBox { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public float ActiveRadius { get; set; } = 150f;
+        public float AwaySpawnRadius { get; set; } = 500f;
+        // ----------------------------------
+        public Vector2 Origin { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 TargetPos { get; set; }
         public Vector2 SpawnPosition { get; set; }
         public float WanderTimer { get; set; } = 0f;
+        private const float _blinkInterval = 0.1f;
+        private float _blinkTimer = 0f;
+        private float _knockBackTimer = 0f, _knockBackForce = 0f;
+        private Vector2 _knockBackDirection = Vector2.Zero;
+        private List<IEntity> _collisions;
+        private CollisionComponent _collisionComponents;
+        private PreventMonster _preventMonster;
+        private AnimController monster;
+        public bool ShakeViewport = false;
+
+        // ----------------Bool----------------
         public bool WaitingToReturn { get; set; } = false;
         public bool IsReturning { get; set; } = false;
-        private PreventMonster _preventMonster;
-        // -------------Property-------------
-        public float Speed { get; set; }
-        public float SreachRadius {  get; set; }
-        public IEntity HurtBox { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        // ----------------------------------
+
         public bool IgnorePlayer = false;
         private bool _isHit;
         private float _hitTimer = 0f;
-        public bool isHit
+        public bool isHit // togle I-frame state; check if monster is attacked
         {
             get => _isHit;
             set
@@ -95,16 +127,18 @@ namespace game
                 if (value)
                 {
                     _isHit = true;
-                    _hitTimer = 1f; // start 1 second timer
+                    ShakeViewport = true;
+                    _hitTimer = 1f;
+                    ApplyKnockback(250f); 
                 }
             }
         }
         private bool _isAttack;
         private float _attackCD;
-        public bool isAttack 
+        public bool isAttack // togle attack state; check if monster is attacking
         {
             get => _isAttack;
-            set 
+            set
             {
                 if (value)
                 {
@@ -113,65 +147,69 @@ namespace game
                 }
             }
         }
+        public bool IsDead => HP <= 0;
         private int _HP;
-        public int HP { 
+        public int HP
+        {
             get => _HP;
-            set 
+            set
             {
                 _HP = value;
                 if (_HP <= 0)
                 {
-                    Debug.WriteLine("Dead");
+                    _HP = 0;
                 }
-            } 
+            }
         }
+        // ----------------------------------
 
 
-        private AnimController monster;
 
         public MonsterMelee(Vector2 position, PreventMonster preventMonster)
         {
             Position = position;
-            SpawnPosition = Position;
+            SpawnPosition = position;
             _preventMonster = preventMonster;
         }
-        public void LoadAnim(string textureName, Vector2 position, int width, int height, ContentManager content)
+        public void LoadAnim(string spriteSheetName, string textureName, Vector2 position, int width, int height, ContentManager content)
         {
-            Width = width;
-            Height = height;
-            monster = new AnimController(textureName, position, width, height);
-            monster.LoadFrame(content);
-            Center = new Vector2(monster.TextureWidth /2, monster.TextureHeight/2); // Centerize: maybe tempo, not sure
+            if (Width == 0 || Height == 0)
+            {
+                Width = width;
+                Height = height;
+            }
+            if (monster == null)
+            {
+                monster = new AnimController(position);
+            }
+            monster.LoadFrame(content, spriteSheetName, textureName, width, height);
         }
-        public void LoadAnim(AnimController animController, ContentManager content)
-        {
-            LoadAnim(animController.TextureName, animController.Position, animController.TextureWidth, animController.TextureHeight, content);
-        }
+
+        /*
+         IMPORTANT NOTE: Need to change in future
+         Based on the animation sprite sheet
+        */
         public void CreateAnimation()
         {
-            monster.CreateAnimation("idle", true, 1, 12, 15); // temporary
-            monster.CreateAnimation("attack", false, 12, 0, 4); // temporary
-            monster.CreateAnimation("Walk/down", true, 1, 0, 3);
-            monster.CreateAnimation("Walk/left", true, 1, 4, 7);
-            monster.CreateAnimation("Walk/right", true, 1, 8, 11);
-            monster.CreateAnimation("Walk/up", true, 1, 12, 15);
-            // Update In future
-            //monster.CreateAnimation("Idle/down", true, 0.5f, 0, 3);
-            //monster.CreateAnimation("Idle/left", true, 0.5f, 4, 7);
-            //monster.CreateAnimation("Idle/right", true, 0.5f, 8, 11);
-            //monster.CreateAnimation("Idle/up", true, 0.5f, 12, 15);
-            //monster.CreateAnimation("Attack/down", true, 0.5f, 0, 3);
-            //monster.CreateAnimation("Attack/left", true, 0.5f, 4, 7);
-            //monster.CreateAnimation("Attack/right", true, 0.5f, 8, 11);
-            //monster.CreateAnimation("Attack/up", true, 0.5f, 12, 15); 
+            monster.CreateAnimation("Idle", "down", true, 12, 0, 8); // temporary
+            //monster.CreateAnimation("Attack","right", false, 12, 0, 7); // temporary
+
+            monster.CreateAnimation("Walk", "down", true, 12, 0, 4);
+            monster.CreateAnimation("Walk", "attack", false, 12, 12, 4);
+            monster.CreateAnimation("Walk", "left", true, 12, 4, 4);
+            monster.CreateAnimation("Walk", "right", true, 12, 8, 4);
+            monster.CreateAnimation("Walk", "up", true, 12, 12, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp)
         {
             SetProperty(
-                speed, 
-                sreachRadius, 
-                new MonsterHurtbox(new RectangleF(Position, new SizeF(Width, Height)), this),
+                speed,
+                sreachRadius,
+                new MonsterHurtbox(
+                    /*new RectangleF(Position, new SizeF(Width, Height)*/
+                    monster.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(monster.Position, 0f, Vector2.One)),
+                this),
                 hp
                 );
         }
@@ -184,23 +222,38 @@ namespace game
         }
         public void UpdateState(GameTime gameTime, List<IEntity> collisions, CollisionComponent collisionComponents, Vector2 targetPosition)
         {
-            HurtBox.Bounds.Position = Position - Center; // Centerize: maybe tempo, not sure
+            if (_collisions == null || _collisionComponents == null)
+            {
+                _collisions = collisions;
+                _collisionComponents = collisionComponents;
+            }
+
+            var hurtBox = HurtBox as MonsterHurtbox;
             TargetPos = targetPosition;
             float deltaTime = gameTime.GetElapsedSeconds();
 
-            StateController(deltaTime, collisions, collisionComponents);
-            DeleteHitBox(deltaTime, collisions, collisionComponents);
-            UpdateHitTimer(deltaTime);
-            monster.UpdateFrame(gameTime, Position - Center); // Draw // Centerize: maybe tempo, not sure
+            if (monster != null)
+            {
+                hurtBox.Update(Position);
+                StateController(deltaTime, collisions, collisionComponents);
+                DeleteHitBox(deltaTime, collisions, collisionComponents);
+                UpdateHitTimer(deltaTime);
+                monster.UpdateFrame(gameTime, Position); // Draw  
+            }
         }
-        private float _blinkTimer = 0f; // timer สำหรับ blink
-        private const float BlinkInterval = 0.1f; // กระพริบทุก 0.1 วินาที (ปรับได้)
         public void DrawMonster(SpriteBatch spriteBatch)
         {
-            bool shouldFlash = _isHit && (_blinkTimer < BlinkInterval);
-            Color tint = shouldFlash ? Color.White * 0.5f : Color.White; // transparent and normal
-            monster.DrawFrame(spriteBatch, tint);
-            //monster.DrawFrame(spriteBatch);
+            if (monster != null)
+            {
+                bool shouldFlash = _isHit && (_blinkTimer < _blinkInterval);
+                Color tint = shouldFlash ? Color.Red : Color.White; // transparent and normal
+                monster.DrawFrame(spriteBatch, tint);
+            }
+        }
+
+        public void UnLoad()
+        {
+            monster.Unload(OnAnimationEvent);
         }
         public void MoveTo(float deltaTime, Vector2 position)
         {
@@ -209,30 +262,9 @@ namespace game
             if (Speed == 0) Speed = 1f;
             Vector2 movement = direction * Speed * deltaTime;
             Position += movement;
-            PlayAnimaion("Walk" ,GetDirection(direction));
+            monster.SetAnimation("Walk", GetDirection(direction));
         }
-        //public void BackToSpawn(float deltaTime)
-        //{
-        //    Vector2 direction = SpawnPosition - Position;
-        //    direction.Normalize();
-        //    Position += direction * Speed * deltaTime;
-        //    PlayAnimaion("Walk", GetDirection(direction));
-        //}
-        //public string GetDirection(Vector2 direction)
-        //{
-        //    var angle = Math.Acos(direction.X) * (180/Math.PI); 
-        //    Debug.WriteLine(angle);
 
-        //    if (direction.X >= -0.7 && direction.X <= 0.7 && direction.Y <= 0.7)
-        //        return "up";
-        //    else if (direction.X >= -0.7 && direction.X <= 0.7 && direction.Y > -0.7)
-        //        return "down";
-        //    else if (direction.Y < 0.7 && direction.Y >= -0.7 && direction.X >= 0.7)
-        //        return "right";
-        //    else if (direction.Y <= 0.7 && direction.Y >= -0.7 && direction.X <= -0.7)
-        //        return "left";
-        //    return null;
-        //}
         public string GetDirection(Vector2 direction)
         {
             if (direction.LengthSquared() == 0)
@@ -250,13 +282,28 @@ namespace game
         public void CreateHitbox(string direction, List<IEntity> collisions, CollisionComponent collisionComponents)
         {
             const float ttl = 0.1f; // 100 ms
-            SizeF size = new SizeF(Width * 1.2f, Height * 1.5f);
+            var bounds = HurtBox.Bounds.BoundingRectangle;
+            SizeF size = new SizeF(bounds.Width * 1.2f, bounds.Height * 1.5f); // Hitbox size; size of sprite * 1.2f and 1.5f
 
-            // Shift so Position is treated as center
-            Vector2 topLeft = Position - new Vector2(Width / 2f, Height / 2f);
-
+            //Vector2 topLeft = Position - new Vector2(Width / 2f, Height / 2f); // old method maybe useful in future 
+            Vector2 topLeft = bounds.TopLeft; // Shift Position to topleft; Because old positon was based on topleft position but now position is center
             switch (direction)
             {
+                /*
+                    Calculate logic :
+                        Up :
+                            X: First calculate the center of the sprite (topLeft.X + Width / 2) 
+                            and then subtract half of the hitbox width (size.Height / 2) (use size.Height instead of width because it rotated) 
+                            Y: Subtract the hitbox height (size.Width) from the topLeft.Y
+                        Down :  
+                            for Down logic is reverse of Up logic or similar to Up logic
+                        Right :
+                            X: Add the Width to the topLeft.X to get the right edge of the sprite
+                            Y: First calculate the center of the right side sprite (topLeft.Y + Height / 2)
+                            and then subtract half of the hitbox height (size.Height / 2)
+                        Left :
+                            for eft logic is reverse of right logic or similar to right logic
+                */
                 case "up":
                     var hb = new MonsterAttackHitbox(
                         new RectangleF(new Vector2((topLeft.X + Width / 2) - size.Height / 2, topLeft.Y - size.Width),
@@ -291,63 +338,78 @@ namespace game
             }
         }
 
+        /*
+        IMPORTANT NOTE:
+        not sure if this is the best way to handle state controller and code is too complicated and hard to read
+        maybe need to optimize in future
+        */
         public void StateController(float deltaTime, List<IEntity> collisions, CollisionComponent collisionComponents)
         {
-            AnimatedSprite animSprite = monster.AnimSprite;
-            float preventMonsterEdge = Vector2.Distance(Position,_preventMonster.Position) - _preventMonster.Radius;
-            bool inAttackList = _preventMonster.ActiveAttacker.Contains(this); 
-            bool isAwayHome = Vector2.Distance(Position, SpawnPosition) > 500f;
+            // ----------------bool varbles------------------
+            var bounds = HurtBox.Bounds.BoundingRectangle;
+            Width = (int)bounds.Width;
+            Height = (int)bounds.Height;
+            float preventMonsterEdge = Vector2.Distance(Position, _preventMonster.Position) - _preventMonster.Radius;
+            bool inAttackList = _preventMonster.ActiveAttacker.Contains(this);
+            bool isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
             bool inDetect = Vector2.Distance(Position, TargetPos) <= SreachRadius;
             bool inAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f) && inDetect;
             bool inWander = Vector2.Distance(Position, TargetPos) > SreachRadius || Vector2.Distance(Position, SpawnPosition) > Width;
-            bool isAttacking = animSprite.CurrentAnimation == "attack";
+            Vector2 direction = TargetPos - Position;
+            direction.Normalize();
+            //bool isAttacking = monster.CurrentSpriteSheet == "Attack";
+            // ------------------------------------------
 
             if (isAwayHome)
             {
                 IgnorePlayer = true;
-            }            
-            if (inDetect || inAttack && !IgnorePlayer) // if player is in detect range or in attack range and not ignoring player will wait to return
+            }
+            if (inDetect || inAttack && !IgnorePlayer)
             {
                 WaitingToReturn = false;
                 IsReturning = false;
             }
-            if (preventMonsterEdge >= 1f) _preventMonster.ActiveAttacker.Remove(this); // Remove from active attacker if out of preventMonsterEdge range
-            
+            if (preventMonsterEdge >= 1f) _preventMonster.RemoveMonster(this); // Remove from active attacker if out of preventMonsterEdge range
 
-            if (IgnorePlayer) // ---------------------------------------------------------------------------- Ignore Player State
+
+            if (IgnorePlayer) // - --------------------------------------------------------------------------- Ignore Player State
             {
+                // ignore player and move to spawn position
                 inDetect = false;
                 IsReturning = true;
             }
-            else if (inAttack && !isAttacking) // ----------------------------------------------------------- Attack State
+            else if (inAttack && !isAttack) // ----------------------------------------------------------- Attack State
             {
-                if (!isAttack)
-                {
-                    _preventMonster.ActiveAttacker.Add(this); // Add to active attacker when in Attack State
-                    isAttack = true;
-                    animSprite.SetAnimation("attack").OnAnimationEvent += (sender, trigger) =>
-                    {
-                        if (trigger == AnimationEventTrigger.AnimationCompleted)
-                        {
-                            Vector2 direction = TargetPos - Position;
-                            direction.Normalize();
-                            CreateHitbox(GetDirection(direction), collisions, collisionComponents);
-                            animSprite.SetAnimation("idle");
-                        }
-                    };
-                }
+                // attack player if in attack range 
+                isAttack = true;
+                monster.SetAnimation("Walk", "attack", OnAnimationEvent); // temporary attack animation 
             }
-            else if (inDetect && !isAttacking) // ----------------------------------------------------------- Chasing State
+            else if (inDetect && !isAttack) // ----------------------------------------------------------- Chasing State
             {
-                if (!isAttack && inAttackList)
+                /*
+                Move to player only when inAttackList 
+                if not will check if near player enough will add to activeAttacker list
+                if not will move to preventMonsterEdge instead
+                if at preventMonsterEdge will Idle instead
+                */
+                if (inAttackList)
                 {
                     MoveTo(deltaTime, TargetPos);
                 }
-                else if (!isAttack &&  preventMonsterEdge >= 1f) MoveTo(deltaTime, TargetPos);
-                else animSprite.SetAnimation("idle");
+                else if (Vector2.Distance(Position, TargetPos) <= ActiveRadius)
+                {
+                    if (!_preventMonster.ActiveAttacker.Contains(this))
+                        _preventMonster.ActiveAttacker.Add(this);
+                }
+                else if (preventMonsterEdge >= 1f) MoveTo(deltaTime, TargetPos);
+                else monster.SetAnimation("Idle", "down"); // temporary idle animation
             }
-            else if (inWander && !isAttacking) // ----------------------------------------------------------- Wander State
+            else if (inWander && !isAttack) // ----------------------------------------------------------- Wander State
             {
+                /*
+                will Idle and wait to return if not in detect range or in attack range
+                if wait end will return to spawn position
+                */
                 if (!WaitingToReturn && !IsReturning)
                 {
                     WaitingToReturn = true;
@@ -356,18 +418,17 @@ namespace game
 
                 if (WaitingToReturn)
                 {
-                    if (animSprite.CurrentAnimation != "idle")
-                        animSprite.SetAnimation("idle");
+                    monster.SetAnimation("Walk", "down"); // temporary idle animation
                     WanderTimer -= deltaTime;
                     if (WanderTimer <= 0f)
                     {
                         WaitingToReturn = false;
                         IsReturning = true;
-
                     }
                 }
             }
 
+            // Return Logic
             if (IsReturning)
             {
                 MoveTo(deltaTime, SpawnPosition);
@@ -375,11 +436,11 @@ namespace game
                 {
                     IsReturning = false;
                     IgnorePlayer = false;
-                    animSprite.SetAnimation("idle");
+                    monster.SetAnimation("Walk", GetDirection(direction));
                 }
             }
         }
-        public void DeleteHitBox(float deltaTime,List<IEntity> entities, CollisionComponent collisionComponent)
+        public void DeleteHitBox(float deltaTime, List<IEntity> entities, CollisionComponent collisionComponent)
         {
             foreach (var hb in entities.OfType<MonsterAttackHitbox>().ToList())
             {
@@ -396,8 +457,8 @@ namespace game
             if (_isHit)
             {
                 _hitTimer -= deltaTime;
-                _blinkTimer += deltaTime; 
-                if (_blinkTimer >= BlinkInterval * 2) _blinkTimer = 0f; 
+                _blinkTimer += deltaTime;
+                if (_blinkTimer >= _blinkInterval * 2) _blinkTimer = 0f;
                 if (_hitTimer <= 0f)
                 {
                     _isHit = false;
@@ -414,27 +475,113 @@ namespace game
                     _attackCD = 0f;
                 }
             }
-        }
-
-        // Summary how to use : 
-            //PlayAnimaion("Walk" ,GetDirection(direction));
-        public void PlayAnimaion(string animationType,string direction)
-        {
-            switch (direction)
+            if (IsKnockBack())
             {
-                case "up":
-                    monster.ChangeAnim(animationType + "/up");
-                    break;
-                case "down":
-                    monster.ChangeAnim(animationType + "/down");
-                    break;
-                case "right":
-                    monster.ChangeAnim(animationType + "/right");
-                    break;
-                case "left":
-                    monster.ChangeAnim(animationType + "/left");
-                    break;
+                _knockBackTimer -= deltaTime;
+                _knockBackForce *= MathF.Pow(0.1f, deltaTime);
+                Position += _knockBackDirection * _knockBackForce * deltaTime;
+                //Debug.WriteLine($"Knockback Force:" + _knockBackDirection * _knockBackForce * deltaTime
+                //    + "\n DeltaTime : " + deltaTime + "\n Force : " + _knockBackForce + "\n Direction : " + _knockBackDirection);
+            }
+        }
+        public void OnAnimationEvent(IAnimationController sender, AnimationEventTrigger trigger)
+        {
+            if (monster.CurrentSpriteSheet == "Walk" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                Vector2 direction = TargetPos - Position;
+                direction.Normalize();
+                CreateHitbox(GetDirection(direction), _collisions, _collisionComponents);
+                monster.SetAnimation("Walk", GetDirection(direction));
+            }
+        }
+        public void RemoveMonster()
+        {
+            _preventMonster.RemoveMonster(this);
+            _collisions.Remove(HurtBox);
+            _collisionComponents.Remove(HurtBox);
+            monster.Unload(OnAnimationEvent);
+            monster = null;
+        }
+        public bool IsKnockBack()
+        {
+            return _knockBackTimer > 0f && _knockBackForce > 0.01f;
+        }
+        public void ApplyKnockback(float knockbackForce)
+        {
+            var knockbackDirection = -(TargetPos - Position);
+            if (knockbackDirection.LengthSquared() == 0)
+            {
+                return;
+            }
+            knockbackDirection.Normalize();
+            _knockBackTimer = 0.4f;
+            _knockBackDirection = knockbackDirection;
+            _knockBackForce = knockbackForce;
+        }
+        public void DropHeal(List<IEntity> entities, CollisionComponent collisionComponent, Texture2D texture, Player player)
+        {
+            Random r = new Random();
+            if (r.Next(1, 101) > 100 - 75) // Percentage, Ex: 75 mean 75%
+            {
+                entities.Add(new HealDrops(
+                                new RectangleF(
+                                    monster.Position,
+                                    new SizeF(texture.Width, texture.Height)
+                                    ),
+                                texture,
+                                player
+                            )); // Add drops
+                collisionComponent.Insert(entities.Last());
             }
         }
     }
 }
+
+
+
+
+
+// old Method
+//public void BackToSpawn(float deltaTime)
+//{
+//    Vector2 direction = SpawnPosition - Position;
+//    direction.Normalize();
+//    Position += direction * Speed * deltaTime;
+//    PlayAnimaion("Walk", GetDirection(direction));
+//}
+//public string GetDirection(Vector2 direction)
+//{
+//    var angle = Math.Acos(direction.X) * (180/Math.PI); 
+//    Debug.WriteLine(angle);
+
+//    if (direction.X >= -0.7 && direction.X <= 0.7 && direction.Y <= 0.7)
+//        return "up";
+//    else if (direction.X >= -0.7 && direction.X <= 0.7 && direction.Y > -0.7)
+//        return "down";
+//    else if (direction.Y < 0.7 && direction.Y >= -0.7 && direction.X >= 0.7)
+//        return "right";
+//    else if (direction.Y <= 0.7 && direction.Y >= -0.7 && direction.X <= -0.7)
+//        return "left";
+//    return null;
+//}
+
+//// Summary how to use : 
+//    //PlayAnimaion("Walk" ,GetDirection(direction));
+//public void PlayAnimaion(string spriteSheet,string direction)
+//{
+//    switch (direction)
+//    {
+//        case "up":
+//            monster.SetAnimation(spriteSheet, "up");
+//            break;
+//        case "down":
+//            monster.SetAnimation(spriteSheet, "down");
+//            break;
+//        case "right":
+//            monster.SetAnimation(spriteSheet, "right");
+//            break;
+//        case "left":
+//            monster.SetAnimation(spriteSheet, "left");
+//            break;
+//    }
+//}

@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace game
+namespace game1
 {
     public class PlayerInput
     {
         public Vector2 Direction { get; private set; }
+        public Vector2 Direction2 { get; private set; } = Vector2.Zero;
         public bool DashTriggered { get; private set; }
         public bool AttackTriggered { get; private set; }
 
@@ -56,6 +57,10 @@ namespace game
             AttackTriggered = justClicked;
             _oldMouseState = mouseState;
 
+            if (dir != Vector2.Zero)
+            {
+                Direction2 = dir;
+            }
             Direction = dir;
             _oldkeyboardState = _keyboardState;
         }

@@ -17,130 +17,169 @@ using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.Particles;
 
 
-namespace game
+namespace game1
 {
     /*
     How to use Example
     1.
             private AnimController _player;
     2.
-            _player = new AnimController(textureName, position, width, height);
-            _player.LoadFrame(Content);
-            _player.CreateAnimation("idle", true, 0.8f, 0, 3);
-            _player.CreateAnimation("fart", false, 0.1f, 0, 3);
+            _player = new AnimController(_position);
+            _player.LoadFrame(Content, "Char", "Char01", 32, 48);
+            _player.LoadFrame(Content, "attackDown", "idletestnohat", 48, 53);
+            _player.CreateAnimation("Char", "Attack/Down", false, 2, 0, 4);
+            _player.CreateAnimation("Char", "Walk/Left", true, 12, 4, 4);
     3.
             _player.UpdateFrame(gameTime, _playerPos);
     4.
             _player.DrawFrame(_spriteBatch);
     5.
-            _player.ChangeAnim("fart", "idle");
-            _player.ChangeAnim("fart", "idle", OnFartAnimationComplete);
-     */
+            _player.SetAnimation("spriteSheet", "animationName");
+            _player.SetAnimation("attackDown", "Attack/Down", OnAnimationEvent);
+    6.
+            _player.Unload(OnAnimationEvent);
+    */
     public class AnimController
     {
         public Texture2D SourceTexture { get; set; }
-        public Texture2DAtlas Atlas { get; set; }
-        public SpriteSheet SpriteSheet { get; set; }
-        public AnimatedSprite AnimSprite { get; set; }
-        public string TextureName { get; set; }
-        public int TextureWidth { get; set; }
-        public int TextureHeight { get; set; }
+        public Dictionary<string,Texture2DAtlas> Atlas { get; set; } = new Dictionary<string, Texture2DAtlas>();
+        public Dictionary<string,SpriteSheet> SpriteSheet { get; set; } = new Dictionary<string, SpriteSheet>();
+        public Dictionary<string, AnimatedSprite> AnimSprite { get; set; } = new Dictionary<string, AnimatedSprite>(); 
         public Vector2 Position { get; set; }
-        public AnimController(string textureName, Vector2 position, int textureWidth, int textureHeight)
+        public Vector2 Origin { get; set; }
+        public float TextureWidth { get; set; }
+        public float TextureHeight { get; set; }
+        public string CurrentSpriteSheet { get; set; }
+        public string CurrentAnimation { get; set; }
+        public AnimController(Vector2 position)
         {
-            TextureName = textureName;
             Position = position;
-            TextureWidth = textureWidth;
-            TextureHeight = textureHeight;
         }
 
-        public void LoadFrame(ContentManager content)
+        // Ex. _player.LoadFrame(Content, "Char", "Char01", 32, 48);
+        public void LoadFrame(ContentManager content, string spriteSheetName, string textureName, int textureWidth, int textureHeight)
         {
-            SourceTexture = content.Load<Texture2D>("Texture/" + TextureName);
-            Atlas = Texture2DAtlas.Create("Atlas/" + TextureName, SourceTexture, TextureWidth, TextureHeight);
-            SpriteSheet = new SpriteSheet("SpriteSheet/" + TextureName, Atlas);
+            SourceTexture = content.Load<Texture2D>("Texture/" + textureName);
+            Atlas.Add(spriteSheetName, Texture2DAtlas.Create("Atlas/" + textureName, SourceTexture, textureWidth, textureHeight));
+            SpriteSheet.Add(spriteSheetName, new SpriteSheet("SpriteSheet/" + textureName, Atlas[spriteSheetName]));
         }
+
+
+        // Ex. _player.UpdateFrame(gameTime);
         public void UpdateFrame(GameTime gameTime)
         {
-            AnimSprite.Update(gameTime);
+            AnimSprite[CurrentSpriteSheet].Update(gameTime);
         }
+
+
+        // Ex. _player.UpdateFrame(gameTime, _playerPos);
         public void UpdateFrame(GameTime gameTime, Vector2 position)
         {
-            AnimSprite.Update(gameTime);
-            Position = position;
+            Position = position; 
+            AnimSprite[CurrentSpriteSheet].Update(gameTime);
+            Origin = AnimSprite[CurrentSpriteSheet].Origin;
+            TextureWidth = AnimSprite[CurrentSpriteSheet].TextureRegion.Width;
+            TextureHeight = AnimSprite[CurrentSpriteSheet].TextureRegion.Height;
         }
+
+
+        // Ex. _player.DrawFrame(_spriteBatch);
         public void DrawFrame(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Draw(AnimSprite, Position);
-            AnimSprite.Draw(spriteBatch, Position, 0f, Vector2.One);
+            AnimSprite[CurrentSpriteSheet].Draw(spriteBatch, Position, 0f, Vector2.One);
         }
+
+
+        // Ex. _player.DrawFrame(_spriteBatch, Color.Red);
         public void DrawFrame(SpriteBatch spriteBatch, Color tintColor = default)
         {
             if (tintColor == default) tintColor = Color.White;
-            AnimSprite.Color = tintColor;
+            AnimSprite[CurrentSpriteSheet].Color = tintColor;
             DrawFrame(spriteBatch);
         }
-        //public void DrawFrame(SpriteBatch spriteBatch, Color tintColor = default,  SpriteEffects effect)
-        //{
-        //    if (tintColor == default) tintColor = Color.White;
-        //    AnimSprite.Effect = effect;
-        //    DrawFrame(spriteBatch, tintColor);
-        //}
-        public void SetDefaultAnim(string animationName)
-        {
-            AnimSprite = new AnimatedSprite(SpriteSheet, animationName);
-        }
-        public void CreateAnimation(string animationName, bool isLoop, int fps, int startIndexFrames, int endIndexFrames)
+
+
+        // Ex.  _player.CreateAnimation("Char", "Attack/Down", false, 2, 0, 4);
+        //      _player.CreateAnimation("Char", "Walk/Left", true, 12, 4, 4);
+        public void CreateAnimation(string spriteSheetName,string animationName, bool isLoop, int fps, int startIndexFrames, int framesCount)
         {
 
-            // sprite sheet
             float _fps = 1f / fps;
-            SpriteSheet.DefineAnimation(animationName, builder =>
+            SpriteSheet[spriteSheetName].DefineAnimation(animationName, builder =>
             {
                 builder.IsLooping(isLoop);
-                for (int i = startIndexFrames; i <= endIndexFrames; i++)
+                for (int i = startIndexFrames; i <= startIndexFrames + framesCount - 1; i++)
                 {
                     builder.AddFrame(i, TimeSpan.FromSeconds(_fps));
                 }
             });
 
-            // animated sprite
-            if (AnimSprite == null)
+            if (CurrentSpriteSheet == null)
             {
-                this.SetDefaultAnim(animationName);
+                CurrentSpriteSheet = spriteSheetName;
+                CurrentAnimation = animationName;
             }
+
+            if (!AnimSprite.ContainsKey(spriteSheetName))
+            {
+                AnimSprite.Add(spriteSheetName, new AnimatedSprite(SpriteSheet[spriteSheetName], animationName));
+                AnimSprite[spriteSheetName].Origin = new Vector2(
+                    AnimSprite[spriteSheetName].TextureRegion.Width / 2f,
+                    AnimSprite[spriteSheetName].TextureRegion.Height / 2f
+                    ); // Centerize; not sure if change in future 
+            }
+
         }
 
-        public void ChangeAnim(string animationName)
-        {
-            if (AnimSprite.CurrentAnimation != animationName)
-            {
-                AnimSprite.SetAnimation(animationName);  
-            }
-        }
-        public void ChangeAnim(string NewAnimation, string ChangeBackAnimation)
-        {
-            AnimSprite.SetAnimation(NewAnimation).OnAnimationEvent += (sender, trigger) =>
-            {
-                if (trigger == AnimationEventTrigger.AnimationCompleted)
-                {
-                    AnimSprite.SetAnimation(ChangeBackAnimation);
-                }
-            };
-        }
-        // Delegate for methods that take no parameters and return void
-        public delegate void AnimationCallback();
 
-        public void ChangeAnim(string NewAnimation, string ChangeBackAnimation, AnimationCallback methodName)
+        // Ex.  _player.SetAnimation("fart", "idle", OnAnimationEvent);
+        public void SetAnimation(string spriteSheet, string animationName, Action<IAnimationController, AnimationEventTrigger> onEvent = null)
         {
-            AnimSprite.SetAnimation(NewAnimation).OnAnimationEvent += (sender, trigger) =>
+            if (CurrentSpriteSheet == spriteSheet && CurrentAnimation == animationName)
+                return;
+
+            CurrentSpriteSheet = spriteSheet;
+            CurrentAnimation = animationName;
+
+            var sprite = AnimSprite[CurrentSpriteSheet];
+            var controller = sprite.SetAnimation(animationName);
+
+            if (AnimSprite[CurrentSpriteSheet].Controller != null)
+                AnimSprite[CurrentSpriteSheet].Controller.OnAnimationEvent -= onEvent;
+
+            if (onEvent != null)
+                controller.OnAnimationEvent += (s, e) => onEvent(s, e);
+        }
+
+
+        // Ex. _player.Unload(OnAnimationEvent);
+        public void Unload(Action<IAnimationController, AnimationEventTrigger> onEvent)
+        {
+            foreach (var item in AnimSprite.Values)
             {
-                if (trigger == AnimationEventTrigger.AnimationCompleted)
-                {
-                    AnimSprite.SetAnimation(ChangeBackAnimation);
-                    methodName?.Invoke(); // Call the callback method if it's not null
-                }
-            };
+                if (item.Controller != null)
+                    item.Controller.OnAnimationEvent -= onEvent;
+            }
         }
     }
 }
+
+
+
+// Old Method
+
+//public void ChangeAnim(string spriteSheetName,string animationName)
+//{
+//    CurrentSpriteSheet = spriteSheetName;
+//    //CurrentAnimation = animationName;
+//    if (AnimSprite[CurrentSpriteSheet].CurrentAnimation != animationName)
+//    {
+//        AnimSprite[CurrentSpriteSheet].SetAnimation(animationName);  
+//    }
+//}
+//public void DrawFrame(SpriteBatch spriteBatch, Color tintColor = default,  SpriteEffects effect)
+//{
+//    if (tintColor == default) tintColor = Color.White;
+//    AnimSprite.Effect = effect;
+//    DrawFrame(spriteBatch, tintColor);
+//}
