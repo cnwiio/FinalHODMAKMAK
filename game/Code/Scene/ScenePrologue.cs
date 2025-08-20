@@ -23,7 +23,7 @@ namespace game
         // Collision & Layer
         private List<IEntity> _collision = new List<IEntity>();
         private CollisionComponent _collisionComponent;
-        private PreventMonster _preventMonster; // Tempo
+        private PreventMonster _preventMonster; 
         // Player
         private AnimController _playerTexture;
         private Player _player;
@@ -34,7 +34,8 @@ namespace game
         private Game1 game1;
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks; // keyboard
-        
+        private Texture2D _dropTexture; // tempo
+
         public ScenePrologue(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -46,10 +47,10 @@ namespace game
         }
         public override void LoadContent()
         {
+            _dropTexture = Content.Load<Texture2D>("Texture/Health"); // tempo
             //Camera
             camera = game1.camera;
             _camera = camera.Cam;
-            AdjustZoom();
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
@@ -113,6 +114,23 @@ namespace game
             foreach (MonsterMelee monster in _monster)
             {
                 monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                if (monster.ShakeViewport)
+                {
+                    camera.ShakeCamera(gameTime);
+                    monster.ShakeViewport = camera.ShakeViewport;
+                }
+                // Temporary
+                // Will make additional method for monster dead and drop
+                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
+                if (monster.IsDead)
+                {
+                    monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
+                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
+                    monster.RemoveMonster();
+                    _monster.Remove(monster);
+                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
+                }
+                //--------------
             }
             // Collision
             _collisionComponent.Update(gameTime);
@@ -143,26 +161,6 @@ namespace game
                 item.Draw(_spriteBatch);
             }
             _spriteBatch.End();
-        }
-        public void AdjustZoom()
-        {
-            float zoomPerTick = 0.1f;
-            if (_ks.IsKeyDown(Keys.Z) == true)
-            {
-                _camera.ZoomIn(zoomPerTick);
-            }
-            if (_ks.IsKeyDown(Keys.X) == true)
-            {
-                _camera.ZoomOut(zoomPerTick);
-            }
-            if (_ks.IsKeyDown(Keys.C) == true)
-            {
-                _camera.ZoomIn(zoomPerTick * 0.1f);
-            }
-            if (_ks.IsKeyDown(Keys.V) == true)
-            {
-                _camera.ZoomOut(zoomPerTick * 0.1f);
-            }
         }
         public override void UnloadContent()
         {
