@@ -3,8 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Animations;
 
-namespace game1
-{
+namespace game
+{ 
     public class PlayerAnimation
     {
         private AnimController _animController;

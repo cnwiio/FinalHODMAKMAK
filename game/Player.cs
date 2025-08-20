@@ -7,7 +7,7 @@ using MonoGame.Extended.Collisions;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace game1
+namespace game
 {
     public class Player
     {

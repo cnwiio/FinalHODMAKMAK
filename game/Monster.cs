@@ -17,7 +17,7 @@ using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.Timers;
 
-namespace game1
+namespace game
 {
 
     public interface IMonster
@@ -192,13 +192,15 @@ namespace game1
         public void CreateAnimation()
         {
             monster.CreateAnimation("Idle", "down", true, 12, 0, 8); // temporary
-            //monster.CreateAnimation("Attack","right", false, 12, 0, 7); // temporary
+            monster.CreateAnimation("Idle", "up", true, 12, 0, 8); // temporary
+            monster.CreateAnimation("Idle", "left", true, 12, 0, 8); // temporary
+            monster.CreateAnimation("Idle", "right", true, 12, 0, 8); // temporary
 
-            monster.CreateAnimation("Walk", "down", true, 12, 0, 4);
-            monster.CreateAnimation("Walk", "attack", false, 12, 12, 4);
-            monster.CreateAnimation("Walk", "left", true, 12, 4, 4);
-            monster.CreateAnimation("Walk", "right", true, 12, 8, 4);
+            monster.CreateAnimation("Walk", "left", true, 12, 0, 4);
+            monster.CreateAnimation("Walk", "right", true, 12, 4, 4);
+            monster.CreateAnimation("Walk", "down", true, 12, 8, 4);
             monster.CreateAnimation("Walk", "up", true, 12, 12, 4);
+            monster.CreateAnimation("Walk", "attack", false, 12, 12, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp)
@@ -402,7 +404,7 @@ namespace game1
                         _preventMonster.ActiveAttacker.Add(this);
                 }
                 else if (preventMonsterEdge >= 1f) MoveTo(deltaTime, TargetPos);
-                else monster.SetAnimation("Idle", "down"); // temporary idle animation
+                else monster.SetAnimation("Idle", GetDirection(direction));
             }
             else if (inWander && !isAttack) // ----------------------------------------------------------- Wander State
             {
@@ -418,7 +420,7 @@ namespace game1
 
                 if (WaitingToReturn)
                 {
-                    monster.SetAnimation("Walk", "down"); // temporary idle animation
+                    monster.SetAnimation("Idle", GetDirection(direction)); 
                     WanderTimer -= deltaTime;
                     if (WanderTimer <= 0f)
                     {
@@ -491,7 +493,7 @@ namespace game1
                 Vector2 direction = TargetPos - Position;
                 direction.Normalize();
                 CreateHitbox(GetDirection(direction), _collisions, _collisionComponents);
-                monster.SetAnimation("Walk", GetDirection(direction));
+                monster.SetAnimation("Idle", GetDirection(direction));
             }
         }
         public void RemoveMonster()

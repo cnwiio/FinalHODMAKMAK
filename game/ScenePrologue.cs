@@ -49,26 +49,27 @@ namespace game
             _camera = new OrthographicCamera(viewportAdapter);
             AdjustZoom(); 
             // Player
-            _playerTexture = new AnimController("Char01", new Vector2(400, 400), 32, 48);
-            _playerTexture.LoadFrame(Content);
-            _playerTexture.CreateAnimation("down", true, 12, 0, 3);
-            _playerTexture.CreateAnimation("left", true, 12, 4, 7);
-            _playerTexture.CreateAnimation("right", true, 12, 8, 11);
-            _playerTexture.CreateAnimation("up", true, 12, 12, 15);
-            _player = new Player(_playerTexture, _playerTexture.Position + new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2)); // Tempo Position
-            _preventMonster = new PreventMonster(_playerTexture.Position, 100f); // Tempo
+            _playerTexture = new AnimController(new Vector2(400, 400));
+            _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
+            _playerTexture.CreateAnimation("Walk","left", true, 12, 0, 4);
+            _playerTexture.CreateAnimation("Walk","right", true, 12, 4, 4);
+            _playerTexture.CreateAnimation("Walk","down", true, 12, 8, 4);
+            _playerTexture.CreateAnimation("Walk","up", true, 12, 12, 4);
+            _player = new Player(_playerTexture, _playerTexture.Position); // Tempo Position
+            _preventMonster = new PreventMonster(_playerTexture.Position, 250f); // Tempo
             _collisionComponent.Insert(_preventMonster); // Tempo
             // ชั่วคราว
             _collision.Add(new PlayerAttack(new RectangleF(
                 _player._movement.Position - new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2), // Tempo Position
-                new SizeF(32, 48)
+                new SizeF(64, 96)
                 )));
             // Monster
             _monster.Add(new MonsterMelee(new Vector2(600, 200), _preventMonster));
             _monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
             foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
             {
-                monsterMelee.LoadAnim("Char01", monsterMelee.Position, 32, 48, Content);
+                monsterMelee.LoadAnim("Walk", "Player_Walk",monsterMelee.Position, 64, 96, Content);
+                monsterMelee.LoadAnim("Idle", "Player_Idle",monsterMelee.Position, 48, 53, Content);
                 monsterMelee.CreateAnimation();
                 monsterMelee.SetProperty(
                     speed: 100f,
@@ -95,6 +96,12 @@ namespace game
                 //logic
             }
 
+            // Camera
+            _camera.Position = _player._movement.Position - new Vector2(
+                (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
+                (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
+                ); // Temporary
+            AdjustZoom();
             // Player
             _player.Update(gameTime);
             _collision.Find(x => x.GetType() == typeof(PlayerAttack)).Bounds.Position = _player._movement.Position - new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2); // ชั่วคราว
@@ -106,12 +113,10 @@ namespace game
             }
             // Collision
             _collisionComponent.Update(gameTime);
-            _camera.Position = _player._movement.Position - new Vector2(
-                (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
-                (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
-                ); // Temporary
-            AdjustZoom();
             _tileMaper.UpdateMap(gameTime);
+            // Debug
+            int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds); // Temporary
+            game1.Window.Title = $"FPS: {instantFps}";
         }
         public override void Draw(GameTime gameTime)
         {
@@ -125,8 +130,9 @@ namespace game
             foreach (MonsterMelee monster in _monster)
             {
                 monster.DrawMonster(_spriteBatch);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.Red, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, 500f), 16, Color.Black, 2);
+                _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
             }
             // Hitbox
             foreach (IEntity item in _collision)
@@ -154,6 +160,20 @@ namespace game
             {
                 _camera.ZoomOut(zoomPerTick * 0.1f);
             }
+        }
+        public override void UnloadContent()
+        {
+            //_tileMaper.UnloadMap();
+            //_collisionComponent.Clear();
+            //_playerTexture.UnloadContent();
+            _collision.Clear();
+            _monster.Clear();
+            Content.Unload();
+            foreach (MonsterMelee monster in _monster)
+            {
+                monster.UnLoad();
+            }
+            base.UnloadContent();
         }
     }
 }

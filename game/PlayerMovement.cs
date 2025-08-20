@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace game1
+namespace game
 {
     public class PlayerMovement
     {

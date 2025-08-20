@@ -17,7 +17,7 @@ using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.Particles;
 
 
-namespace game1
+namespace game
 {
     /*
     How to use Example

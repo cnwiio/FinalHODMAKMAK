@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 
-namespace game1
+namespace game
 {
     /*
         Ex how to use:
