@@ -1,11 +1,6 @@
 ﻿
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace game
 {
@@ -62,6 +57,21 @@ namespace game
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             _textureChar.DrawFrame(spriteBatch, position, _row);
+        }
+
+        public void TriggerAttack()
+        {
+            if (overLoad == 1 && _animController != null)
+            {
+                // Play "attack" animation and return to idle after finished
+                _animController.ChangeAnim("attack", "idle");
+            }
+            else if (overLoad == 2 && _textureChar != null)
+            {
+                // For AnimatedTexture: pause at attack row/frame (adjust row number to your sprite sheet)
+                int attackRow = 5; // example, change based on your sprite sheet
+                _textureChar.Pause(0, attackRow);
+            }
         }
     }
 }
