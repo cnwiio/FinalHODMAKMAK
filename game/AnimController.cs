@@ -56,7 +56,7 @@ namespace game
 
         public void LoadFrame(ContentManager content)
         {
-            SourceTexture = content.Load<Texture2D>(TextureName);
+            SourceTexture = content.Load<Texture2D>("Texture/" + TextureName);
             Atlas = Texture2DAtlas.Create("Atlas/" + TextureName, SourceTexture, TextureWidth, TextureHeight);
             SpriteSheet = new SpriteSheet("SpriteSheet/" + TextureName, Atlas);
         }

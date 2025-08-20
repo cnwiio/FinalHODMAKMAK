@@ -53,7 +53,7 @@ namespace game
 
         public void LoadMap(ContentManager content, string tiledMapName)
         {
-            _tiledMap = content.Load<TiledMap>(tiledMapName);
+            _tiledMap = content.Load<TiledMap>("TileMap/" + tiledMapName);
             _tiledMapRenderer = new TiledMapRenderer(game.GraphicsDevice, _tiledMap);
         }
 

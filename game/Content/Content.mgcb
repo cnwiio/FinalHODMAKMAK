@@ -14,7 +14,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Char01.png
+#begin Texture/Char01.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -24,9 +24,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Char01.png
+/build:Texture/Char01.png
 
-#begin CliffPic.png
+#begin Texture/Player_Idle.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -36,14 +36,38 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:CliffPic.png
+/build:Texture/Player_Idle.png
 
-#begin CliffTileSet.tsx
+#begin Texture/Player_Walk.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Player_Walk.png
+
+#begin TileMap/CliffPic.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/CliffPic.png
+
+#begin TileMap/CliffTileSet.tsx
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
-/build:CliffTileSet.tsx
+/build:TileMap/CliffTileSet.tsx
 
-#begin GrassPic.png
+#begin TileMap/GrassPic.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -53,19 +77,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:GrassPic.png
+/build:TileMap/GrassPic.png
 
-#begin GrassTileSet.tsx
+#begin TileMap/GrassTileSet.tsx
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
-/build:GrassTileSet.tsx
+/build:TileMap/GrassTileSet.tsx
 
-#begin ScenePrologue.tmx
+#begin TileMap/ScenePrologue.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
-/build:ScenePrologue.tmx
+/build:TileMap/ScenePrologue.tmx
 
-#begin Water_Tileset2Animated.png
+#begin TileMap/Water_Tileset2Animated.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -75,10 +99,10 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Water_Tileset2Animated.png
+/build:TileMap/Water_Tileset2Animated.png
 
-#begin WaterTileset.tsx
+#begin TileMap/WaterTileset.tsx
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
-/build:WaterTileset.tsx
+/build:TileMap/WaterTileset.tsx
 
