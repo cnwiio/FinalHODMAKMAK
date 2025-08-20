@@ -12,9 +12,11 @@ namespace game
     {
         public Vector2 Direction { get; private set; }
         public bool DashTriggered { get; private set; }
+        public bool AttackTriggered { get; private set; }
 
         private KeyboardState _keyboardState;
         private KeyboardState _oldkeyboardState;
+        private MouseState _oldMouseState;
 
         private const float DoubleTapTime = 0.3f; // seconds allowed between taps
 
@@ -29,21 +31,30 @@ namespace game
         {
             _gameTime = gameTime;
             DashTriggered = false;
+            AttackTriggered = false;
 
             _keyboardState = Keyboard.GetState();
             var dir = Vector2.Zero;
 
             double now = gameTime.TotalGameTime.TotalSeconds;
 
+            // Dash
             if (IsKeyDoubleTapped(Keys.W, ref _lastTapTimeW, now)) DashTriggered = true;
             if (IsKeyDoubleTapped(Keys.A, ref _lastTapTimeA, now)) DashTriggered = true;
             if (IsKeyDoubleTapped(Keys.S, ref _lastTapTimeS, now)) DashTriggered = true;
             if (IsKeyDoubleTapped(Keys.D, ref _lastTapTimeD, now)) DashTriggered = true;
 
+            // Movement
             if (_keyboardState.IsKeyDown(Keys.W)) dir.Y -= 1;
             if (_keyboardState.IsKeyDown(Keys.S)) dir.Y += 1;
             if (_keyboardState.IsKeyDown(Keys.A)) dir.X -= 1;
             if (_keyboardState.IsKeyDown(Keys.D)) dir.X += 1;
+
+            // Attack
+            MouseState mouseState = Mouse.GetState();
+            bool justClicked = mouseState.LeftButton == ButtonState.Pressed && _oldMouseState.LeftButton == ButtonState.Released;
+            AttackTriggered = justClicked;
+            _oldMouseState = mouseState;
 
             Direction = dir;
             _oldkeyboardState = _keyboardState;
