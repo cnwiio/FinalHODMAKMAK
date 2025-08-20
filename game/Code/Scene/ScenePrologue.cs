@@ -27,11 +27,13 @@ namespace game
         // Player
         private AnimController _playerTexture;
         private Player _player;
+        // Camera
+        private GlobalCamera camera;
+        private OrthographicCamera _camera;
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks; // keyboard
-        private OrthographicCamera _camera; // camera
         
         public ScenePrologue(Game game) : base(game)
         {
@@ -45,22 +47,23 @@ namespace game
         public override void LoadContent()
         {
             //Camera
-            var viewportAdapter = new BoxingViewportAdapter(Game.Window, GraphicsDevice, game1.MapWidth, game1.MapHeight);
-            _camera = new OrthographicCamera(viewportAdapter);
-            AdjustZoom(); 
+            camera = game1.camera;
+            _camera = camera.Cam;
+            AdjustZoom();
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
-            _playerTexture.CreateAnimation("Walk","left", true, 12, 0, 4);
-            _playerTexture.CreateAnimation("Walk","right", true, 12, 4, 4);
-            _playerTexture.CreateAnimation("Walk","down", true, 12, 8, 4);
-            _playerTexture.CreateAnimation("Walk","up", true, 12, 12, 4);
-            _player = new Player(_playerTexture, _playerTexture.Position); // Tempo Position
-            _preventMonster = new PreventMonster(_playerTexture.Position, 250f); // Tempo
+            _playerTexture.CreateAnimation("Walk", "left", true, 12, 0, 4);
+            _playerTexture.CreateAnimation("Walk", "right", true, 12, 4, 4);
+            _playerTexture.CreateAnimation("Walk", "down", true, 12, 8, 4);
+            _playerTexture.CreateAnimation("Walk", "up", true, 12, 12, 4);   
+            _playerTexture.CreateAnimation("Walk", "attack", true, 12, 8, 4);
+            _player = new Player(_playerTexture, new Vector2(400, 400)); // Tempo Position
+            _preventMonster = new PreventMonster(new Vector2(400, 400), 250f); // Tempo
             _collisionComponent.Insert(_preventMonster); // Tempo
             // ชั่วคราว
             _collision.Add(new PlayerAttack(new RectangleF(
-                _player._movement.Position - new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2), // Tempo Position
+                Vector2.Zero, // Tempo Position
                 new SizeF(64, 96)
                 )));
             // Monster
@@ -73,7 +76,7 @@ namespace game
                 monsterMelee.CreateAnimation();
                 monsterMelee.SetProperty(
                     speed: 100f,
-                    sreachRadius: 300f,
+                    sreachRadius: 500f,
                     hp: 3
                 );
                 _collision.Add(monsterMelee.HurtBox);
@@ -96,16 +99,16 @@ namespace game
                 //logic
             }
 
-            // Camera
-            _camera.Position = _player._movement.Position - new Vector2(
-                (game1.MapWidth / 2) - (_playerTexture.TextureWidth / 2),
-                (game1.MapHeight / 2) - (_playerTexture.TextureHeight / 2)
-                ); // Temporary
-            AdjustZoom();
             // Player
             _player.Update(gameTime);
             _collision.Find(x => x.GetType() == typeof(PlayerAttack)).Bounds.Position = _player._movement.Position - new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2); // ชั่วคราว
             _preventMonster.UpdatePosition(_player._movement.Position); // TEMPO position
+            // Camera
+            camera.Update(_player._movement.Position - new Vector2(
+                (game1.MapWidth / 2),
+                (game1.MapHeight / 2)
+                )); // Temporary
+            camera.AdjustZoom();
             // Monster
             foreach (MonsterMelee monster in _monster)
             {

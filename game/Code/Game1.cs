@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.ViewportAdapters;
 
 namespace game
 {
@@ -12,8 +13,9 @@ namespace game
     { // monster Branch
         private GraphicsDeviceManager _graphics;
         private ScreenManager _screenManager;
+        public GlobalCamera camera;
         public int MapWidth = 1280, MapHeight = 720;
-        // Collision j
+        // Collision 
         public CollisionComponent CollisionComponent { get; set; }
         public List<IEntity> Collision { get; set; } = new List<IEntity>();
 
@@ -29,6 +31,8 @@ namespace game
 
         protected override void Initialize()
         {
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, MapWidth, MapHeight);
+            camera = new GlobalCamera(viewportAdapter);
             _graphics.PreferredBackBufferWidth = MapWidth;
             _graphics.PreferredBackBufferHeight = MapHeight;
             _graphics.ApplyChanges();
