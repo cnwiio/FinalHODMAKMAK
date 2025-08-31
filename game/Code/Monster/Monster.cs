@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Security;
 using System.Threading;
@@ -25,15 +26,35 @@ namespace game
         Vector2 Position { get; set; }
         Vector2 TargetPos { get; set; }
         Vector2 SpawnPosition { get; set; }
+        Vector2 DirectionToPlayer { get; set; }
         float WanderTimer { get; set; }
         bool WaitingToReturn { get; set; }
         bool IsReturning { get; set; }
+        bool IgnorePlayer { get; set; }
+        int MAXHP { get; set; }
+        int HP {  get; set; }
+        float preventMonsterEdge { get; set; }
+        bool isInAttackList { get; set; }
+        bool isAwayHome { get; set; }
+        bool isInRange { get; set; }
+        bool isInAttack { get; set; }
+        bool isInWander { get; set; }
+        bool isInActiveRadius { get; set; }
+        bool isAttack { get; set; }
         float Speed { get; set; }
         float SreachRadius { get; set; }
         int Width { get; set; }
         int Height { get; set; }
+        IEntity HurtBox { get; set; }
+        float AwaySpawnRadius { get; set; }
+        AnimController animation {  get; set; }
 
         void MoveTo(float deltaTime, Vector2 position);
+        void ChangeState(IMonsterState newState);
+        void Attack();
+        void Return(float deltaTime);
+        void StateChecking(float deltaTime);
+        void Reset();
     }
 
     public class MonsterMelee : IMonster
@@ -101,6 +122,7 @@ namespace game
         public Vector2 Position { get; set; }
         public Vector2 TargetPos { get; set; }
         public Vector2 SpawnPosition { get; set; }
+        public Vector2 DirectionToPlayer { get; set; }
         public float WanderTimer { get; set; } = 0f;
         private const float _blinkInterval = 0.1f;
         private float _blinkTimer = 0f;
@@ -108,15 +130,22 @@ namespace game
         private Vector2 _knockBackDirection = Vector2.Zero;
         private List<IEntity> _collisions;
         private CollisionComponent _collisionComponents;
-        private PreventMonster _preventMonster;
-        private AnimController monster;
-        public bool ShakeViewport = false;
+        public PreventMonster PreventMonster;
+        public AnimController animation {  get; set; }
+        public IMonsterState CurrentState { get; set; } = new IdleState();
 
         // ----------------Bool----------------
+        public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
         public bool IsReturning { get; set; } = false;
-
-        public bool IgnorePlayer = false;
+        public float preventMonsterEdge { get; set; }
+        public bool isInAttackList { get; set; }
+        public bool isAwayHome { get; set; }
+        public bool isInRange { get; set; }
+        public bool isInAttack { get; set; }
+        public bool isInWander { get; set; }
+        public bool isInActiveRadius { get; set; }
+        public bool IgnorePlayer { get; set; } = false;
         private bool _isHit;
         private float _hitTimer = 0f;
         public bool isHit // togle I-frame state; check if monster is attacked
@@ -148,6 +177,7 @@ namespace game
             }
         }
         public bool IsDead => HP <= 0;
+        public int MAXHP { get; set; }
         private int _HP;
         public int HP
         {
@@ -169,7 +199,7 @@ namespace game
         {
             Position = position;
             SpawnPosition = position;
-            _preventMonster = preventMonster;
+            PreventMonster = preventMonster;
         }
         public void LoadAnim(string spriteSheetName, string textureName, Vector2 position, int width, int height, ContentManager content)
         {
@@ -178,29 +208,29 @@ namespace game
                 Width = width;
                 Height = height;
             }
-            if (monster == null)
+            if (animation == null)
             {
-                monster = new AnimController(position);
+                animation = new AnimController(position);
             }
-            monster.LoadFrame(content, spriteSheetName, textureName, width, height);
+            animation.LoadFrame(content, spriteSheetName, textureName, width, height);
         }
-
         /*
          IMPORTANT NOTE: Need to change in future
          Based on the animation sprite sheet
         */
         public void CreateAnimation()
         {
-            monster.CreateAnimation("Idle", "down", true, 12, 0, 8); // temporary
-            monster.CreateAnimation("Idle", "up", true, 12, 0, 8); // temporary
-            monster.CreateAnimation("Idle", "left", true, 12, 0, 8); // temporary
-            monster.CreateAnimation("Idle", "right", true, 12, 0, 8); // temporary
+            animation.CreateAnimation("Idle", "down", true, 12, 0, 8); // temporary
+            animation.CreateAnimation("Idle", "left", true, 12, 0, 8); // temporary
+            animation.CreateAnimation("Idle", "right", true, 12, 0, 8); // temporary
+            animation.CreateAnimation("Idle", "up", true, 12, 0, 8); // temporary
+            //monster.CreateAnimation("Attack","right", false, 12, 0, 7); // temporary
 
-            monster.CreateAnimation("Walk", "left", true, 12, 0, 4);
-            monster.CreateAnimation("Walk", "right", true, 12, 4, 4);
-            monster.CreateAnimation("Walk", "down", true, 12, 8, 4);
-            monster.CreateAnimation("Walk", "up", true, 12, 12, 4);
-            monster.CreateAnimation("Walk", "attack", false, 12, 12, 4);
+            animation.CreateAnimation("Walk", "down", true, 12, 0, 4);
+            animation.CreateAnimation("Walk", "attack", false, 12, 12, 4);
+            animation.CreateAnimation("Walk", "left", true, 12, 4, 4);
+            animation.CreateAnimation("Walk", "right", true, 12, 8, 4);
+            animation.CreateAnimation("Walk", "up", true, 12, 12, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp)
@@ -210,10 +240,11 @@ namespace game
                 sreachRadius,
                 new MonsterHurtbox(
                     /*new RectangleF(Position, new SizeF(Width, Height)*/
-                    monster.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(monster.Position, 0f, Vector2.One)),
+                    animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, Vector2.One)),
                 this),
                 hp
                 );
+            MAXHP = hp;
         }
         public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, int hp)
         {
@@ -234,28 +265,28 @@ namespace game
             TargetPos = targetPosition;
             float deltaTime = gameTime.GetElapsedSeconds();
 
-            if (monster != null)
+            if (animation != null)
             {
                 hurtBox.Update(Position);
-                StateController(deltaTime, collisions, collisionComponents);
+                StateChecking(deltaTime);
+                CurrentState.Update(this, deltaTime);
                 DeleteHitBox(deltaTime, collisions, collisionComponents);
                 UpdateHitTimer(deltaTime);
-                monster.UpdateFrame(gameTime, Position); // Draw  
+                animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
         public void DrawMonster(SpriteBatch spriteBatch)
         {
-            if (monster != null)
+            if (animation != null)
             {
                 bool shouldFlash = _isHit && (_blinkTimer < _blinkInterval);
                 Color tint = shouldFlash ? Color.Red : Color.White; // transparent and normal
-                monster.DrawFrame(spriteBatch, tint);
+                animation.DrawFrame(spriteBatch, tint);
             }
         }
-
         public void UnLoad()
         {
-            monster.Unload(OnAnimationEvent);
+            animation.Unload(OnAnimationEvent);
         }
         public void MoveTo(float deltaTime, Vector2 position)
         {
@@ -264,9 +295,8 @@ namespace game
             if (Speed == 0) Speed = 1f;
             Vector2 movement = direction * Speed * deltaTime;
             Position += movement;
-            monster.SetAnimation("Walk", GetDirection(direction));
+            animation.SetAnimation("Walk", GetDirection(direction));
         }
-
         public string GetDirection(Vector2 direction)
         {
             if (direction.LengthSquared() == 0)
@@ -280,7 +310,6 @@ namespace game
             if (angle >= 225 && angle < 315) return "up";
             return "right";
         }
-
         public void CreateHitbox(string direction, List<IEntity> collisions, CollisionComponent collisionComponents)
         {
             const float ttl = 0.1f; // 100 ms
@@ -339,107 +368,25 @@ namespace game
                     break;
             }
         }
-
-        /*
-        IMPORTANT NOTE:
-        not sure if this is the best way to handle state controller and code is too complicated and hard to read
-        maybe need to optimize in future
-        */
-        public void StateController(float deltaTime, List<IEntity> collisions, CollisionComponent collisionComponents)
+        public void StateChecking(float deltaTime)
         {
-            // ----------------bool varbles------------------
             var bounds = HurtBox.Bounds.BoundingRectangle;
             Width = (int)bounds.Width;
             Height = (int)bounds.Height;
-            float preventMonsterEdge = Vector2.Distance(Position, _preventMonster.Position) - _preventMonster.Radius;
-            bool inAttackList = _preventMonster.ActiveAttacker.Contains(this);
-            bool isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
-            bool inDetect = Vector2.Distance(Position, TargetPos) <= SreachRadius;
-            bool inAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f) && inDetect;
-            bool inWander = Vector2.Distance(Position, TargetPos) > SreachRadius || Vector2.Distance(Position, SpawnPosition) > Width;
-            Vector2 direction = TargetPos - Position;
-            direction.Normalize();
-            //bool isAttacking = monster.CurrentSpriteSheet == "Attack";
-            // ------------------------------------------
-
-            if (isAwayHome)
+            preventMonsterEdge = Vector2.Distance(Position, PreventMonster.Position) - PreventMonster.Radius;
+            isInAttackList = PreventMonster.ActiveAttacker.Contains(this);
+            isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
+            isInRange = Vector2.Distance(Position, TargetPos) <= SreachRadius;
+            isInAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f);
+            isInWander = Vector2.Distance(Position, TargetPos) > SreachRadius && Vector2.Distance(Position, SpawnPosition) > Width;
+            isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
+            DirectionToPlayer = TargetPos - Position;
+            if (DirectionToPlayer != Vector2.Zero)
+                DirectionToPlayer.Normalize();
+            if (preventMonsterEdge >= 1f || IgnorePlayer)
             {
-                IgnorePlayer = true;
-            }
-            if (inDetect || inAttack && !IgnorePlayer)
-            {
-                WaitingToReturn = false;
-                IsReturning = false;
-            }
-            if (preventMonsterEdge >= 1f) _preventMonster.RemoveMonster(this); // Remove from active attacker if out of preventMonsterEdge range
-
-
-            if (IgnorePlayer) // - --------------------------------------------------------------------------- Ignore Player State
-            {
-                // ignore player and move to spawn position
-                inDetect = false;
-                IsReturning = true;
-            }
-            else if (inAttack && !isAttack) // ----------------------------------------------------------- Attack State
-            {
-                // attack player if in attack range 
-                isAttack = true;
-                monster.SetAnimation("Walk", "attack", OnAnimationEvent); // temporary attack animation 
-            }
-            else if (inDetect && !isAttack) // ----------------------------------------------------------- Chasing State
-            {
-                /*
-                Move to player only when inAttackList 
-                if not will check if near player enough will add to activeAttacker list
-                if not will move to preventMonsterEdge instead
-                if at preventMonsterEdge will Idle instead
-                */
-                if (inAttackList)
-                {
-                    MoveTo(deltaTime, TargetPos);
-                }
-                else if (Vector2.Distance(Position, TargetPos) <= ActiveRadius)
-                {
-                    if (!_preventMonster.ActiveAttacker.Contains(this))
-                        _preventMonster.ActiveAttacker.Add(this);
-                }
-                else if (preventMonsterEdge >= 1f) MoveTo(deltaTime, TargetPos);
-                else monster.SetAnimation("Idle", GetDirection(direction));
-            }
-            else if (inWander && !isAttack) // ----------------------------------------------------------- Wander State
-            {
-                /*
-                will Idle and wait to return if not in detect range or in attack range
-                if wait end will return to spawn position
-                */
-                if (!WaitingToReturn && !IsReturning)
-                {
-                    WaitingToReturn = true;
-                    WanderTimer = 2f;
-                }
-
-                if (WaitingToReturn)
-                {
-                    monster.SetAnimation("Idle", GetDirection(direction)); 
-                    WanderTimer -= deltaTime;
-                    if (WanderTimer <= 0f)
-                    {
-                        WaitingToReturn = false;
-                        IsReturning = true;
-                    }
-                }
-            }
-
-            // Return Logic
-            if (IsReturning)
-            {
-                MoveTo(deltaTime, SpawnPosition);
-                if (Vector2.Distance(Position, SpawnPosition) <= Width)
-                {
-                    IsReturning = false;
-                    IgnorePlayer = false;
-                    monster.SetAnimation("Walk", GetDirection(direction));
-                }
+                if (isInAttackList)
+                    PreventMonster.RemoveMonster(this);
             }
         }
         public void DeleteHitBox(float deltaTime, List<IEntity> entities, CollisionComponent collisionComponent)
@@ -485,24 +432,43 @@ namespace game
                 //Debug.WriteLine($"Knockback Force:" + _knockBackDirection * _knockBackForce * deltaTime
                 //    + "\n DeltaTime : " + deltaTime + "\n Force : " + _knockBackForce + "\n Direction : " + _knockBackDirection);
             }
+
+            if (WaitingToReturn)
+            {
+
+                if (CurrentState is IdleState)
+                {
+                    
+                    WanderTimer -= deltaTime;
+                    if (WanderTimer <= 0f)
+                    {
+                        IsReturning = true;
+                        ChangeState(new ReturnState());
+                    }
+                }
+                else
+                {
+                    WaitingToReturn = false;
+                }
+            }
         }
+        private Vector2 _placeHolderDirection;
         public void OnAnimationEvent(IAnimationController sender, AnimationEventTrigger trigger)
         {
-            if (monster.CurrentSpriteSheet == "Walk" && trigger == AnimationEventTrigger.AnimationCompleted)
+            if (animation.CurrentSpriteSheet == "Walk" && trigger == AnimationEventTrigger.AnimationCompleted) // Change SpriteSheet to attack later
             {
-                Vector2 direction = TargetPos - Position;
-                direction.Normalize();
-                CreateHitbox(GetDirection(direction), _collisions, _collisionComponents);
-                monster.SetAnimation("Idle", GetDirection(direction));
+                CreateHitbox(GetDirection(_placeHolderDirection), _collisions, _collisionComponents);
+                animation.SetAnimation("Walk", GetDirection(_placeHolderDirection));
+                ChangeState(new IdleState());
             }
         }
         public void RemoveMonster()
         {
-            _preventMonster.RemoveMonster(this);
+            PreventMonster.RemoveMonster(this);
             _collisions.Remove(HurtBox);
             _collisionComponents.Remove(HurtBox);
-            monster.Unload(OnAnimationEvent);
-            monster = null;
+            animation.Unload(OnAnimationEvent);
+            animation = null;
         }
         public bool IsKnockBack()
         {
@@ -527,7 +493,7 @@ namespace game
             {
                 entities.Add(new HealDrops(
                                 new RectangleF(
-                                    monster.Position,
+                                    animation.Position,
                                     new SizeF(texture.Width, texture.Height)
                                     ),
                                 texture,
@@ -535,6 +501,37 @@ namespace game
                             )); // Add drops
                 collisionComponent.Insert(entities.Last());
             }
+        }
+        public void ChangeState(IMonsterState newState)
+        {
+            if (CurrentState.GetType() == newState.GetType()) return;
+            CurrentState.Exit(this);
+            CurrentState = newState;
+            CurrentState.Enter(this);
+        }
+        public void Attack()
+        {
+            if (!isAttack)
+            {
+                isAttack = true;
+                _placeHolderDirection = DirectionToPlayer;
+                animation.SetAnimation("Walk", "attack", OnAnimationEvent); // Change SpriteSheet to attack later
+            }
+        }
+        public void Return(float deltaTime)
+        {
+            MoveTo(deltaTime, SpawnPosition);
+            if (Vector2.Distance(Position, SpawnPosition) <= Width)
+            {
+                IsReturning = false;
+                IgnorePlayer = false;
+                Reset();
+                ChangeState(new IdleState());
+            }
+        }
+        public void Reset()
+        {
+            HP = MAXHP;
         }
     }
 }
@@ -585,5 +582,108 @@ namespace game
 //        case "left":
 //            monster.SetAnimation(spriteSheet, "left");
 //            break;
+//    }
+//}
+///*
+//IMPORTANT NOTE:
+//not sure if this is the best way to handle state controller and code is too complicated and hard to read
+//maybe need to optimize in future
+//*/
+//public void StateController(float deltaTime, List<IEntity> collisions, CollisionComponent collisionComponents)
+//{
+//    // ----------------bool varbles------------------
+//    var bounds = HurtBox.Bounds.BoundingRectangle;
+//    Width = (int)bounds.Width;
+//    Height = (int)bounds.Height;
+//    float preventMonsterEdge = Vector2.Distance(Position, PreventMonster.Position) - PreventMonster.Radius;
+//    Debug.WriteLine(preventMonsterEdge);
+//    bool inAttackList = PreventMonster.ActiveAttacker.Contains(this);
+//    bool isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
+//    bool inDetect = Vector2.Distance(Position, TargetPos) <= SreachRadius;
+//    bool inAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f);
+//    bool inWander = Vector2.Distance(Position, TargetPos) > SreachRadius || Vector2.Distance(Position, SpawnPosition) > Width;
+//    Vector2 direction = TargetPos - Position;
+//    direction.Normalize();
+//    //bool isAttacking = monster.CurrentSpriteSheet == "Attack";
+//    // ------------------------------------------
+
+//    if (isAwayHome)
+//    {
+//        IgnorePlayer = true;
+//    }
+//    if (inDetect || inAttack && !IgnorePlayer)
+//    {
+//        WaitingToReturn = false;
+//        IsReturning = false;
+//    }
+//    if (preventMonsterEdge >= 1f) PreventMonster.RemoveMonster(this); // Remove from active attacker if out of preventMonsterEdge range
+
+
+//    if (IgnorePlayer) // - --------------------------------------------------------------------------- Ignore Player State
+//    {
+//        // ignore player and move to spawn position
+//        inDetect = false;
+//        IsReturning = true;
+//    }
+//    else if (inAttack && !isAttack) // ----------------------------------------------------------- Attack State
+//    {
+//        // attack player if in attack range 
+//        isAttack = true;
+//        animation.SetAnimation("Walk", "attack", OnAnimationEvent); // temporary attack animation 
+//    }
+//    else if (inDetect && !isAttack) // ----------------------------------------------------------- Chasing State
+//    {
+//        /*
+//        Move to player only when inAttackList 
+//        if not will check if near player enough will add to activeAttacker list
+//        if not will move to preventMonsterEdge instead
+//        if at preventMonsterEdge will Idle instead
+//        */
+//        if (inAttackList)
+//        {
+//            MoveTo(deltaTime, TargetPos);
+//        }
+//        else if (Vector2.Distance(Position, TargetPos) <= ActiveRadius)
+//        {
+//            if (!PreventMonster.ActiveAttacker.Contains(this))
+//                PreventMonster.ActiveAttacker.Add(this);
+//        }
+//        else if (preventMonsterEdge >= 1f) MoveTo(deltaTime, TargetPos);
+//        else animation.SetAnimation("Idle", "down"); // temporary idle animation
+//    }
+//    else if (inWander && !isAttack) // ----------------------------------------------------------- Wander State
+//    {
+//        /*
+//        will Idle and wait to return if not in detect range or in attack range
+//        if wait end will return to spawn position
+//        */
+//        if (!WaitingToReturn && !IsReturning)
+//        {
+//            WaitingToReturn = true;
+//            WanderTimer = 2f;
+//        }
+
+//        if (WaitingToReturn)
+//        {
+//            animation.SetAnimation("Walk", "down"); // temporary idle animation
+//            WanderTimer -= deltaTime;
+//            if (WanderTimer <= 0f)
+//            {
+//                WaitingToReturn = false;
+//                IsReturning = true;
+//            }
+//        }
+//    }
+
+//    // Return Logic
+//    if (IsReturning)
+//    {
+//        MoveTo(deltaTime, SpawnPosition);
+//        if (Vector2.Distance(Position, SpawnPosition) <= Width)
+//        {
+//            IsReturning = false;
+//            IgnorePlayer = false;
+//            //animation.SetAnimation("Walk", GetDirection(direction));
+//        }
 //    }
 //}
