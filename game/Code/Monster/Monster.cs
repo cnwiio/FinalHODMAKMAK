@@ -226,11 +226,11 @@ namespace game
             animation.CreateAnimation("Idle", "up", true, 12, 0, 8); // temporary
             //monster.CreateAnimation("Attack","right", false, 12, 0, 7); // temporary
 
-            animation.CreateAnimation("Walk", "down", true, 12, 0, 4);
-            animation.CreateAnimation("Walk", "attack", false, 12, 12, 4);
-            animation.CreateAnimation("Walk", "left", true, 12, 4, 4);
-            animation.CreateAnimation("Walk", "right", true, 12, 8, 4);
+            animation.CreateAnimation("Walk", "left", true, 12, 0, 4);
+            animation.CreateAnimation("Walk", "right", true, 12, 4, 4);
+            animation.CreateAnimation("Walk", "down", true, 12, 8, 4);
             animation.CreateAnimation("Walk", "up", true, 12, 12, 4);
+            animation.CreateAnimation("Walk", "attack", false, 12, 12, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp)
