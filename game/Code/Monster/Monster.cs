@@ -267,8 +267,8 @@ namespace game
 
             if (animation != null)
             {
-                StateChecking(deltaTime);
                 hurtBox.Update(Position);
+                StateChecking(deltaTime);
                 CurrentState.Update(this, deltaTime);
                 DeleteHitBox(deltaTime, collisions, collisionComponents);
                 UpdateHitTimer(deltaTime);
