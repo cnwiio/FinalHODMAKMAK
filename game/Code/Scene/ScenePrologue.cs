@@ -102,8 +102,8 @@ namespace game
 
             // Player
             _player.Update(gameTime);
-            _collision.Find(x => x.GetType() == typeof(PlayerAttack)).Bounds.Position = _player._movement.Position - new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2); // ชั่วคราว
-            _preventMonster.UpdatePosition(_player._movement.Position); // TEMPO position
+            _collision.Find(x => x.GetType() == typeof(PlayerAttack)).Bounds.Position = _player._movement.Position - new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2); // ชั่วคราว; maybe move into player class
+            _preventMonster.UpdatePosition(_player._movement.Position); // TEMPO position; maybe move into player class
             // Camera
             camera.Update(_player._movement.Position - new Vector2(
                 (game1.MapWidth / 2),
