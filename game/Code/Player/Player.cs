@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
+using SharpDX;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -12,7 +13,7 @@ namespace game
     public class Player
     {
         private PlayerStats _stats;
-        public PlayerInput _input;
+        private PlayerInput _input;
         public PlayerMovement _movement;
         private PlayerAnimation _animation;
 
@@ -21,20 +22,20 @@ namespace game
         private bool _isAttacking = false;
         private float _attackDuration = 0.2f;  // How long the attack hitbox stays active
         private float _attackTimer = 0f;
-        public PlayerAttack _attackHitbox;
+        private RectangleF _attackHitbox;
 
         public PlayerStats Stats => _stats;
 
         private List<IEntity> _attackTargets;
 
 
-        public Player(AnimController texture, Vector2 startPosition/*, List<IEntity> attackTargets*/)
+        public Player(AnimController texture, Vector2 startPosition, List<IEntity> attackTargets)
         {
             _stats = new PlayerStats();
             _input = new PlayerInput();
             _movement = new PlayerMovement(startPosition, _stats);
             _animation = new PlayerAnimation(texture);
-            //_attackTargets = attackTargets;
+            _attackTargets = attackTargets;
         }
 
         public void Update(GameTime gameTime)
@@ -78,31 +79,31 @@ namespace game
             else if (_movement.Direction.X > 0) attackOffset = new Vector2(_attackRange, 0);  // Right
             else attackOffset = new Vector2(0, _attackRange); // Default down if idle
 
-            _attackHitbox = new PlayerAttack(new RectangleF(
+            _attackHitbox = new RectangleF(
                 _movement.Position + attackOffset - new Vector2(_attackRange / 2, _attackRange / 2),
-                new SizeF(_attackRange, _attackRange))
+                new SizeF(_attackRange, _attackRange)
             );
         }
         private void CheckAttackHit()
         {
-            //foreach (var target in _attackTargets)
-            //{
-            //    if (target is BoxCollision box && _attackHitbox.Intersects(box.Bounds))
-            //    {
-            //        // Apply damage here
-            //        Debug.WriteLine("Hit enemy!");
-            //    }
-            //}
+            foreach (var target in _attackTargets)
+            {
+                if (target is BoxCollision box && _attackHitbox.Intersects(box.Bounds))
+                {
+                    // Apply damage here
+                    Debug.WriteLine("Hit enemy!");
+                }
+            }
         }
         public void Draw(SpriteBatch spriteBatch)
         {
             // Draw player animation
-            _animation.Draw(spriteBatch);
+            _animation.Draw(spriteBatch, _movement.Position);
 
             // Debug: draw attack hitbox
             if (_isAttacking)
             {
-                spriteBatch.DrawRectangle((RectangleF)_attackHitbox.Bounds, Color.Red, 2); // requires MonoGame.Extended
+                spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2); // requires MonoGame.Extended
             }
         }
     }
