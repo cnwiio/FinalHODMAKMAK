@@ -76,6 +76,10 @@ namespace game
                     MonsterMelee.Position -= collisionInfo.PenetrationVector;
                 }
             }
+            if (collisionInfo.Other is Wall)
+            {
+                MonsterMelee.Position -= collisionInfo.PenetrationVector;
+            }
         }
     }
     public class PlayerAttack : IEntity
@@ -99,6 +103,10 @@ namespace game
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
+            if (collisionInfo.Other is Wall)
+            {
+                Bounds.Position -= collisionInfo.PenetrationVector;
+            }
         }
     }
     public class PreventMonster : IEntity
@@ -193,6 +201,24 @@ namespace game
                 // HP logic
                 // player.Stats.HP = new Stat() { BaseValue = 1 }; มั่ว
             }
+        }
+    }
+
+    public class Wall : IEntity
+    {
+        public IShapeF Bounds { get; set; }
+        public string LayerName { get; set; }
+        public Wall(RectangleF bounds)
+        {
+            Bounds = bounds;
+        }
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Red, 3);
+        }
+        public void OnCollision(CollisionEventArgs collisionInfo)
+        {
+
         }
     }
 }
