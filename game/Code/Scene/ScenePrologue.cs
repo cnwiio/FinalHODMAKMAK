@@ -62,11 +62,6 @@ namespace game
             _player = new Player(_playerTexture, new Vector2(400, 400)); // Tempo Position
             _preventMonster = new PreventMonster(new Vector2(400, 400), 250f); // Tempo
             _collisionComponent.Insert(_preventMonster); // Tempo
-            // ชั่วคราว
-            _collision.Add(new PlayerAttack(new RectangleF(
-                Vector2.Zero, // Tempo Position
-                new SizeF(64, 96)
-                )));
             // Monster
             _monster.Add(new MonsterMelee(new Vector2(600, 200), _preventMonster));
             _monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
@@ -102,7 +97,6 @@ namespace game
 
             // Player
             _player.Update(gameTime);
-            _collision.Find(x => x.GetType() == typeof(PlayerAttack)).Bounds.Position = _player._movement.Position - new Vector2(_playerTexture.TextureWidth / 2, _playerTexture.TextureHeight / 2); // ชั่วคราว; maybe move into player class
             _preventMonster.UpdatePosition(_player._movement.Position); // TEMPO position; maybe move into player class
             // Camera
             camera.Update(_player._movement.Position - new Vector2(
@@ -143,7 +137,7 @@ namespace game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _tileMaper.DrawMap(_camera);
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp ,transformMatrix: _camera.GetViewMatrix());
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _camera.GetViewMatrix());
             // Player
             _player.Draw(_spriteBatch);
             _preventMonster.Draw(_spriteBatch);

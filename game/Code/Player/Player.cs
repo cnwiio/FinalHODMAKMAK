@@ -29,13 +29,13 @@ namespace game
         private List<IEntity> _attackTargets;
 
 
-        public Player(AnimController texture, Vector2 startPosition, List<IEntity> attackTargets)
+        public Player(AnimController texture, Vector2 startPosition/*, List<IEntity> attackTargets*/)
         {
             _stats = new PlayerStats();
             _input = new PlayerInput();
             _movement = new PlayerMovement(startPosition, _stats);
             _animation = new PlayerAnimation(texture);
-            _attackTargets = attackTargets;
+            //_attackTargets = attackTargets;
         }
 
         public void Update(GameTime gameTime)
@@ -86,19 +86,19 @@ namespace game
         }
         private void CheckAttackHit()
         {
-            foreach (var target in _attackTargets)
-            {
-                if (target is BoxCollision box && _attackHitbox.Intersects(box.Bounds))
-                {
-                    // Apply damage here
-                    Debug.WriteLine("Hit enemy!");
-                }
-            }
+            //foreach (var target in _attackTargets)
+            //{
+            //    if (target is BoxCollision box && _attackHitbox.Intersects(box.Bounds))
+            //    {
+            //        // Apply damage here
+            //        Debug.WriteLine("Hit enemy!");
+            //    }
+            //}
         }
         public void Draw(SpriteBatch spriteBatch)
         {
             // Draw player animation
-            _animation.Draw(spriteBatch, _movement.Position);
+            _animation.Draw(spriteBatch);
 
             // Debug: draw attack hitbox
             if (_isAttacking)
