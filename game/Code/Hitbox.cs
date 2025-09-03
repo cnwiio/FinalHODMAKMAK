@@ -63,10 +63,7 @@ namespace game
             {
                 if (!MonsterMelee.isHit)
                 {
-                    //MonsterMelee.ApplyKnockback(250f);
                     MonsterMelee.isHit = true;
-                    MonsterMelee.HP -= 1;
-                    Debug.WriteLine(MonsterMelee.HP);
                 }
             }
             if (collisionInfo.Other is MonsterHurtbox)
@@ -198,8 +195,7 @@ namespace game
             if (collisionInfo.Other is PlayerAttack)
             {
                 IsActive = false;
-                // HP logic
-                // player.Stats.HP = new Stat() { BaseValue = 1 }; มั่ว
+                player.Stats.HP.AddModifier(10);
             }
         }
     }

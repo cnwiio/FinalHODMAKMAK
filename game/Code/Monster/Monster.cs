@@ -72,6 +72,13 @@ namespace game
         1.
                 private List<IMonster> _monster = new List<IMonster>();
         2.
+                var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+                foreach(var obj in spawnPoint.Objects)
+                {
+                    if (obj.Type == "Melee")
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster));
+                }
+                ///// or /////
                 _monster.Add(new MonsterMelee(new Vector2(600, 200), _preventMonster));
                 _monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
         3.
@@ -129,6 +136,9 @@ namespace game
         public int Height { get; set; }
         public float ActiveRadius { get; set; } = 150f;
         public float AwaySpawnRadius { get; set; } = 500f;
+        public int Damage { get; set; }
+        public int AttackRange { get; set; }
+        public float DashForce { get; set; }
         // ----------------------------------
         public Vector2 Origin { get; set; }
         public Vector2 Position { get; set; }
@@ -136,9 +146,6 @@ namespace game
         public Vector2 SpawnPosition { get; set; }
         public Vector2 DirectionToPlayer { get; set; }
         public float WanderTimer { get; set; } = 0f;
-        public int Damage { get; set; }
-        public int AttackRange { get; set; }
-        public float DashForce { get; set; }
         private const float _blinkInterval = 0.1f;
         private float _blinkTimer = 0f;
         private float _knockBackTimer = 0f, _knockBackForce = 0f;
@@ -255,7 +262,6 @@ namespace game
                 speed,
                 sreachRadius,
                 new MonsterHurtbox(
-                    /*new RectangleF(Position, new SizeF(Width, Height)*/
                     animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, Vector2.One)),
                 this),
                 hp,
@@ -337,19 +343,7 @@ namespace game
             Position += movement;
             animation.SetAnimation("Walk", GetDirection(direction));
         }
-        /*public string GetDirection(Vector2 direction)
-        {
-            if (direction.LengthSquared() == 0)
-                return null;
 
-            float angle = MathF.Atan2(direction.Y, direction.X) * (180f / MathF.PI);
-            if (angle < 0) angle += 360f;
-
-            if (angle >= 45 && angle < 135) return "down";
-            if (angle >= 135 && angle < 225) return "left";
-            if (angle >= 225 && angle < 315) return "up";
-            return "right";
-        }*/
         public string GetDirection(Vector2 direction)
         {
             if (direction.LengthSquared() == 0)
@@ -366,7 +360,7 @@ namespace game
         public MonsterAttackHitbox Hitbox;
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
         {
-            const float ttl = 0.7f; // 100 ms
+            const float ttl = 0.7f; // ms
             var bounds = HurtBox.Bounds.BoundingRectangle;
             var center = bounds.Center;
             var topleft = bounds.TopLeft;
@@ -391,7 +385,6 @@ namespace game
             isInAttackList = PreventMonster.ActiveAttacker.Contains(this);
             isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
             isInRange = Vector2.Distance(Position, TargetPos) <= SreachRadius;
-            //isInAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f);
             isInAttack = Vector2.Distance(Position, TargetPos) <= AttackRange;
             isInWander = Vector2.Distance(Position, TargetPos) > SreachRadius && Vector2.Distance(Position, SpawnPosition) > Width;
             isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
@@ -470,9 +463,8 @@ namespace game
         private Vector2 _placeHolderDirection;
         public void OnAnimationEvent(IAnimationController sender, AnimationEventTrigger trigger)
         {
-            if (animation.CurrentSpriteSheet == "Attack" && trigger == AnimationEventTrigger.AnimationCompleted) // Change SpriteSheet to attack later
+            if (animation.CurrentSpriteSheet == "Attack" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
-                animation.SetAnimation("Idle", GetDirection(_placeHolderDirection));
                 ChangeState(new IdleState());
             }
             if (animation.CurrentSpriteSheet == "Charge" && trigger == AnimationEventTrigger.AnimationCompleted)
@@ -546,8 +538,7 @@ namespace game
             {
                 isAttack = true;
                 _placeHolderDirection = DirectionToPlayer;
-                //WaitToAttackTimer = 0.5f;
-                animation.SetAnimation("Charge", GetDirection(DirectionToPlayer), OnAnimationEvent);
+                animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
         }
         public void Return(float deltaTime)
@@ -775,3 +766,17 @@ namespace game
                                 collisionComponents.Insert(hb);
                                 break;
                         }*/
+/*public string GetDirection(Vector2 direction)
+{
+    if (direction.LengthSquared() == 0)
+        return null;
+
+    float angle = MathF.Atan2(direction.Y, direction.X) * (180f / MathF.PI);
+    if (angle < 0) angle += 360f;
+
+    if (angle >= 45 && angle < 135) return "down";
+    if (angle >= 135 && angle < 225) return "left";
+    if (angle >= 225 && angle < 315) return "up";
+    return "right";
+}*/
+/*new RectangleF(Position, new SizeF(Width, Height)*/

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Tiled;
 using MonoGame.Extended.ViewportAdapters;
 
 namespace game
@@ -51,20 +52,28 @@ namespace game
             //Camera
             camera = game1.camera;
             _camera = camera.Cam;
+            //Tile Map
+            _tileMaper.LoadMap(Content, "ScenePrologue");
+            _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
-            _playerTexture.CreateAnimation("Walk", "left", true, 12, 0, 4);
-            _playerTexture.CreateAnimation("Walk", "right", true, 12, 4, 4);
-            _playerTexture.CreateAnimation("Walk", "down", true, 12, 8, 4);
-            _playerTexture.CreateAnimation("Walk", "up", true, 12, 12, 4);   
-            _playerTexture.CreateAnimation("Walk", "attack", true, 12, 8, 4);
+            _playerTexture.CreateAnimation("Walk", "left", true, 200, 0, 4);
+            _playerTexture.CreateAnimation("Walk", "right", true, 200, 4, 4);
+            _playerTexture.CreateAnimation("Walk", "down", true, 200, 8, 4);
+            _playerTexture.CreateAnimation("Walk", "up", true, 200, 12, 4);   
+            _playerTexture.CreateAnimation("Walk", "attack", true, 200, 8, 4);
             _player = new Player(_playerTexture, new Vector2(400, 400)); // Tempo Position
             _preventMonster = new PreventMonster(new Vector2(400, 400), 250f); // Tempo
             _collisionComponent.Insert(_preventMonster); // Tempo
             // Monster
-            _monster.Add(new MonsterMelee(new Vector2(600, 200), _preventMonster));
-            _monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
+            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+            foreach(var obj in spawnPoint.Objects)
+            {
+                if (obj.Type == "Melee")
+                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster));
+            }
+            //_monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
             foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
             {
                 monsterMelee.LoadAnim("Walk", "LightGoonWalk", monsterMelee.Position, 128, 128, Content);
@@ -88,9 +97,7 @@ namespace game
             {
                 _collisionComponent.Insert(entity);
             }
-            //Tile Map
-            _tileMaper.LoadMap(Content, "ScenePrologue");
-            _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
+            
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)

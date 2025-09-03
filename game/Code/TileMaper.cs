@@ -123,5 +123,15 @@ namespace game
             }
         }
 
+        /// <summary>
+        /// get ObjectLayer of tile map 
+        /// </summary>
+        /// <param name="layerName"> name of layer</param>
+        /// <returns></returns>
+        public TiledMapObjectLayer GetObjectLayer(string layerName)
+        {
+            return TiledMap.GetLayer<TiledMapObjectLayer>(layerName);
+        }
+
     }
 }
