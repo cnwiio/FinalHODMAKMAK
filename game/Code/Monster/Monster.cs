@@ -236,8 +236,8 @@ namespace game
         */
         public void CreateAnimation()
         {
-            animation.CreateAnimation("Idle", "right", true, 200, 0, 4); // temporary
-            animation.CreateAnimation("Idle", "left", true, 200, 0, 4); // temporary
+            animation.CreateAnimation("Idle", "right", true, 200, 0, 4); 
+            animation.CreateAnimation("Idle", "left", true, 200, 0, 4); 
 
             animation.CreateAnimation("Walk", "left", true, 200, 0, 8);
             animation.CreateAnimation("Walk", "right", true, 200, 0, 8);
@@ -366,7 +366,7 @@ namespace game
         public MonsterAttackHitbox Hitbox;
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
         {
-            const float ttl = 0.5f; // 100 ms
+            const float ttl = 0.7f; // 100 ms
             var bounds = HurtBox.Bounds.BoundingRectangle;
             var center = bounds.Center;
             var topleft = bounds.TopLeft;
@@ -513,7 +513,7 @@ namespace game
                 return;
             }
             knockbackDirection.Normalize();
-            _knockBackTimer = 0.4f;
+            _knockBackTimer = 0.7f;
             _knockBackDirection = knockbackDirection;
             _knockBackForce = knockbackForce;
         }

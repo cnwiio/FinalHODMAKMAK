@@ -67,8 +67,10 @@ namespace game
             _monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
             foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
             {
-                monsterMelee.LoadAnim("Walk", "Player_Walk",monsterMelee.Position, 64, 96, Content);
-                monsterMelee.LoadAnim("Idle", "Player_Idle",monsterMelee.Position, 48, 53, Content);
+                monsterMelee.LoadAnim("Walk", "LightGoonWalk", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Idle", "LightGoonIdle", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Attack", "LightGoonAttack", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Charge", "LightGoonCharge", monsterMelee.Position, 128, 128, Content);
                 monsterMelee.CreateAnimation();
                 monsterMelee.SetProperty(
                     speed: 100f,

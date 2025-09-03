@@ -37,8 +37,8 @@ namespace game
      */
     public class TileMaper
     {
-        private TiledMap _tiledMap;
-        private TiledMapRenderer _tiledMapRenderer;
+        public TiledMap TiledMap;
+        public TiledMapRenderer TiledMapRenderer;
         public Game game { get; }
 
 
@@ -53,14 +53,14 @@ namespace game
 
         public void LoadMap(ContentManager content, string tiledMapName)
         {
-            _tiledMap = content.Load<TiledMap>("TileMap/" + tiledMapName);
-            _tiledMapRenderer = new TiledMapRenderer(game.GraphicsDevice, _tiledMap);
+            TiledMap = content.Load<TiledMap>("TileMap/" + tiledMapName);
+            TiledMapRenderer = new TiledMapRenderer(game.GraphicsDevice, TiledMap);
         }
 
 
         public void LoadObjects(ContentManager content, string LayerName, List<GameObject> gameObject)
         {
-            var objectLayer = _tiledMap.GetLayer<TiledMapObjectLayer>(LayerName);
+            var objectLayer = TiledMap.GetLayer<TiledMapObjectLayer>(LayerName);
             foreach (var obj in objectLayer.Objects)
             {
                 if (obj.Properties.ContainsKey("Ysort") && obj.Properties["Ysort"] == "true")
@@ -78,7 +78,7 @@ namespace game
 
         public void LoadCollision(CollisionComponent collisionComponent, List<IEntity> collisionList, string layerName)
         {
-            var collisionLayer = _tiledMap.GetLayer<TiledMapObjectLayer>(layerName);
+            var collisionLayer = TiledMap.GetLayer<TiledMapObjectLayer>(layerName);
             foreach (var obj in collisionLayer.Objects)
             {
                 collisionList.Add(new Wall(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height)));
@@ -92,7 +92,7 @@ namespace game
 
         public void UpdateMap(GameTime gameTime)
         {
-            _tiledMapRenderer.Update(gameTime);
+            TiledMapRenderer.Update(gameTime);
         }
 
 
@@ -100,7 +100,7 @@ namespace game
         {
             BlendState previousBlendState = game.GraphicsDevice.BlendState;
             game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-            _tiledMapRenderer.Draw(camera.GetViewMatrix());
+            TiledMapRenderer.Draw(camera.GetViewMatrix());
         }
 
 
@@ -108,7 +108,7 @@ namespace game
         {
             BlendState previousBlendState = game.GraphicsDevice.BlendState;
             game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-            _tiledMapRenderer.Draw(layerIndex ,camera.GetViewMatrix());
+            TiledMapRenderer.Draw(layerIndex ,camera.GetViewMatrix());
         }
 
 
