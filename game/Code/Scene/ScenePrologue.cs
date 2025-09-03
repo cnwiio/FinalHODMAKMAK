@@ -73,7 +73,11 @@ namespace game
                 monsterMelee.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 3
+                    hp: 3,
+                    damage: 10,
+                    element: Element.light,
+                    attackRange: (int)(monsterMelee.Width * 1.5),
+                    dashForce: monsterMelee.Width * 7
                 );
                 _collision.Add(monsterMelee.HurtBox);
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,11 @@ using MonoGame.Extended.Timers;
 
 namespace game
 {
-
+    public enum Element
+    {
+        light,
+        dark
+    }
     public interface IMonster
     {
         Vector2 Position { get; set; }
@@ -33,6 +38,7 @@ namespace game
         bool IgnorePlayer { get; set; }
         int MAXHP { get; set; }
         int HP {  get; set; }
+        int Damage { get; set; }
         float preventMonsterEdge { get; set; }
         bool isInAttackList { get; set; }
         bool isAwayHome { get; set; }
@@ -48,13 +54,14 @@ namespace game
         IEntity HurtBox { get; set; }
         float AwaySpawnRadius { get; set; }
         AnimController animation {  get; set; }
-
+        Element ElementType { get; set; }
         void MoveTo(float deltaTime, Vector2 position);
         void ChangeState(IMonsterState newState);
         void Attack();
         void Return(float deltaTime);
         void StateChecking(float deltaTime);
         void Reset();
+        string GetDirection(Vector2 direction);
     }
 
     public class MonsterMelee : IMonster
@@ -70,12 +77,17 @@ namespace game
         3.
                 foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
                 {
-                    monsterMelee.LoadAnim("Char01", monsterMelee.Position, 32, 48, Content);
+                    monsterMelee.LoadAnim("Walk", "GoonWalk-Sheet", monsterMelee.Position, 128, 128, Content);
+                    monsterMelee.LoadAnim("Idle", "GrootIdle-Sheet", monsterMelee.Position, 128, 128, Content);
                     monsterMelee.CreateAnimation();
                     monsterMelee.SetProperty(
                         speed: 100f,
-                        sreachRadius: 300f,
-                        hp: 3
+                        sreachRadius: 500f,
+                        hp: 50,
+                        damage: 1,
+                        element: Element.light,
+                        attackRange: (int)(monsterMelee.Width * 1.5f),
+                        dashForce: monsterMelee.Width * 7
                     );
                     _collision.Add(monsterMelee.HurtBox);
                 }
@@ -124,6 +136,9 @@ namespace game
         public Vector2 SpawnPosition { get; set; }
         public Vector2 DirectionToPlayer { get; set; }
         public float WanderTimer { get; set; } = 0f;
+        public int Damage { get; set; }
+        public int AttackRange { get; set; }
+        public float DashForce { get; set; }
         private const float _blinkInterval = 0.1f;
         private float _blinkTimer = 0f;
         private float _knockBackTimer = 0f, _knockBackForce = 0f;
@@ -133,7 +148,7 @@ namespace game
         public PreventMonster PreventMonster;
         public AnimController animation {  get; set; }
         public IMonsterState CurrentState { get; set; } = new IdleState();
-
+        public Element ElementType { get; set; }
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -158,6 +173,7 @@ namespace game
                     _isHit = true;
                     ShakeViewport = true;
                     _hitTimer = 1f;
+                    ApplyDamage();
                     ApplyKnockback(250f); 
                 }
             }
@@ -172,7 +188,7 @@ namespace game
                 if (value)
                 {
                     _isAttack = true;
-                    _attackCD = 2f;
+                    _attackCD = 3f;
                 }
             }
         }
@@ -220,20 +236,20 @@ namespace game
         */
         public void CreateAnimation()
         {
-            animation.CreateAnimation("Idle", "down", true, 12, 0, 8); // temporary
-            animation.CreateAnimation("Idle", "left", true, 12, 0, 8); // temporary
-            animation.CreateAnimation("Idle", "right", true, 12, 0, 8); // temporary
-            animation.CreateAnimation("Idle", "up", true, 12, 0, 8); // temporary
-            //monster.CreateAnimation("Attack","right", false, 12, 0, 7); // temporary
+            animation.CreateAnimation("Idle", "right", true, 200, 0, 4); // temporary
+            animation.CreateAnimation("Idle", "left", true, 200, 0, 4); // temporary
 
-            animation.CreateAnimation("Walk", "left", true, 12, 0, 4);
-            animation.CreateAnimation("Walk", "right", true, 12, 4, 4);
-            animation.CreateAnimation("Walk", "down", true, 12, 8, 4);
-            animation.CreateAnimation("Walk", "up", true, 12, 12, 4);
-            animation.CreateAnimation("Walk", "attack", false, 12, 12, 4);
+            animation.CreateAnimation("Walk", "left", true, 200, 0, 8);
+            animation.CreateAnimation("Walk", "right", true, 200, 0, 8);
+
+            animation.CreateAnimation("Charge", "right", false, 200, 0, 6);
+            animation.CreateAnimation("Charge", "left", false, 200, 0, 6);
+
+            animation.CreateAnimation("Attack", "left", false, 100, 0, 9);
+            animation.CreateAnimation("Attack", "right", false, 100, 0, 9);
         }
         // Need Change in future
-        public void SetProperty(float speed, float sreachRadius, int hp)
+        public void SetProperty(float speed, float sreachRadius, int hp, int damage, Element element, int attackRange, float dashForce)
         {
             SetProperty(
                 speed,
@@ -242,16 +258,24 @@ namespace game
                     /*new RectangleF(Position, new SizeF(Width, Height)*/
                     animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, Vector2.One)),
                 this),
-                hp
+                hp,
+                damage,
+                element,
+                attackRange,
+                dashForce
                 );
-            MAXHP = hp;
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, int hp)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, int hp, int dammage, Element element, int attackRange, float dashForce)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
             HurtBox = hurtBox;
             HP = hp;
+            Damage = dammage;
+            MAXHP = hp;
+            ElementType = element;
+            AttackRange = attackRange;
+            DashForce = dashForce;
         }
         public void UpdateState(GameTime gameTime, List<IEntity> collisions, CollisionComponent collisionComponents, Vector2 targetPosition)
         {
@@ -272,16 +296,32 @@ namespace game
                 CurrentState.Update(this, deltaTime);
                 DeleteHitBox(deltaTime, collisions, collisionComponents);
                 UpdateHitTimer(deltaTime);
+                
+                if (Hitbox != null)
+                {
+                    var rect = (RectangleF)Hitbox.Bounds;
+                    rect.Position = Position - (rect.Size / 2f);
+                    Hitbox.Bounds = rect;
+                }
+                
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
         public void DrawMonster(SpriteBatch spriteBatch)
         {
+            
             if (animation != null)
             {
                 bool shouldFlash = _isHit && (_blinkTimer < _blinkInterval);
                 Color tint = shouldFlash ? Color.Red : Color.White; // transparent and normal
-                animation.DrawFrame(spriteBatch, tint);
+                if (animation.CurrentAnimation == "left")
+                {
+                    animation.DrawFrame(spriteBatch, true, tint);
+                }
+                else
+                {
+                    animation.DrawFrame(spriteBatch, false, tint);
+                } 
             }
         }
         public void UnLoad()
@@ -297,7 +337,7 @@ namespace game
             Position += movement;
             animation.SetAnimation("Walk", GetDirection(direction));
         }
-        public string GetDirection(Vector2 direction)
+        /*public string GetDirection(Vector2 direction)
         {
             if (direction.LengthSquared() == 0)
                 return null;
@@ -309,64 +349,38 @@ namespace game
             if (angle >= 135 && angle < 225) return "left";
             if (angle >= 225 && angle < 315) return "up";
             return "right";
-        }
-        public void CreateHitbox(string direction, List<IEntity> collisions, CollisionComponent collisionComponents)
+        }*/
+        public string GetDirection(Vector2 direction)
         {
-            const float ttl = 0.1f; // 100 ms
+            if (direction.LengthSquared() == 0)
+                return null;
+
+
+            if (direction.X >= 0)
+                return "right";
+            else if (direction.X < 0)
+                return "left";
+            else
+                return "right";
+        }
+        public MonsterAttackHitbox Hitbox;
+        public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
+        {
+            const float ttl = 0.5f; // 100 ms
             var bounds = HurtBox.Bounds.BoundingRectangle;
-            SizeF size = new SizeF(bounds.Width * 1.2f, bounds.Height * 1.5f); // Hitbox size; size of sprite * 1.2f and 1.5f
-
-            //Vector2 topLeft = Position - new Vector2(Width / 2f, Height / 2f); // old method maybe useful in future 
-            Vector2 topLeft = bounds.TopLeft; // Shift Position to topleft; Because old positon was based on topleft position but now position is center
-            switch (direction)
+            var center = bounds.Center;
+            var topleft = bounds.TopLeft;
+            SizeF size = new SizeF(bounds.Width, bounds.Height); // Hitbox size; 
+            if (Hitbox == null)
             {
-                /*
-                    Calculate logic :
-                        Up :
-                            X: First calculate the center of the sprite (topLeft.X + Width / 2) 
-                            and then subtract half of the hitbox width (size.Height / 2) (use size.Height instead of width because it rotated) 
-                            Y: Subtract the hitbox height (size.Width) from the topLeft.Y
-                        Down :  
-                            for Down logic is reverse of Up logic or similar to Up logic
-                        Right :
-                            X: Add the Width to the topLeft.X to get the right edge of the sprite
-                            Y: First calculate the center of the right side sprite (topLeft.Y + Height / 2)
-                            and then subtract half of the hitbox height (size.Height / 2)
-                        Left :
-                            for eft logic is reverse of right logic or similar to right logic
-                */
-                case "up":
-                    var hb = new MonsterAttackHitbox(
-                        new RectangleF(new Vector2((topLeft.X + Width / 2) - size.Height / 2, topLeft.Y - size.Width),
-                        new SizeF(size.Height, size.Width)), ttl);
-                    collisions.Add(hb);
-                    collisionComponents.Insert(hb);
-                    break;
-
-                case "down":
-                    hb = new MonsterAttackHitbox(
-                        new RectangleF(new Vector2((topLeft.X + Width / 2) - size.Height / 2, topLeft.Y + Height),
-                        new SizeF(size.Height, size.Width)), ttl);
-                    collisions.Add(hb);
-                    collisionComponents.Insert(hb);
-                    break;
-
-                case "right":
-                    hb = new MonsterAttackHitbox(
-                        new RectangleF(new Vector2(topLeft.X + Width, (topLeft.Y + Height / 2) - size.Height / 2),
-                        size), ttl);
-                    collisions.Add(hb);
-                    collisionComponents.Insert(hb);
-                    break;
-
-                case "left":
-                    hb = new MonsterAttackHitbox(
-                        new RectangleF(new Vector2(topLeft.X - size.Width, (topLeft.Y + Height / 2) - size.Height / 2),
-                        size), ttl);
-                    collisions.Add(hb);
-                    collisionComponents.Insert(hb);
-                    break;
+                Hitbox = new MonsterAttackHitbox(
+                                new RectangleF(Position - (size / 2f),
+                                size), ttl); 
             }
+            Hitbox.TimeToLiveSeconds = ttl;
+            Hitbox.Bounds.Position = Position - (size / 2f);
+            collisions.Add(Hitbox);
+            collisionComponents.Insert(Hitbox);
         }
         public void StateChecking(float deltaTime)
         {
@@ -377,7 +391,8 @@ namespace game
             isInAttackList = PreventMonster.ActiveAttacker.Contains(this);
             isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
             isInRange = Vector2.Distance(Position, TargetPos) <= SreachRadius;
-            isInAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f);
+            //isInAttack = !(Math.Abs(Position.X - TargetPos.X) > Width * 1.2f || Math.Abs(Position.Y - TargetPos.Y) > Height * 1.2f);
+            isInAttack = Vector2.Distance(Position, TargetPos) <= AttackRange;
             isInWander = Vector2.Distance(Position, TargetPos) > SreachRadius && Vector2.Distance(Position, SpawnPosition) > Width;
             isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
             DirectionToPlayer = TargetPos - Position;
@@ -438,7 +453,7 @@ namespace game
 
                 if (CurrentState is IdleState)
                 {
-                    
+
                     WanderTimer -= deltaTime;
                     if (WanderTimer <= 0f)
                     {
@@ -455,11 +470,16 @@ namespace game
         private Vector2 _placeHolderDirection;
         public void OnAnimationEvent(IAnimationController sender, AnimationEventTrigger trigger)
         {
-            if (animation.CurrentSpriteSheet == "Walk" && trigger == AnimationEventTrigger.AnimationCompleted) // Change SpriteSheet to attack later
+            if (animation.CurrentSpriteSheet == "Attack" && trigger == AnimationEventTrigger.AnimationCompleted) // Change SpriteSheet to attack later
             {
-                CreateHitbox(GetDirection(_placeHolderDirection), _collisions, _collisionComponents);
-                animation.SetAnimation("Walk", GetDirection(_placeHolderDirection));
+                animation.SetAnimation("Idle", GetDirection(_placeHolderDirection));
                 ChangeState(new IdleState());
+            }
+            if (animation.CurrentSpriteSheet == "Charge" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                ApplyKnockback(DashForce, _placeHolderDirection);
+                CreateHitbox(_collisions, _collisionComponents);
+                animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
         }
         public void RemoveMonster()
@@ -486,10 +506,21 @@ namespace game
             _knockBackDirection = knockbackDirection;
             _knockBackForce = knockbackForce;
         }
+        public void ApplyKnockback(float knockbackForce, Vector2 knockbackDirection)
+        {
+            if (knockbackDirection.LengthSquared() == 0)
+            {
+                return;
+            }
+            knockbackDirection.Normalize();
+            _knockBackTimer = 0.4f;
+            _knockBackDirection = knockbackDirection;
+            _knockBackForce = knockbackForce;
+        }
         public void DropHeal(List<IEntity> entities, CollisionComponent collisionComponent, Texture2D texture, Player player)
         {
             Random r = new Random();
-            if (r.Next(1, 101) > 100 - 75) // Percentage, Ex: 75 mean 75%
+            if (r.Next(1, 101) > 100 - 100) // Percentage, Ex: 75 mean 75%
             {
                 entities.Add(new HealDrops(
                                 new RectangleF(
@@ -508,14 +539,15 @@ namespace game
             CurrentState.Exit(this);
             CurrentState = newState;
             CurrentState.Enter(this);
-        }
+        }      
         public void Attack()
         {
             if (!isAttack)
             {
                 isAttack = true;
                 _placeHolderDirection = DirectionToPlayer;
-                animation.SetAnimation("Walk", "attack", OnAnimationEvent); // Change SpriteSheet to attack later
+                //WaitToAttackTimer = 0.5f;
+                animation.SetAnimation("Charge", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
         }
         public void Return(float deltaTime)
@@ -532,6 +564,11 @@ namespace game
         public void Reset()
         {
             HP = MAXHP;
+        }
+        public void ApplyDamage()
+        {
+            HP -= 1;
+            //Debug.WriteLine(HP);
         }
     }
 }
@@ -687,3 +724,54 @@ namespace game
 //        }
 //    }
 //}
+/*            //Vector2 topLeft = Position - new Vector2(Width / 2f, Height / 2f); // old method maybe useful in future 
+                        Vector2 topLeft = bounds.TopLeft; // Shift Position to topleft; Because old positon was based on topleft position but now position is center
+                        switch (direction)
+                        {
+                            *//*
+                                Calculate logic :
+                                    Up :
+                                        X: First calculate the center of the sprite (topLeft.X + Width / 2) 
+                                        and then subtract half of the hitbox width (size.Height / 2) (use size.Height instead of width because it rotated) 
+                                        Y: Subtract the hitbox height (size.Width) from the topLeft.Y
+                                    Down :  
+                                        for Down logic is reverse of Up logic or similar to Up logic
+                                    Right :
+                                        X: Add the Width to the topLeft.X to get the right edge of the sprite
+                                        Y: First calculate the center of the right side sprite (topLeft.Y + Height / 2)
+                                        and then subtract half of the hitbox height (size.Height / 2)
+                                    Left :
+                                        for eft logic is reverse of right logic or similar to right logic
+                            *//*
+                            case "up":
+                                var hb = new MonsterAttackHitbox(
+                                    new RectangleF(new Vector2((topLeft.X + Width / 2) - size.Height / 2, topLeft.Y - size.Width),
+                                    new SizeF(size.Height, size.Width)), ttl);
+                                collisions.Add(hb);
+                                collisionComponents.Insert(hb);
+                                break;
+
+                            case "down":
+                                hb = new MonsterAttackHitbox(
+                                    new RectangleF(new Vector2((topLeft.X + Width / 2) - size.Height / 2, topLeft.Y + Height),
+                                    new SizeF(size.Height, size.Width)), ttl);
+                                collisions.Add(hb);
+                                collisionComponents.Insert(hb);
+                                break;
+
+                            case "right":
+                                hb = new MonsterAttackHitbox(
+                                    new RectangleF(new Vector2(topLeft.X + Width, (topLeft.Y + Height / 2) - size.Height / 2),
+                                    size), ttl);
+                                collisions.Add(hb);
+                                collisionComponents.Insert(hb);
+                                break;
+
+                            case "left":
+                                hb = new MonsterAttackHitbox(
+                                    new RectangleF(new Vector2(topLeft.X - size.Width, (topLeft.Y + Height / 2) - size.Height / 2),
+                                    size), ttl);
+                                collisions.Add(hb);
+                                collisionComponents.Insert(hb);
+                                break;
+                        }*/

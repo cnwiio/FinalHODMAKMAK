@@ -28,7 +28,7 @@ namespace game
         {
             if (monster.isAttack)
             {
-                monster.animation.SetAnimation("Idle", /*melee.GetDirection(monster.DirectionToPlayer)*/"down");
+                monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
                 return;
             }
             else if (monster.isAwayHome)
@@ -48,14 +48,14 @@ namespace game
             {
                 if (monster.WaitingToReturn == false)
                 {
-                    monster.animation.SetAnimation("Idle", "down");
+                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
                     monster.WanderTimer = 2f;
                     monster.WaitingToReturn = true;
                 }
             }
             else
             {
-                monster.animation.SetAnimation("Idle", "down");
+                monster.animation.SetAnimation("Idle", "right");
             }
         }
         public virtual void Exit(IMonster monster)
@@ -98,7 +98,7 @@ namespace game
                 }
                 else
                 {
-                    melee.animation.SetAnimation("Idle", /*melee.GetDirection(monster.DirectionToPlayer)*/"down"); // still in chasing state but in idle animation
+                    melee.animation.SetAnimation("Idle", melee.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
                 }
             }
         }
