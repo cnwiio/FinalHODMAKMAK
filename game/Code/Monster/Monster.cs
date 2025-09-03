@@ -156,6 +156,7 @@ namespace game
         public AnimController animation {  get; set; }
         public IMonsterState CurrentState { get; set; } = new IdleState();
         public Element ElementType { get; set; }
+        private Player _player { get; set; }
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -218,11 +219,12 @@ namespace game
 
 
 
-        public MonsterMelee(Vector2 position, PreventMonster preventMonster)
+        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player)
         {
             Position = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
+            _player = player;
         }
         public void LoadAnim(string spriteSheetName, string textureName, Vector2 position, int width, int height, ContentManager content)
         {
@@ -558,8 +560,9 @@ namespace game
         }
         public void ApplyDamage()
         {
-            HP -= 1;
-            //Debug.WriteLine(HP);
+            var Damage = _player.Stats.AttackDamage.Value;
+            HP -= Damage;
+            //Debug.WriteLine(Damage);
         }
     }
 }

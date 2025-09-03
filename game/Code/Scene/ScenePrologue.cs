@@ -71,7 +71,7 @@ namespace game
             foreach(var obj in spawnPoint.Objects)
             {
                 if (obj.Type == "Melee")
-                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster));
+                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player));
             }
             //_monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
             foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
