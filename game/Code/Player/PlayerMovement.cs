@@ -52,16 +52,17 @@ namespace game
                 }
             }
 
-            Direction = direction;
-
-            if (Direction != Vector2.Zero)
-                Direction.Normalize();
+            Vector2 moveDir = direction;
+            if (moveDir != Vector2.Zero)
+                moveDir.Normalize();
 
             float speed = _stats.Speed.Value;
             if (_isDashing)
-                speed *= 5f; // Dash speed multiplier
+                speed *= 5f;
 
-            Position += Direction * speed * deltaTime;
+            Position += moveDir * speed * deltaTime;
+            Direction = moveDir; // store normalized direction
+
         }
     }
 }
