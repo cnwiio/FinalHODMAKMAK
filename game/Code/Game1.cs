@@ -5,13 +5,16 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.ViewportAdapters;
 
 namespace game
 {
     public class Game1 : Game
-    {   // From Player
+    { // monster Branch
         private GraphicsDeviceManager _graphics;
         private ScreenManager _screenManager;
+        public GlobalCamera camera;
+        public int MapWidth = 1280, MapHeight = 720;
         // Collision 
         public CollisionComponent CollisionComponent { get; set; }
         public List<IEntity> Collision { get; set; } = new List<IEntity>();
@@ -23,13 +26,15 @@ namespace game
             IsMouseVisible = true;
             _screenManager = new ScreenManager();
             Components.Add(_screenManager);
-            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, 1200, 800));
+            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
         }
 
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = 1200;
-            _graphics.PreferredBackBufferHeight = 800;
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, MapWidth, MapHeight);
+            camera = new GlobalCamera(viewportAdapter);
+            _graphics.PreferredBackBufferWidth = MapWidth;
+            _graphics.PreferredBackBufferHeight = MapHeight;
             _graphics.ApplyChanges();
             base.Initialize();
         }
