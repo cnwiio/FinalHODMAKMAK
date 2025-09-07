@@ -24,6 +24,10 @@ namespace game
         private float _attackTimer = 0f;
         private RectangleF _attackHitbox;
 
+        // Track last movement direction for attack facing
+        private Vector2 _lastDirection = new Vector2(0, 1); // default down
+
+
         public PlayerStats Stats => _stats;
 
         private List<IEntity> _attackTargets;
@@ -43,6 +47,10 @@ namespace game
             _input.Update(gameTime);
             _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
             _animation.Update(gameTime, _movement.Direction, _movement.Position);
+
+            // Update last direction if moving
+            if (_movement.Direction != Vector2.Zero)
+                _lastDirection = _movement.Direction;
 
             // Handle attack logic
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && !_isAttacking)
@@ -71,18 +79,11 @@ namespace game
             // Trigger animation (if using AnimController)
             _animation.TriggerAttack();
 
-            // Define attack hitbox in front of player based on movement direction
-            Vector2 attackOffset = Vector2.Zero;
-            if (_movement.Direction.Y < 0) attackOffset = new Vector2(0, -_attackRange);   // Up
-            else if (_movement.Direction.Y > 0) attackOffset = new Vector2(0, _attackRange); // Down
-            else if (_movement.Direction.X < 0) attackOffset = new Vector2(-_attackRange, 0); // Left
-            else if (_movement.Direction.X > 0) attackOffset = new Vector2(_attackRange, 0);  // Right
-            else attackOffset = new Vector2(0, _attackRange); // Default down if idle
+            Vector2 attackDir = _movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection; // Use last movement direction if idle
+            if (attackDir != Vector2.Zero) attackDir.Normalize(); // Normalize to make diagonal attacks same distance as straight ones
+            Vector2 attackOffset = attackDir * _attackRange;
 
-            _attackHitbox = new RectangleF(
-                _movement.Position + attackOffset - new Vector2(_attackRange / 2, _attackRange / 2),
-                new SizeF(_attackRange, _attackRange)
-            );
+            _attackHitbox = new RectangleF(_movement.Position + attackOffset - new Vector2(_attackRange / 2, _attackRange / 2), new SizeF(_attackRange, _attackRange));
         }
         private void CheckAttackHit()
         {
