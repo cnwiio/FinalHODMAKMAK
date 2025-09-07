@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Animations;
+using System;
 
 namespace game
 { 
@@ -32,11 +33,19 @@ namespace game
             if (direction != Vector2.Zero)
                 _lastDirection = direction;
 
-            // Map last direction to row for AnimatedTexture
-            _row = _lastDirection.Y < 0 ? 4 :      // Up
-                   _lastDirection.Y > 0 ? 3 :      // Down
-                   _lastDirection.X < 0 ? 1 :      // Left
-                   _lastDirection.X > 0 ? 2 : 3;   // Right / default Down
+            if (_lastDirection != Vector2.Zero)
+            {
+                if (Math.Abs(_lastDirection.X) >= Math.Abs(_lastDirection.Y))
+                {
+                    // Horizontal dominant
+                    _row = _lastDirection.X < 0 ? 1 : 2; // Left : Right
+                }
+                else
+                {
+                    // Vertical dominant
+                    _row = _lastDirection.Y < 0 ? 4 : 3; // Up : Down
+                }
+            }
 
             if (overLoad == 1)
             {
