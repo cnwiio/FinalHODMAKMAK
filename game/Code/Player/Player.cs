@@ -24,6 +24,9 @@ namespace game
         private float _attackTimer = 0f;
         private RectangleF _attackHitbox;
 
+        // Hurtbox
+        public PlayerHurtbox Hurtbox { get; private set; }
+
         // Track last movement direction for attack facing
         private Vector2 _lastDirection = new Vector2(0, 1); // default down
 
@@ -40,6 +43,9 @@ namespace game
             _movement = new PlayerMovement(startPosition, _stats);
             _animation = new PlayerAnimation(texture);
             //_attackTargets = attackTargets;
+
+            // Initialize hurtbox (size matches player)
+            Hurtbox = new PlayerHurtbox(this, 64, 96);
         }
 
         public void Update(GameTime gameTime)
@@ -51,6 +57,9 @@ namespace game
             // Update last direction if moving
             if (_movement.Direction != Vector2.Zero)
                 _lastDirection = _movement.Direction;
+
+            // Update hurtbox position
+            Hurtbox.Update();
 
             // Handle attack logic
             if (Mouse.GetState().LeftButton == ButtonState.Pressed && !_isAttacking)
@@ -106,6 +115,9 @@ namespace game
             {
                 spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2); // requires MonoGame.Extended
             }
+
+            // Debug: draw hurtbox
+            Hurtbox.Draw(spriteBatch);
         }
     }
 }
