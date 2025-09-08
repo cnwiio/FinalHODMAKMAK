@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
-using SharpDX;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace game
 {
@@ -17,9 +17,9 @@ namespace game
         public PlayerMovement _movement;
 
         // Attack properties
-        private float _attackRange = 50f;      // Radius or size of attack
+        private float _attackRange = 50f;
         private bool _isAttacking = false;
-        private float _attackDuration = 0.2f;  // How long the attack hitbox stays active
+        private float _attackDuration = 0.2f;
         private float _attackTimer = 0f;
         private RectangleF _attackHitbox;
         private Vector2 _attackPosition;
@@ -33,8 +33,9 @@ namespace game
         // Expose stats
         public PlayerStats Stats => _stats;
 
-        // Temporary list to store attack targets during update
-        private List<IEntity> _attackTargets;
+        // World references for collisions and entities
+        private List<IEntity> _entities;
+        private CollisionComponent _collisionComponent;
 
         public Player(AnimController texture, Vector2 startPosition)
         {
@@ -43,48 +44,44 @@ namespace game
             _movement = new PlayerMovement(startPosition, _stats);
             _animation = new PlayerAnimation(texture);
 
-            // Initialize hurtbox (size matches player)
+            // Initialize hurtbox
             Hurtbox = new PlayerHurtbox(this, 64, 96);
+        }
+
+        // Call this from your Game class after creating player
+        public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
+        {
+            _entities = entities;
+            _collisionComponent = collisionComponent;
         }
 
         public void Update(GameTime gameTime, List<IEntity> attackTargets)
         {
-            // Update input first
             _input.Update(gameTime);
 
             // Handle attack input
             if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
 
-            // If attacking, only update attack logic
             if (_isAttacking)
             {
-                // Countdown attack timer
                 _attackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                // Freeze movement
                 _movement.SetPosition(_attackPosition);
-
-                // Check attack hits
                 CheckAttackHit(attackTargets);
 
-                // Finish attack
                 if (_attackTimer <= 0f)
                 {
                     _isAttacking = false;
-                    _movement.SetCanMove(true); // allow movement again
+                    _movement.SetCanMove(true);
                 }
             }
             else
             {
-                // Not attacking: normal movement
                 _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
 
-                // Update last direction
                 if (_movement.Direction != Vector2.Zero)
                     _lastDirection = _movement.Direction;
 
-                // Reset monsters
                 if (attackTargets != null)
                 {
                     foreach (var target in attackTargets)
@@ -95,37 +92,35 @@ namespace game
                 }
             }
 
-            // Update hurtbox regardless of attacking
-            Hurtbox.Update();
+            // Collect heal pickups
+            if (_entities != null && _collisionComponent != null)
+            {
+                foreach (var heal in _entities.OfType<HealPickup>().ToList())
+                {
+                    if (heal.Bounds.Intersects(Hurtbox.Bounds))
+                    {
+                        heal.OnCollected();
+                        _entities.Remove(heal);
+                        _collisionComponent.Remove(heal);
+                    }
+                }
 
-            // Update animation (passes _isAttacking)
+            }
+
+            Hurtbox.Update();
             _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
         }
-
 
         private void StartAttack()
         {
             _isAttacking = true;
             _attackTimer = _attackDuration;
-
-            // stop all movement during attack
             _movement.SetCanMove(false);
-
-            // Completely cancel any ongoing dash
-            //_movement.CancelDash();
-
-            // Freeze player position
             _attackPosition = _movement.Position;
-
-            // Trigger attack animation
             _animation.TriggerAttack();
 
-            // Determine attack direction
             Vector2 attackDir = _movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection;
-
-            if (attackDir != Vector2.Zero)
-                attackDir.Normalize();
-
+            if (attackDir != Vector2.Zero) attackDir.Normalize();
             Vector2 attackOffset = attackDir * _attackRange;
 
             _attackHitbox = new RectangleF(
@@ -134,32 +129,22 @@ namespace game
             );
         }
 
-
         private void CheckAttackHit(List<IEntity> attackTargets)
         {
-            if (attackTargets == null || attackTargets.Count == 0)
-                return;
+            if (attackTargets == null || attackTargets.Count == 0) return;
 
-            // Create temporary hitbox entity for collision checks
             var playerAttack = new PlayerAttack(_attackHitbox);
 
             foreach (var target in attackTargets)
             {
                 if (target is MonsterHurtbox monsterHurtbox)
                 {
-                    if (playerAttack.Bounds.Intersects(monsterHurtbox.Bounds))
+                    if (playerAttack.Bounds.Intersects(monsterHurtbox.Bounds) &&
+                        !monsterHurtbox.MonsterMelee.isHit)
                     {
-                        if (!monsterHurtbox.MonsterMelee.isHit)
-                        {
-                            // Apply damage
-                            monsterHurtbox.MonsterMelee.HP -= _stats.AttackDamage.Value;
-
-                            // Mark monster as hit
-                            monsterHurtbox.MonsterMelee.isHit = true;
-
-                            // Debug
-                            Debug.WriteLine($"Hit monster! Remaining HP: {monsterHurtbox.MonsterMelee.HP}");
-                        }
+                        monsterHurtbox.MonsterMelee.HP -= _stats.AttackDamage.Value;
+                        monsterHurtbox.MonsterMelee.isHit = true;
+                        Debug.WriteLine($"Hit monster! Remaining HP: {monsterHurtbox.MonsterMelee.HP}");
                     }
                 }
             }
@@ -167,16 +152,11 @@ namespace game
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Draw player animation
             _animation.Draw(spriteBatch);
 
-            // Debug: draw attack hitbox
             if (_isAttacking)
-            {
-                spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2); // requires MonoGame.Extended
-            }
+                spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2);
 
-            // Debug: draw hurtbox
             Hurtbox.Draw(spriteBatch);
         }
     }

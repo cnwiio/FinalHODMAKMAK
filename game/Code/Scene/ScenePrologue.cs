@@ -38,7 +38,7 @@ namespace game
         private Game1 game1;
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks;
-        private Texture2D _dropTexture; // temporary
+        private Texture2D _healTexture; // temporary
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -57,7 +57,7 @@ namespace game
         public override void LoadContent()
         {
             // Load temporary drop texture
-            _dropTexture = Content.Load<Texture2D>("Texture/Health");
+            _healTexture = Content.Load<Texture2D>("Texture/Health");
 
             // Camera setup
             camera = game1.camera;
@@ -84,6 +84,9 @@ namespace game
 
 
             _player = new Player(_playerTexture, new Vector2(400, 400));
+
+            // **Set world references for collision / pickups**
+            _player.SetWorldReferences(_collision, _collisionComponent);
 
             // Prevent monster zone
             _preventMonster = new PreventMonster(new Vector2(400, 400), 250f);
@@ -157,11 +160,17 @@ namespace game
                 // Monster death handling
                 if (monster.IsDead)
                 {
-                    monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
+                    // Drop heal
+                    Random r = new Random();
+                    if (r.Next(100) < 25) // 25% chance
+                        monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
+
+                    // Remove monster hitbox and object
                     monster.DeleteHitBox(1f, _collision, _collisionComponent);
                     monster.RemoveMonster();
                     _monster.Remove(monster);
-                    break; // avoid modifying collection during iteration
+
+                    break; // avoid collection modification error
                 }
             }
 

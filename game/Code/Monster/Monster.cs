@@ -505,19 +505,16 @@ namespace game
         }
 
         // ---------------- Drops ----------------
-        public void DropHeal(List<IEntity> entities, CollisionComponent collisionComponent, Texture2D texture, Player player)
+        public void DropHeal(List<IEntity> collision, CollisionComponent collisionComponent, Texture2D texture, Player player)
         {
-            Random r = new Random();
-            if (r.Next(1, 101) > 25) // 75% chance
-            {
-                entities.Add(new HealDrops(
-                    new RectangleF(animation.Position, new SizeF(texture.Width, texture.Height)),
-                    texture,
-                    player
-                ));
-                collisionComponent.Insert(entities.Last());
-            }
+            HealPickup heal = new HealPickup(Position, texture, player, 25);
+            collision.Add(heal);
+            collisionComponent.Insert(heal);
         }
+
+
+
+
         // ---------------- State Management ----------------
         public void ChangeState(IMonsterState newState)
         {
