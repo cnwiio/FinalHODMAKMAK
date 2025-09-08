@@ -13,8 +13,8 @@ namespace game
     {
         private PlayerStats _stats;
         private PlayerInput _input;
-        public PlayerMovement _movement;
         private PlayerAnimation _animation;
+        public PlayerMovement _movement;
 
         // Attack properties
         private float _attackRange = 50f;      // Radius or size of attack
@@ -22,6 +22,7 @@ namespace game
         private float _attackDuration = 0.2f;  // How long the attack hitbox stays active
         private float _attackTimer = 0f;
         private RectangleF _attackHitbox;
+        private Vector2 _attackPosition;
 
         // Hurtbox
         public PlayerHurtbox Hurtbox { get; private set; }
@@ -48,69 +49,91 @@ namespace game
 
         public void Update(GameTime gameTime, List<IEntity> attackTargets)
         {
-            // Update input and movement
+            // Update input first
             _input.Update(gameTime);
-            _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
-
-            // Update last direction if moving
-            if (_movement.Direction != Vector2.Zero)
-                _lastDirection = _movement.Direction;
-
-            // Update hurtbox position
-            Hurtbox.Update();
-
-            // Reset isHit on monsters if attack is not active
-            if (!_isAttacking && attackTargets != null)
-            {
-                foreach (var target in attackTargets)
-                {
-                    if (target is MonsterHurtbox monster)
-                        monster.MonsterMelee.isHit = false; // ready to be hit again
-                }
-            }
 
             // Handle attack input
             if (_input.AttackTriggered && !_isAttacking)
-            {
                 StartAttack();
-            }
 
-            // Update attack timer
+            // If attacking, only update attack logic
             if (_isAttacking)
             {
+                // Countdown attack timer
                 _attackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+                // Freeze movement
+                _movement.SetPosition(_attackPosition);
+
+                // Check attack hits
+                CheckAttackHit(attackTargets);
+
+                // Finish attack
                 if (_attackTimer <= 0f)
+                {
                     _isAttacking = false;
-                else
-                    CheckAttackHit(attackTargets);
+                    _movement.SetCanMove(true); // allow movement again
+                }
+            }
+            else
+            {
+                // Not attacking: normal movement
+                _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
+
+                // Update last direction
+                if (_movement.Direction != Vector2.Zero)
+                    _lastDirection = _movement.Direction;
+
+                // Reset monsters
+                if (attackTargets != null)
+                {
+                    foreach (var target in attackTargets)
+                    {
+                        if (target is MonsterHurtbox monster)
+                            monster.MonsterMelee.isHit = false;
+                    }
+                }
             }
 
-            // Update animation
+            // Update hurtbox regardless of attacking
+            Hurtbox.Update();
+
+            // Update animation (passes _isAttacking)
             _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
         }
+
 
         private void StartAttack()
         {
             _isAttacking = true;
             _attackTimer = _attackDuration;
 
-            // Trigger animation (if using AnimController)
+            // stop all movement during attack
+            _movement.SetCanMove(false);
+
+            // Completely cancel any ongoing dash
+            _movement.CancelDash();
+
+            // Freeze player position
+            _attackPosition = _movement.Position;
+
+            // Trigger attack animation
             _animation.TriggerAttack();
 
             // Determine attack direction
             Vector2 attackDir = _movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection;
 
             if (attackDir != Vector2.Zero)
-                attackDir.Normalize(); // Normalize diagonal attacks
+                attackDir.Normalize();
 
             Vector2 attackOffset = attackDir * _attackRange;
 
             _attackHitbox = new RectangleF(
-                _movement.Position + attackOffset - new Vector2(_attackRange / 2, _attackRange / 2),
+                _attackPosition + attackOffset - new Vector2(_attackRange / 2, _attackRange / 2),
                 new SizeF(_attackRange, _attackRange)
             );
         }
+
 
         private void CheckAttackHit(List<IEntity> attackTargets)
         {
