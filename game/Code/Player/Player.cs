@@ -52,9 +52,6 @@ namespace game
             _input.Update(gameTime);
             _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
 
-            // Update animation
-            _animation.Update(gameTime, _movement.Direction, _movement.Position);
-
             // Update last direction if moving
             if (_movement.Direction != Vector2.Zero)
                 _lastDirection = _movement.Direction;
@@ -88,6 +85,9 @@ namespace game
                 else
                     CheckAttackHit(attackTargets);
             }
+
+            // Update animation
+            _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
         }
 
         private void StartAttack()

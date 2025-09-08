@@ -27,7 +27,7 @@ namespace game
             overLoad = 2;
         }
 
-        public void Update(GameTime gameTime, Vector2 direction, Vector2 position)
+        public void Update(GameTime gameTime, Vector2 direction, Vector2 position, bool isAttacking)
         {
             // Update last direction if moving
             if (direction != Vector2.Zero)
@@ -60,8 +60,16 @@ namespace game
                 };
 
                 // If moving, set walking animation
-                if (direction != Vector2.Zero)
+                if (direction != Vector2.Zero && !isAttacking)
+                {
+                    // Walking animation
                     _animController.SetAnimation("Walk", directionName);
+                }
+                else if (direction == Vector2.Zero && !isAttacking)
+                {
+                    // Idle animation
+                    _animController.SetAnimation("Idle", "down"); // use down row for idle
+                }
 
                 _animController.UpdateFrame(gameTime, position);
             }

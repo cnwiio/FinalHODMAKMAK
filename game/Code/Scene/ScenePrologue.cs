@@ -66,11 +66,17 @@ namespace game
             // Player setup
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
+
+            // Walk Animations
             _playerTexture.CreateAnimation("Walk", "left", true, 12, 0, 4);
             _playerTexture.CreateAnimation("Walk", "right", true, 12, 4, 4);
             _playerTexture.CreateAnimation("Walk", "down", true, 12, 8, 4);
             _playerTexture.CreateAnimation("Walk", "up", true, 12, 12, 4);
             _playerTexture.CreateAnimation("Walk", "attack", true, 12, 8, 4);
+
+            // Idle animation (only down direction, 8 frames)
+            _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 48, 53); 
+            _playerTexture.CreateAnimation("Idle", "down", true, 8, 0, 8);
 
             _player = new Player(_playerTexture, new Vector2(400, 400));
 
@@ -208,14 +214,14 @@ namespace game
             //_collisionComponent.Clear();
             //_playerTexture.UnloadContent();
 
-            _collision.Clear();
-            _monster.Clear();
-            Content.Unload();
-
             foreach (MonsterMelee monster in _monster)
             {
-                monster.UnLoad();
+                monster.UnLoad(); // actually calls UnLoad on each monster
             }
+
+            _monster.Clear();
+            _collision.Clear();
+            Content.Unload();
 
             base.UnloadContent();
         }
