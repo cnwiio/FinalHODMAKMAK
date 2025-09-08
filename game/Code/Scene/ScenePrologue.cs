@@ -74,9 +74,14 @@ namespace game
             _playerTexture.CreateAnimation("Walk", "up", true, 12, 12, 4);
             _playerTexture.CreateAnimation("Walk", "attack", true, 12, 8, 4);
 
-            // Idle animation (only down direction, 8 frames)
-            _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 48, 53); 
-            _playerTexture.CreateAnimation("Idle", "down", true, 8, 0, 8);
+            // Idle animation (4 directions, 6 frames per row)
+            _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 100, 112);
+
+            _playerTexture.CreateAnimation("Idle", "down", true, 6, 0, 6);   // row 0
+            _playerTexture.CreateAnimation("Idle", "right", true, 6, 6, 6);  // row 1
+            _playerTexture.CreateAnimation("Idle", "left", true, 6, 12, 6);  // row 2
+            _playerTexture.CreateAnimation("Idle", "up", true, 6, 18, 6);    // row 3
+
 
             _player = new Player(_playerTexture, new Vector2(400, 400));
 

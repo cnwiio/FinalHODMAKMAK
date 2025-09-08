@@ -67,8 +67,16 @@ namespace game
                 }
                 else if (direction == Vector2.Zero && !isAttacking)
                 {
-                    // Idle animation
-                    _animController.SetAnimation("Idle", "down"); // use down row for idle
+                    // Map last direction to idle animation
+                    string idleDir = _row switch
+                    {
+                        1 => "left",
+                        2 => "right",
+                        3 => "down",
+                        4 => "up",
+                        _ => "down"
+                    };
+                    _animController.SetAnimation("Idle", idleDir);
                 }
 
                 _animController.UpdateFrame(gameTime, position);
