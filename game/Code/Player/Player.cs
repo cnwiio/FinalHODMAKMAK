@@ -53,7 +53,7 @@ namespace game
             _input.Update(gameTime);
 
             // Handle attack input
-            if (_input.AttackTriggered && !_isAttacking)
+            if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
 
             // If attacking, only update attack logic
@@ -112,7 +112,7 @@ namespace game
             _movement.SetCanMove(false);
 
             // Completely cancel any ongoing dash
-            _movement.CancelDash();
+            //_movement.CancelDash();
 
             // Freeze player position
             _attackPosition = _movement.Position;

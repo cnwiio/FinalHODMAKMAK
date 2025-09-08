@@ -20,6 +20,7 @@ namespace game
         private readonly float _dashCooldown = 1.0f;  // 1 second cooldown between dashes
         private float _dashTimer = 0f;
         private float _cooldownTimer = 0f;
+        public bool IsDashing => _isDashing;
         private bool _isDashing = false;
 
         public void SetPosition(Vector2 newPosition)
