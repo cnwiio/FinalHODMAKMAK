@@ -39,6 +39,7 @@ namespace game
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks; // keyboard
         private Texture2D _dropTexture; // tempo
+        private List<IYsort> _ysort = new List<IYsort>();
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -116,12 +117,20 @@ namespace game
             _player.Draw(_spriteBatch);
             _preventMonster.Draw(_spriteBatch);
             // Monster
-            foreach (MonsterMelee monster in _monster)
+            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())  
             {
                 monster.Draw(_spriteBatch);
                 _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+            }
+            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())  
+            {
+                monster.Draw(_spriteBatch);
+                _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
             }
             // Hitbox
             foreach (IEntity item in _collision)
@@ -152,31 +161,54 @@ namespace game
             {
                 if (obj.Type == "Melee")
                     _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle));
+                if (obj.Type == "Range")
+                    _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle));
             }
-            //_monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
-            foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
+            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
             {
-                monsterMelee.LoadAnim("Walk", "LightGoonWalk", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Idle", "LightGoonIdle", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Attack", "LightGoonAttack", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Charge", "LightGoonCharge", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.CreateAnimation();
-                monsterMelee.SetProperty(
+                monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+                monster.CreateAnimation();
+                monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
                     hp: 3,
                     damage: 10,
                     element: Element.light,
-                    attackRange: (int)(monsterMelee.Width * 1.5),
-                    dashForce: monsterMelee.Width * 7
+                    attackRange: (int)(monster.Width * 1.5),
+                    dashForce: monster.Width * 7
                 );
-                _collision.Add(monsterMelee.HurtBox);
+                _ysort.Add(monster);
+                _collision.Add(monster.HurtBox);
+            }
+            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
+            {
+                monster.loadBullet(Content, "Health");
+                monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Attack", "LightRegimogusAttack", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Charge", "LightRegimogusCharge", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Idle", "LightRegimogusIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Die", "LightRegimogusFuckingDie", monster.Position, 128, 128, Content);
+                monster.CreateAnimation();
+                monster.SetProperty(
+                    speed: 100f,
+                    sreachRadius: 500f,
+                    hp: 3,
+                    damage: 10,
+                    element: Element.light,
+                    attackRange: (int)(monster.Width * 1.5),
+                    dashForce: monster.Width * 7
+                );
+                _ysort.Add(monster);
+                _collision.Add(monster.HurtBox);
             }
         }
         private void UpdateMonster(GameTime gameTime)
         {
-            foreach (MonsterMelee monster in _monster)
+            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
             {
                 monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
                 if (monster.ShakeViewport)
@@ -191,6 +223,27 @@ namespace game
                 {
                     monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
                     monster.DeleteHitBox(1f, _collision, _collisionComponent);
+                    monster.RemoveMonster();
+                    _monster.Remove(monster);
+                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
+                }
+                //--------------
+            }
+            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
+            {
+                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                if (monster.ShakeViewport)
+                {
+                    camera.ShakeCamera(gameTime);
+                    monster.ShakeViewport = camera.ShakeViewport;
+                }
+                // Temporary
+                // Will make additional method for monster dead and drop
+                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
+                if (monster.IsDead)
+                {
+                    monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
+                    monster.DeleteHitBox(1f);
                     monster.RemoveMonster();
                     _monster.Remove(monster);
                     break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
