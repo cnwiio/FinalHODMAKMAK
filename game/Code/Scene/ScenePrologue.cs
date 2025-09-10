@@ -11,6 +11,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Tiled;
+using MonoGame.Extended.Timers;
 using MonoGame.Extended.ViewportAdapters;
 
 namespace game
@@ -71,32 +72,7 @@ namespace game
             _preventMonster = new PreventMonster(new Vector2(400, 400), 250f); // Tempo
             _collisionComponent.Insert(_preventMonster); // Tempo
             // Monster
-            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
-            foreach(var obj in spawnPoint.Objects)
-            {
-                if (obj.Type == "Melee")
-                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle));
-            }
-            //_monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
-            foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
-            {
-                monsterMelee.LoadAnim("Walk", "LightGoonWalk", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Idle", "LightGoonIdle", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Attack", "LightGoonAttack", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Charge", "LightGoonCharge", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monsterMelee.Position, 128, 128, Content);
-                monsterMelee.CreateAnimation();
-                monsterMelee.SetProperty(
-                    speed: 100f,
-                    sreachRadius: 500f,
-                    hp: 3,
-                    damage: 10,
-                    element: Element.light,
-                    attackRange: (int)(monsterMelee.Width * 1.5),
-                    dashForce: monsterMelee.Width * 7
-                );
-                _collision.Add(monsterMelee.HurtBox);
-            }
+            LoadMonster();
             //Collision
             foreach (IEntity entity in _collision)
             {
@@ -123,27 +99,7 @@ namespace game
                 )); // Temporary
             camera.AdjustZoom();
             // Monster
-            foreach (MonsterMelee monster in _monster)
-            {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
-                {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
-                }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
-                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
-            }
+            UpdateMonster(gameTime);
             // Collision
             _collisionComponent.Update(gameTime);
             _tileMaper.UpdateMap(gameTime);
@@ -188,5 +144,60 @@ namespace game
             }
             base.UnloadContent();
         }
+        // {------------------------------ Monster ------------------------------------------- } //
+        private void LoadMonster()
+        {
+            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+            foreach (var obj in spawnPoint.Objects)
+            {
+                if (obj.Type == "Melee")
+                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle));
+            }
+            //_monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
+            foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
+            {
+                monsterMelee.LoadAnim("Walk", "LightGoonWalk", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Idle", "LightGoonIdle", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Attack", "LightGoonAttack", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Charge", "LightGoonCharge", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.CreateAnimation();
+                monsterMelee.SetProperty(
+                    speed: 100f,
+                    sreachRadius: 500f,
+                    hp: 3,
+                    damage: 10,
+                    element: Element.light,
+                    attackRange: (int)(monsterMelee.Width * 1.5),
+                    dashForce: monsterMelee.Width * 7
+                );
+                _collision.Add(monsterMelee.HurtBox);
+            }
+        }
+        private void UpdateMonster(GameTime gameTime)
+        {
+            foreach (MonsterMelee monster in _monster)
+            {
+                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                if (monster.ShakeViewport)
+                {
+                    camera.ShakeCamera(gameTime);
+                    monster.ShakeViewport = camera.ShakeViewport;
+                }
+                // Temporary
+                // Will make additional method for monster dead and drop
+                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
+                if (monster.IsDead)
+                {
+                    monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
+                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
+                    monster.RemoveMonster();
+                    _monster.Remove(monster);
+                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
+                }
+                //--------------
+            }
+        }
+        // {-------------------------- End of Monster ---------------------------------------- } //
     }
 }
