@@ -25,7 +25,8 @@ namespace game
         // Collision & Layer
         private List<IEntity> _collision = new List<IEntity>();
         private CollisionComponent _collisionComponent;
-        private PreventMonster _preventMonster; 
+        private PreventMonster _preventMonster;
+        private List<GameObject> _gameObject = new List<GameObject>();
         // Player
         private AnimController _playerTexture;
         private Player _player;
@@ -61,6 +62,13 @@ namespace game
             _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
             // Particle
             particle = new Particle(game1);
+            // Game Object
+            var objectLayer = _tileMaper.GetObjectLayer("Object");
+            foreach (var item in objectLayer.Objects)
+            {
+                _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
+                _ysort.Add(_gameObject.Last());
+            }
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
@@ -131,6 +139,11 @@ namespace game
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
+            }
+            // Object
+            foreach (var item in _ysort)
+            {
+                item.Draw(_spriteBatch);    
             }
             // Hitbox
             foreach (IEntity item in _collision)

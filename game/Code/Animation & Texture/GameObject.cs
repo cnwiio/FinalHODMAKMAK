@@ -11,16 +11,16 @@ namespace game
         public Texture2D Texture { get; set; }
         public float SortY { get; }
 
-        public GameObject(Vector2 position, Texture2D texture, bool ysort)
+        public GameObject(Vector2 position, Texture2D texture)
         {
             Texture = texture;
-            Position = new Vector2(position.X, position.Y + Texture.Height);
+            Position = new Vector2(position.X, position.Y - Texture.Height);
             SortY = position.Y;
         }
         public GameObject(Vector2 position, ContentManager content,string textureName)
         {
             Texture = content.Load<Texture2D>("Texture/" + textureName);
-            Position = new Vector2(position.X, position.Y + Texture.Height);
+            Position = new Vector2(position.X, position.Y - Texture.Height);
             SortY = position.Y;
         }
 

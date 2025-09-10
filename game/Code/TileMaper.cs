@@ -58,22 +58,22 @@ namespace game
         }
 
 
-        public void LoadObjects(ContentManager content, string LayerName, List<GameObject> gameObject)
-        {
-            var objectLayer = TiledMap.GetLayer<TiledMapObjectLayer>(LayerName);
-            foreach (var obj in objectLayer.Objects)
-            {
-                if (obj.Properties.ContainsKey("Ysort") && obj.Properties["Ysort"] == "true")
-                {
-                    gameObject.Add(new GameObject
-                    (
-                        obj.Position,
-                        content.Load<Texture2D>(obj.Type),
-                        true
-                    ));
-                }
-            }
-        }
+        //public void LoadObjects(ContentManager content, string LayerName, List<GameObject> gameObject)
+        //{
+        //    var objectLayer = TiledMap.GetLayer<TiledMapObjectLayer>(LayerName);
+        //    foreach (var obj in objectLayer.Objects)
+        //    {
+        //        if (obj.Properties.ContainsKey("Ysort") && obj.Properties["Ysort"] == "true")
+        //        {
+        //            gameObject.Add(new GameObject
+        //            (
+        //                obj.Position,
+        //                content.Load<Texture2D>(obj.Type),
+        //                true
+        //            ));
+        //        }
+        //    }
+        //}
 
 
         public void LoadCollision(CollisionComponent collisionComponent, List<IEntity> collisionList, string layerName)

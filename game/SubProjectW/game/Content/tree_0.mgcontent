@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>D:/Visual Studio/SubProjectW/game/Content/tree.tsx</SourceFile>
+  <SourceTime>2025-09-05T23:02:57.6056892+07:00</SourceTime>
+  <DestFile>D:/Visual Studio/FinalHODMAKMAK/game/Content/bin/DesktopGL/../../../SubProjectW/game/Content/tree_0.xnb</DestFile>
+  <DestTime>2025-09-10T18:05:19.5126138+07:00</DestTime>
+  <Importer>TiledMapTilesetImporter</Importer>
+  <ImporterTime>2025-04-23T21:42:52+07:00</ImporterTime>
+  <Processor>TiledMapTilesetProcessor</Processor>
+  <ProcessorTime>2025-04-23T21:42:52+07:00</ProcessorTime>
+  <Dependencies>
+    <string>D:\Visual Studio\SubProjectW\game\Content\pine_free.png</string>
+  </Dependencies>
+  <BuildAsset>
+    <string>D:/Visual Studio/FinalHODMAKMAK/game/Content/bin/DesktopGL/../../../SubProjectW/game/Content/pine_free_0.xnb</string>
+  </BuildAsset>
+  <BuildOutput />
+</PipelineBuildEvent>
