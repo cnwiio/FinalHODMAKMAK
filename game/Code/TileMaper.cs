@@ -112,16 +112,16 @@ namespace game
         }
 
 
-        public void DrawObjects(SpriteBatch spriteBatch, List<GameObject> gameObjects)
-        {
-            foreach (var obj in gameObjects)
-            {
-                if (obj.Ysort)
-                {
-                    spriteBatch.Draw(obj.Texture, obj.Position, Color.White);
-                }
-            }
-        }
+        //public void DrawObjects(SpriteBatch spriteBatch, List<GameObject> gameObjects)
+        //{
+        //    foreach (var obj in gameObjects)
+        //    {
+        //        if (obj.Ysort)
+        //        {
+        //            spriteBatch.Draw(obj.Texture, obj.Position, Color.White);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// get ObjectLayer of tile map 

@@ -1,48 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.Toolkit.HighPerformance;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
-using MonoGame.Extended.ViewportAdapters;
 
 namespace game
 {
-    public class GameObject
+    // IMPORTANT NOTE: now only recieve bottom-left position if want to add other value pls change
+    public class GameObject : IYsort
     {
-        public Microsoft.Xna.Framework.Vector2 Position { get; set; }
+        public Vector2 Position { get; set; }
         public Texture2D Texture { get; set; }
-        public bool Ysort { get; set; }
-        public string Name { get; set; }
+        public float SortY { get; }
 
         public GameObject(Vector2 position, Texture2D texture, bool ysort)
         {
-            Position = position;
             Texture = texture;
-            Ysort = ysort;
+            Position = new Vector2(position.X, position.Y + Texture.Height);
+            SortY = position.Y;
         }
-        public GameObject(Vector2 position, Texture2D texture, bool ysort, string name)
+        public GameObject(Vector2 position, ContentManager content,string textureName)
         {
-            Position = position;
-            Texture = texture;
-            Ysort = ysort;
-            Name = name;
+            Texture = content.Load<Texture2D>("Texture/" + textureName);
+            Position = new Vector2(position.X, position.Y + Texture.Height);
+            SortY = position.Y;
         }
 
-        public GameObject(Vector2 position, bool ysort)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            Position = position;
-            Ysort = ysort;
-        }
-        public GameObject(Vector2 position, bool ysort, string name)
-        {
-            Position = position;
-            Ysort = ysort;
-            Name = name;
+            spriteBatch.Draw(Texture, Position, Color.White);
         }
     }
 }

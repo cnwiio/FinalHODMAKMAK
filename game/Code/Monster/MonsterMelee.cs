@@ -111,8 +111,8 @@ namespace game
             animation.CreateAnimation("Charge", "right", false, 200, 0, 6);
             animation.CreateAnimation("Charge", "left", false, 200, 0, 6);
 
-            animation.CreateAnimation("Attack", "left", false, 100, 0, 9);
-            animation.CreateAnimation("Attack", "right", false, 100, 0, 9);
+            animation.CreateAnimation("Attack", "left", false, 100, 0, 10);
+            animation.CreateAnimation("Attack", "right", false, 100, 0, 10);
 
             animation.CreateAnimation("Die", "right", false, 100, 0, 12);
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);

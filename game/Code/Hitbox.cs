@@ -14,13 +14,15 @@ namespace game
 {
     public class MonsterAttackHitbox : IEntity
     {
+        public IMonster Monster { get; private set; }
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
         public float TimeToLiveSeconds { get; set; }
-        public MonsterAttackHitbox(RectangleF bounds, float timeToLiveSeconds)
+        public MonsterAttackHitbox(RectangleF bounds, float timeToLiveSeconds, IMonster monster)
         {
             Bounds = bounds;
             TimeToLiveSeconds = timeToLiveSeconds;
+            Monster = monster;
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {
@@ -28,17 +30,21 @@ namespace game
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-
+            if (collisionInfo.Other is Wall && Monster is MonsterRange)
+            {
+                var mon = Monster as MonsterRange;
+                mon.BulletVisible = false;
+            }
         }
     }
     public class MonsterHurtbox : IEntity {
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
-        public MonsterMelee MonsterMelee { get; set; }
-        public MonsterHurtbox(RectangleF bounds, MonsterMelee monsterMelee)
+        public IMonster Monster { get; set; }
+        public MonsterHurtbox(RectangleF bounds, IMonster monsterMelee)
         {
             Bounds = bounds;
-            MonsterMelee = monsterMelee;
+            Monster = monsterMelee;
         }
         public void Update(Vector2 position)
         {
@@ -61,21 +67,25 @@ namespace game
         {
             if (collisionInfo.Other is PlayerAttack)
             {
-                if (!MonsterMelee.isHit)
+                if (!Monster.isHit)
                 {
-                    MonsterMelee.isHit = true;
+                    Monster.isHit = true;
                 }
             }
-            if (collisionInfo.Other is MonsterHurtbox)
+            var returnState = Monster.CurrentState is ReturnState;
+            if (!returnState)
             {
-                if (!MonsterMelee.isHit)
+                if (collisionInfo.Other is MonsterHurtbox friend)
                 {
-                    MonsterMelee.Position -= collisionInfo.PenetrationVector;
+                    if (!Monster.isHit && !(friend.Monster.CurrentState is ReturnState))
+                    {
+                        Monster.Position -= collisionInfo.PenetrationVector;
+                    }
                 }
-            }
-            if (collisionInfo.Other is Wall)
-            {
-                MonsterMelee.Position -= collisionInfo.PenetrationVector;
+                if (collisionInfo.Other is Wall)
+                {
+                    Monster.Position -= collisionInfo.PenetrationVector;
+                } 
             }
         }
     }
@@ -132,9 +142,9 @@ namespace game
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            if (collisionInfo.Other is MonsterHurtbox hurtbox)
+            if (collisionInfo.Other is MonsterHurtbox hurtbox && hurtbox.Monster is MonsterMelee)
             {
-                var monster = hurtbox.MonsterMelee;
+                var monster = hurtbox.Monster as MonsterMelee;
                 if (!ActiveAttacker.Contains(monster) && ActiveAttacker.Count < MAXATTACKER)
                 {
                     ActiveAttacker.Add(monster);
@@ -194,8 +204,12 @@ namespace game
         {
             if (collisionInfo.Other is PlayerAttack)
             {
-                IsActive = false;
-                player.Stats.HP.AddModifier(10);
+                if (IsActive)
+                {
+                    IsActive = false;
+                    player.Stats.HP.AddModifier(10); 
+                }
+                //Debug.WriteLine(player.Stats.HP.Value);
             }
         }
     }

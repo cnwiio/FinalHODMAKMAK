@@ -31,6 +31,8 @@ namespace game
         // Camera
         private GlobalCamera camera;
         private OrthographicCamera _camera;
+        // Particle
+        private Particle particle;
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
@@ -55,6 +57,8 @@ namespace game
             //Tile Map
             _tileMaper.LoadMap(Content, "ScenePrologue");
             _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
+            // Particle
+            particle = new Particle(game1);
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
@@ -71,7 +75,7 @@ namespace game
             foreach(var obj in spawnPoint.Objects)
             {
                 if (obj.Type == "Melee")
-                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player));
+                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle));
             }
             //_monster.Add(new MonsterMelee(new Vector2(400, 200), _preventMonster));
             foreach (MonsterMelee monsterMelee in _monster.OfType<MonsterMelee>().ToList())
@@ -80,6 +84,7 @@ namespace game
                 monsterMelee.LoadAnim("Idle", "LightGoonIdle", monsterMelee.Position, 128, 128, Content);
                 monsterMelee.LoadAnim("Attack", "LightGoonAttack", monsterMelee.Position, 128, 128, Content);
                 monsterMelee.LoadAnim("Charge", "LightGoonCharge", monsterMelee.Position, 128, 128, Content);
+                monsterMelee.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monsterMelee.Position, 128, 128, Content);
                 monsterMelee.CreateAnimation();
                 monsterMelee.SetProperty(
                     speed: 100f,
@@ -157,7 +162,7 @@ namespace game
             // Monster
             foreach (MonsterMelee monster in _monster)
             {
-                monster.DrawMonster(_spriteBatch);
+                monster.Draw(_spriteBatch);
                 _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
