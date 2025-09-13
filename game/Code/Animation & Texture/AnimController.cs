@@ -91,11 +91,18 @@ namespace game
 
 
         // Ex. _player.DrawFrame(_spriteBatch, Color.Red);
-        public void DrawFrame(SpriteBatch spriteBatch, Color tintColor = default)
+        public void DrawFrame(SpriteBatch spriteBatch, bool isFlip, Color tintColor = default)
         {
             if (tintColor == default) tintColor = Color.White;
+            if (isFlip)
+            {
+                AnimSprite[CurrentSpriteSheet].Effect = SpriteEffects.FlipHorizontally;
+            } else
+            {
+                AnimSprite[CurrentSpriteSheet].Effect = SpriteEffects.None;
+            }
             AnimSprite[CurrentSpriteSheet].Color = tintColor;
-            DrawFrame(spriteBatch);
+            AnimSprite[CurrentSpriteSheet].Draw(spriteBatch, Position, 0f, Vector2.One);
         }
 
 
@@ -103,14 +110,12 @@ namespace game
         //      _player.CreateAnimation("Char", "Walk/Left", true, 12, 4, 4);
         public void CreateAnimation(string spriteSheetName,string animationName, bool isLoop, int fps, int startIndexFrames, int framesCount)
         {
-
-            float _fps = 1f / fps;
             SpriteSheet[spriteSheetName].DefineAnimation(animationName, builder =>
             {
                 builder.IsLooping(isLoop);
                 for (int i = startIndexFrames; i <= startIndexFrames + framesCount - 1; i++)
                 {
-                    builder.AddFrame(i, TimeSpan.FromSeconds(_fps));
+                    builder.AddFrame(i, TimeSpan.FromMilliseconds(fps));
                 }
             });
 

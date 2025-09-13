@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace game
 {
@@ -23,39 +24,78 @@ namespace game
     {
         public virtual void Enter(IMonster monster)
         {
+            //Debug.WriteLine("Enter idle");
         }
         public virtual void Update(IMonster monster, float deltaTime)
         {
-            if (monster.isAttack)
+            if (monster is MonsterMelee)
             {
-                monster.animation.SetAnimation("Idle", /*melee.GetDirection(monster.DirectionToPlayer)*/"down");
-                return;
-            }
-            else if (monster.isAwayHome)
-            {
-                monster.IgnorePlayer = true;
-                monster.ChangeState(new ReturnState());
-            }
-            else if (monster.isInAttack)
-            {
-                monster.ChangeState(new AttackState());
-            }
-            else if (monster.isInRange)
-            {
-                monster.ChangeState(new ChasingState());
-            }
-            else if (monster.isInWander)
-            {
-                if (monster.WaitingToReturn == false)
+                if (monster.isAttack)
                 {
-                    monster.animation.SetAnimation("Idle", "down");
-                    monster.WanderTimer = 2f;
-                    monster.WaitingToReturn = true;
+                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
+                    return;
                 }
-            }
-            else
+                else if (monster.isAwayHome)
+                {
+                    monster.IgnorePlayer = true;
+                    monster.ChangeState(new ReturnState());
+                }
+                else if (monster.isInAttack)
+                {
+                    monster.ChangeState(new AttackState());
+                }
+                else if (monster.isInRange)
+                {
+                    monster.ChangeState(new ChasingState());
+                }
+                else if (monster.isInWander)
+                {
+                    if (monster.WaitingToReturn == false)
+                    {
+                        monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
+                        monster.WanderTimer = 2f;
+                        monster.WaitingToReturn = true;
+                    }
+                }
+                else
+                {
+                    monster.animation.SetAnimation("Idle", "right");
+                } 
+            } else if (monster is MonsterRange)
             {
-                monster.animation.SetAnimation("Idle", "down");
+                var range = monster as MonsterRange;
+                
+                if (monster.isAwayHome)
+                {
+                    monster.IgnorePlayer = true;
+                    monster.ChangeState(new ReturnState());
+                }
+                else if (monster.isAttack)
+                {
+                    monster.ChangeState(new ChasingState());
+                    return;
+                }
+                else if (monster.isInAttack)
+                {
+                    monster.ChangeState(new AttackState());
+                }
+                else if (monster.isInRange)
+                {
+                    monster.ChangeState(new ChasingState());
+                }
+                else if (monster.isInWander)
+                {
+                    if (monster.WaitingToReturn == false)
+                    {
+                        monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
+                        monster.WanderTimer = 2f;
+                        monster.WaitingToReturn = true;
+                    }
+                }
+                else
+                {
+                    monster.animation.SetAnimation("Idle", "right");
+                }
             }
         }
         public virtual void Exit(IMonster monster)
@@ -66,7 +106,7 @@ namespace game
     {
         public virtual void Enter(IMonster monster)
         {
-
+            //Debug.WriteLine("Enter Chasing");
         }
         public virtual void Update(IMonster monster, float deltaTime)
         {
@@ -96,9 +136,44 @@ namespace game
                 {
                     melee.MoveTo(deltaTime, melee.TargetPos);
                 }
+                else 
+                {
+                    melee.animation.SetAnimation("Idle", melee.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
+                }
+            }
+            if (monster is MonsterRange)
+            {
+                var range = monster as MonsterRange;
+                var distance = Vector2.Distance(range.Position, range.TargetPos);
+
+                if (!range.isInRange || range.isAwayHome)
+                {
+                    monster.ChangeState(new IdleState());
+                }else if (range.isAttack)
+                {
+                    if (distance < range.AttackRange) {
+                        range.MoveToDirection(deltaTime, -range.DirectionToPlayer);
+                    }
+                    else if (distance >= range.AttackRange * 1.2f)
+                    {
+                        range.MoveTo(deltaTime, range.TargetPos);
+                    }
+                    else
+                    {
+                        range.animation.SetAnimation("Idle", range.GetDirection(monster.DirectionToPlayer));
+                    }
+                }
+                else if (range.isInAttack)
+                {
+                    monster.ChangeState(new AttackState());
+                }
+                else if (range.isInAttackList)
+                {
+                    range.MoveTo(deltaTime, range.TargetPos);
+                }
                 else
                 {
-                    melee.animation.SetAnimation("Idle", /*melee.GetDirection(monster.DirectionToPlayer)*/"down"); // still in chasing state but in idle animation
+                    range.animation.SetAnimation("Idle", range.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
                 }
             }
         }
@@ -111,6 +186,7 @@ namespace game
     {
         public virtual void Enter(IMonster monster)
         {
+            //Debug.WriteLine("Enter attack");
         }
         public virtual void Update(IMonster monster, float deltaTime)
         {
