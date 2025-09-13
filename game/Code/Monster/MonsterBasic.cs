@@ -14,7 +14,6 @@ namespace game
         // -------------Property-------------
         public float Speed { get; set; }
         public float SreachRadius { get; set; }
-        public IEntity HurtBox { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public float ActiveRadius { get; set; } = 150f;
@@ -36,6 +35,8 @@ namespace game
         protected List<IEntity> _collisions;
         protected CollisionComponent _collisionComponents;
         public MonsterAttackHitbox Hitbox;
+        public IEntity HurtBox { get; set; }
+        public IEntity Collision { get; set; }
         public PreventMonster PreventMonster;
         public AnimController animation {  get; set; }
         public IMonsterState CurrentState { get; set; } = new IdleState();

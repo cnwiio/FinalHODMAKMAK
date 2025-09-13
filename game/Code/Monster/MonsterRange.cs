@@ -137,7 +137,10 @@ namespace game
                 sreachRadius,
                 new MonsterHurtbox(
                     animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, Vector2.One)),
-                this),
+                this), 
+                new MonsterCollision(
+                    new RectangleF(0, 0, 50, 30),
+                    this),
                 hp,
                 damage,
                 element,
@@ -145,11 +148,12 @@ namespace game
                 dashForce
                 );
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, int hp, int dammage, Element element, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, Element element, int attackRange, float dashForce)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
             HurtBox = hurtBox;
+            Collision = collision;
             HP = hp;
             Damage = dammage;
             MAXHP = hp;
@@ -166,6 +170,7 @@ namespace game
             }
 
             var hurtBox = HurtBox as MonsterHurtbox;
+            var col = Collision as MonsterCollision;
             TargetPos = targetPosition;
             float deltaTime = gameTime.GetElapsedSeconds();
 
@@ -178,6 +183,7 @@ namespace game
                 }
                 DeleteHitBox(deltaTime);
                 hurtBox.Update(Position);
+                col.Update(Position);
                 UpdateHitTimer(deltaTime);
 
                 if (BulletVisible)

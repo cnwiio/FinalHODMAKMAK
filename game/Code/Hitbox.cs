@@ -12,83 +12,6 @@ using System.Collections.Generic;
 
 namespace game
 {
-    public class MonsterAttackHitbox : IEntity
-    {
-        public IMonster Monster { get; private set; }
-        public IShapeF Bounds { get; set; }
-        public string LayerName { get; set; }
-        public float TimeToLiveSeconds { get; set; }
-        public MonsterAttackHitbox(RectangleF bounds, float timeToLiveSeconds, IMonster monster)
-        {
-            Bounds = bounds;
-            TimeToLiveSeconds = timeToLiveSeconds;
-            Monster = monster;
-        }
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Red, 3);
-        }
-        public void OnCollision(CollisionEventArgs collisionInfo)
-        {
-            if (collisionInfo.Other is Wall && Monster is MonsterRange)
-            {
-                var mon = Monster as MonsterRange;
-                mon.BulletVisible = false;
-            }
-        }
-    }
-    public class MonsterHurtbox : IEntity {
-        public IShapeF Bounds { get; set; }
-        public string LayerName { get; set; }
-        public IMonster Monster { get; set; }
-        public MonsterHurtbox(RectangleF bounds, IMonster monsterMelee)
-        {
-            Bounds = bounds;
-            Monster = monsterMelee;
-        }
-        public void Update(Vector2 position)
-        {
-            var rect = (RectangleF)Bounds;
-            rect.Position = position - (rect.Size / 2f);
-            Bounds = rect;
-        }
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-            var rect = (RectangleF)Bounds;
-            spriteBatch.DrawRectangle(rect, Color.Lime, 3);
-
-            // Draw a small cross at the origin (center) 
-            var center = rect.Center;
-            float crossSize = 4f;
-            spriteBatch.DrawLine(center - new Vector2(crossSize, 0), center + new Vector2(crossSize, 0), Color.BlueViolet, 2);
-            spriteBatch.DrawLine(center - new Vector2(0, crossSize), center + new Vector2(0, crossSize), Color.BlueViolet, 2);
-        }
-        public void OnCollision(CollisionEventArgs collisionInfo)
-        {
-            if (collisionInfo.Other is PlayerAttack)
-            {
-                if (!Monster.isHit)
-                {
-                    Monster.isHit = true;
-                }
-            }
-            var returnState = Monster.CurrentState is ReturnState;
-            if (!returnState)
-            {
-                if (collisionInfo.Other is MonsterHurtbox friend)
-                {
-                    if (!Monster.isHit && !(friend.Monster.CurrentState is ReturnState))
-                    {
-                        Monster.Position -= collisionInfo.PenetrationVector;
-                    }
-                }
-                if (collisionInfo.Other is Wall)
-                {
-                    Monster.Position -= collisionInfo.PenetrationVector;
-                } 
-            }
-        }
-    }
     public class PlayerAttack : IEntity
     {
         public IShapeF Bounds { get; set; }
@@ -114,47 +37,6 @@ namespace game
             {
                 Bounds.Position -= collisionInfo.PenetrationVector;
             }
-        }
-    }
-    public class PreventMonster : IEntity
-    {
-        public IShapeF Bounds { get; set; }
-        public Vector2 Position { get; set; }
-        public float Radius { get; set; }
-        public string LayerName { get; set; }
-        public Game1 Game { get; set; }
-        public List<MonsterMelee> ActiveAttacker { get; private set; } = new List<MonsterMelee>();
-        public const int MAXATTACKER = 1;
-        public PreventMonster(Vector2 position, float radius)
-        {
-            Position = position;
-            Radius = radius;
-            Bounds = new CircleF(position, radius);
-        }
-        public void UpdatePosition(Vector2 position)
-        {
-            Position = position;
-            Bounds.Position = Position;
-        }
-        public virtual void Draw(SpriteBatch spritebatch)
-        {
-            spritebatch.DrawCircle((CircleF)Bounds, 16, Color.Coral, 3);
-        }
-        public void OnCollision(CollisionEventArgs collisionInfo)
-        {
-            if (collisionInfo.Other is MonsterHurtbox hurtbox && hurtbox.Monster is MonsterMelee)
-            {
-                var monster = hurtbox.Monster as MonsterMelee;
-                if (!ActiveAttacker.Contains(monster) && ActiveAttacker.Count < MAXATTACKER)
-                {
-                    ActiveAttacker.Add(monster);
-                }
-            }
-        }
-
-        public void RemoveMonster(MonsterMelee monster)
-        {
-            ActiveAttacker.Remove(monster); 
         }
     }
 
@@ -214,21 +96,4 @@ namespace game
         }
     }
 
-    public class Wall : IEntity
-    {
-        public IShapeF Bounds { get; set; }
-        public string LayerName { get; set; }
-        public Wall(RectangleF bounds)
-        {
-            Bounds = bounds;
-        }
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Red, 3);
-        }
-        public void OnCollision(CollisionEventArgs collisionInfo)
-        {
-
-        }
-    }
 }

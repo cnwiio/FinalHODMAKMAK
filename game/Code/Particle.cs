@@ -63,7 +63,7 @@ namespace game
             if (ParticleEffect.Emitters.Count > 0)
             {
                 var emitter = ParticleEffect.Emitters[0];
-                emitter.Profile = Profile.Spray(direction, 2f); 
+                emitter.Profile = Profile.Spray(direction, 1f); 
             }
 
             ParticleEffect.Trigger();
@@ -75,12 +75,12 @@ namespace game
                 Position = Vector2.Zero,
                 Emitters = new List<ParticleEmitter>
                 {
-                    new ParticleEmitter(textureRegion, 60, TimeSpan.FromSeconds(0.75), // capacity and life span
-                        Profile.Spray(new Vector2(1,0), 2f)) // direction and spray cone size
+                    new ParticleEmitter(textureRegion, 60, TimeSpan.FromSeconds(0.5), // capacity and life span
+                        Profile.Spray(new Vector2(1,0), 1f)) // direction and spray cone size
                     {
                         Parameters = new ParticleReleaseParameters()
                         {
-                            Speed = new Range<float>(400f, 500f),
+                            Speed = new Range<float>(450f, 550f),
                             Quantity = 15,
                             Rotation = new Range<float>(-1f, 1f)
                         },
@@ -90,10 +90,10 @@ namespace game
                             {
                                 Interpolators = new List<Interpolator>()
                                 {
-                                    new ScaleInterpolator { StartValue = new Vector2(30f), EndValue = new Vector2(10)}
+                                    new ScaleInterpolator { StartValue = new Vector2(20f), EndValue = new Vector2(0)}
                                 }
                             },
-                            new OpacityFastFadeModifier(),
+                            //new OpacityFastFadeModifier(),
                             new RotationModifier {RotationRate = -2.1f},
                             new LinearGravityModifier {Direction = -Vector2.UnitX, Strength = 30f},
                         },
