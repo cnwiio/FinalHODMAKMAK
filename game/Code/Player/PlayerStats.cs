@@ -10,18 +10,36 @@ namespace game
     public class PlayerStats
     {
         public Stat HP { get; } = new Stat() { BaseValue = 100 };
+        public int CurrentHP { get; private set; }
         public Stat MP { get; } = new Stat() { BaseValue = 100 };
         public Stat AttackDamage { get; } = new Stat() { BaseValue = 50 };
         public Stat AttackPower { get; } = new Stat() { BaseValue = 50 };
         public Stat Defense { get; } = new Stat() { BaseValue = 10 };
         public Stat MagicResistance { get; } = new Stat() { BaseValue = 5 };
-        public Stat Speed { get; } = new Stat() { BaseValue = 200 };
+        public Stat Speed { get; } = new Stat() { BaseValue = 250 };
         public Stat AttackSpeed { get; } = new Stat() { BaseValue = 1 };
 
         // EXP & Level
         public int Level { get; private set; } = 1;
         public int CurrentExp { get; private set; } = 0;
         public int ExpToNextLevel { get; private set; } = 100;
+
+        public PlayerStats()
+        {
+            CurrentHP = HP.Value; // start full
+        }
+
+        public void Heal(int amount)
+        {
+            CurrentHP += amount;
+            if (CurrentHP > HP.Value) CurrentHP = HP.Value;
+        }
+
+        public void TakeDamage(int amount)
+        {
+            CurrentHP -= amount;
+            if (CurrentHP < 0) CurrentHP = 0;
+        }
 
         public void GainExp(int amount)
         {
@@ -39,6 +57,7 @@ namespace game
             ExpToNextLevel = (int)(ExpToNextLevel * 1.5f); // increase exp required per level
                                                            // Optionally increase stats on level up
             HP.BaseValue += 10;
+            CurrentHP = HP.Value; // heal to full on level up
             AttackDamage.BaseValue += 5;
             Speed.BaseValue += 10;
             // You can also trigger an event or callback here

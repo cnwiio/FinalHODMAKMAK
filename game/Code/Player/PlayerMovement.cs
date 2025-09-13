@@ -11,6 +11,7 @@ namespace game
     {
         public Vector2 Position { get; private set; }
         public Vector2 Direction { get; private set; }
+        private bool _canMove = true;
 
         private PlayerStats _stats;
 
@@ -19,8 +20,17 @@ namespace game
         private readonly float _dashCooldown = 1.0f;  // 1 second cooldown between dashes
         private float _dashTimer = 0f;
         private float _cooldownTimer = 0f;
+        public bool IsDashing => _isDashing;
         private bool _isDashing = false;
 
+        public void SetPosition(Vector2 newPosition)
+        {
+            Position = newPosition;
+        }
+        public void SetCanMove(bool canMove)
+        {
+            _canMove = canMove;
+        }
         public PlayerMovement(Vector2 startPosition, PlayerStats stats)
         {
             Position = startPosition;
@@ -52,16 +62,25 @@ namespace game
                 }
             }
 
-            Direction = direction;
-
-            if (Direction != Vector2.Zero)
-                Direction.Normalize();
+            Vector2 moveDir = direction;
+            if (moveDir != Vector2.Zero && _canMove)
+                moveDir.Normalize();
+            else
+                moveDir = Vector2.Zero;
 
             float speed = _stats.Speed.Value;
-            if (_isDashing)
-                speed *= 5f; // Dash speed multiplier
+            if (_isDashing && _canMove)
+                speed *= 5f;
 
-            Position += Direction * speed * deltaTime;
+            Position += moveDir * speed * deltaTime;
+            Direction = moveDir; // store normalized direction
+
+        }
+        public void CancelDash()
+        {
+            _isDashing = false;
+            _dashTimer = 0f;
+            _cooldownTimer = 0f; // optional: reset cooldown or not
         }
     }
 }

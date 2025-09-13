@@ -38,11 +38,14 @@ namespace game
 
             double now = gameTime.TotalGameTime.TotalSeconds;
 
-            // Dash
-            if (IsKeyDoubleTapped(Keys.W, ref _lastTapTimeW, now)) DashTriggered = true;
-            if (IsKeyDoubleTapped(Keys.A, ref _lastTapTimeA, now)) DashTriggered = true;
-            if (IsKeyDoubleTapped(Keys.S, ref _lastTapTimeS, now)) DashTriggered = true;
-            if (IsKeyDoubleTapped(Keys.D, ref _lastTapTimeD, now)) DashTriggered = true;
+            //// Dash
+            //if (IsKeyDoubleTapped(Keys.W, ref _lastTapTimeW, now)) DashTriggered = true;
+            //if (IsKeyDoubleTapped(Keys.A, ref _lastTapTimeA, now)) DashTriggered = true;
+            //if (IsKeyDoubleTapped(Keys.S, ref _lastTapTimeS, now)) DashTriggered = true;
+            //if (IsKeyDoubleTapped(Keys.D, ref _lastTapTimeD, now)) DashTriggered = true;
+
+            // Dash: press Spacebar
+            DashTriggered = _keyboardState.IsKeyDown(Keys.Space) && !_oldkeyboardState.IsKeyDown(Keys.Space);
 
             // Movement
             if (_keyboardState.IsKeyDown(Keys.W)) dir.Y -= 1;
@@ -59,32 +62,32 @@ namespace game
             Direction = dir;
             _oldkeyboardState = _keyboardState;
         }
-        private bool IsKeyDoubleTapped(Keys key, ref double lastTapTime, double now)
-        {
-            var keyboardState = Keyboard.GetState();
+        //private bool IsKeyDoubleTapped(Keys key, ref double lastTapTime, double now)
+        //{
+        //    var keyboardState = Keyboard.GetState();
 
-            // Detect key press down event
-            bool justPressed = keyboardState.IsKeyDown(key) && !_oldkeyboardState.IsKeyDown(key);
+        //    // Detect key press down event
+        //    bool justPressed = keyboardState.IsKeyDown(key) && !_oldkeyboardState.IsKeyDown(key);
 
-            if (justPressed)
-            {
-                if (lastTapTime < 0)
-                {
-                    lastTapTime = now;
-                    return false; // first tap
-                }
-                else if (now - lastTapTime <= DoubleTapTime)
-                {
-                    lastTapTime = -1; // reset
-                    return true; // double tap detected
-                }
-                else
-                {
-                    lastTapTime = now; // too late, treat as new first tap
-                }
-            }
+        //    if (justPressed)
+        //    {
+        //        if (lastTapTime < 0)
+        //        {
+        //            lastTapTime = now;
+        //            return false; // first tap
+        //        }
+        //        else if (now - lastTapTime <= DoubleTapTime)
+        //        {
+        //            lastTapTime = -1; // reset
+        //            return true; // double tap detected
+        //        }
+        //        else
+        //        {
+        //            lastTapTime = now; // too late, treat as new first tap
+        //        }
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
 }

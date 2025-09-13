@@ -10,22 +10,30 @@ using MonoGame.Extended.ViewportAdapters;
 namespace game
 {
     public class Game1 : Game
-    { // monster Branch
+    {   
+        // monster Branch
         private GraphicsDeviceManager _graphics;
         private ScreenManager _screenManager;
+
         public GlobalCamera camera;
         public int MapWidth = 1280, MapHeight = 720;
+
         // Collision 
         public CollisionComponent CollisionComponent { get; set; }
         public List<IEntity> Collision { get; set; } = new List<IEntity>();
 
+        // Player and monsters
+        private Player _player;
+        private List<IEntity> _monsters;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
             _screenManager = new ScreenManager();
             Components.Add(_screenManager);
+
             CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
         }
 
@@ -33,9 +41,11 @@ namespace game
         {
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, MapWidth, MapHeight);
             camera = new GlobalCamera(viewportAdapter);
+
             _graphics.PreferredBackBufferWidth = MapWidth;
             _graphics.PreferredBackBufferHeight = MapHeight;
             _graphics.ApplyChanges();
+                
             base.Initialize();
         }
 

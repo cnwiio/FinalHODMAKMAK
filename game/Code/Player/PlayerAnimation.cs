@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Animations;
+using System;
 
 namespace game
 { 
@@ -9,8 +10,11 @@ namespace game
     {
         private AnimController _animController;
         private AnimatedTexture _textureChar;
-        private int _row = 1;
+        private int _row = 3;
         private int overLoad;
+
+        // Track last movement direction for animation facing
+        private Vector2 _lastDirection = new Vector2(0, 1); // default down
 
         public PlayerAnimation(AnimController texture)
         {
@@ -23,31 +27,65 @@ namespace game
             overLoad = 2;
         }
 
-        public void Update(GameTime gameTime, Vector2 direction, Vector2 position)
+        public void Update(GameTime gameTime, Vector2 direction, Vector2 position, bool isAttacking)
         {
+            // Update last direction if moving
+            if (direction != Vector2.Zero)
+                _lastDirection = direction;
+
+            if (_lastDirection != Vector2.Zero)
+            {
+                if (Math.Abs(_lastDirection.X) >= Math.Abs(_lastDirection.Y))
+                {
+                    // Horizontal dominant
+                    _row = _lastDirection.X < 0 ? 1 : 2; // Left : Right
+                }
+                else
+                {
+                    // Vertical dominant
+                    _row = _lastDirection.Y < 0 ? 4 : 3; // Up : Down
+                }
+            }
+
             if (overLoad == 1)
             {
-                if (direction.Y < 0) _animController.SetAnimation("Walk", "up"); // Up
-                else if (direction.Y > 0) _animController.SetAnimation("Walk", "down"); // Down
-                else if (direction.X < 0) _animController.SetAnimation("Walk", "left"); // Left
-                else if (direction.X > 0) _animController.SetAnimation("Walk", "right"); // Right
-
-                if (direction != Vector2.Zero)
+                // Map last direction to animation name for AnimController
+                string directionName = _row switch
                 {
-                    _animController.UpdateFrame(gameTime, position);
+                    1 => "left",
+                    2 => "right",
+                    3 => "down",
+                    4 => "up",
+                    _ => "down"
+                };
+
+                // If moving, set walking animation
+                if (direction != Vector2.Zero && !isAttacking)
+                {
+                    // Walking animation
+                    _animController.SetAnimation("Walk", directionName);
                 }
+                else if (direction == Vector2.Zero && !isAttacking)
+                {
+                    // Map last direction to idle animation
+                    string idleDir = _row switch
+                    {
+                        1 => "left",
+                        2 => "right",
+                        3 => "down",
+                        4 => "up",
+                        _ => "down"
+                    };
+                    _animController.SetAnimation("Idle", idleDir);
+                }
+
+                _animController.UpdateFrame(gameTime, position);
             }
             else if (overLoad == 2)
             {
-                if (direction.Y < 0) _row = 4; // Up
-                else if (direction.Y > 0) _row = 1; // Down
-                else if (direction.X < 0) _row = 2; // Left
-                else if (direction.X > 0) _row = 3; // Right
-
+                // Update AnimatedTexture frame if moving
                 if (direction != Vector2.Zero)
-                {
                     _textureChar.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
-                }
             }
         }
 
@@ -64,14 +102,22 @@ namespace game
         {
             if (overLoad == 1 && _animController != null)
             {
-                // Play "attack" animation and return to idle after finished
-                _animController.SetAnimation("Walk", "attack");
+                // Use the same walking animation for attack (there's no attack sheet rn)
+                string directionName = _row switch
+                {
+                    1 => "left",
+                    2 => "right",
+                    3 => "down",
+                    4 => "up",
+                    _ => "down"
+                };
+
+                _animController.SetAnimation("Walk", directionName);
             }
             else if (overLoad == 2 && _textureChar != null)
             {
-                // For AnimatedTexture: pause at attack row/frame (adjust row number to your sprite sheet)
-                int attackRow = 5; // example, change based on your sprite sheet
-                _textureChar.Pause(0, attackRow);
+                // Pause at the row that matches last direction
+                _textureChar.Pause(0, _row);
             }
         }
 
