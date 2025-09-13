@@ -224,12 +224,12 @@ namespace game
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
                 }
+                _particle?.Draw(spriteBatch);
             }
             if (BulletVisible)
             {
                 spriteBatch.Draw(bullet, Hitbox.Bounds.BoundingRectangle.Position, Color.White);
             }
-            _particle?.Draw(spriteBatch);
         }
         public void MoveToDirection(float deltaTime, Vector2 direction)
         {

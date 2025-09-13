@@ -75,7 +75,7 @@ namespace game
                 Position = Vector2.Zero,
                 Emitters = new List<ParticleEmitter>
                 {
-                    new ParticleEmitter(textureRegion, 60, TimeSpan.FromSeconds(0.5), // capacity and life span
+                    new ParticleEmitter(textureRegion, 600, TimeSpan.FromSeconds(0.5), // capacity and life span
                         Profile.Spray(new Vector2(1,0), 1f)) // direction and spray cone size
                     {
                         Parameters = new ParticleReleaseParameters()

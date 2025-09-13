@@ -52,48 +52,48 @@ namespace game
             _player
         )); 
     */
-    public class HealDrops : IEntity
-    {
-        public IShapeF Bounds { get; set; }
-        public Vector2 Position { get; set; }
-        public Vector2 Origin { get; set; }
-        public string LayerName { get; set; }
-        public bool IsActive { get; set; } = true;
-        public Texture2D Texture { get; set; }
-        public Player player { get; set; }
-        public HealDrops(RectangleF bounds, Texture2D texture, Player player)
-        {
-            Bounds = bounds;
-            Origin = bounds.Center;
-            Bounds.Position -= (bounds.Size / 2f);
-            Position = Bounds.Position;
-            Texture = texture;
-            this.player = player;
-        }
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-            var rect = (RectangleF)Bounds;
-            spriteBatch.Draw(Texture, rect.Position, Color.White);
-            spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Gold, 3); // for debug
+    //public class HealDrops : IEntity
+    //{
+    //    public IShapeF Bounds { get; set; }
+    //    public Vector2 Position { get; set; }
+    //    public Vector2 Origin { get; set; }
+    //    public string LayerName { get; set; }
+    //    public bool IsActive { get; set; } = true;
+    //    public Texture2D Texture { get; set; }
+    //    public Player player { get; set; }
+    //    public HealDrops(RectangleF bounds, Texture2D texture, Player player)
+    //    {
+    //        Bounds = bounds;
+    //        Origin = bounds.Center;
+    //        Bounds.Position -= (bounds.Size / 2f);
+    //        Position = Bounds.Position;
+    //        Texture = texture;
+    //        this.player = player;
+    //    }
+    //    public virtual void Draw(SpriteBatch spriteBatch)
+    //    {
+    //        var rect = (RectangleF)Bounds;
+    //        spriteBatch.Draw(Texture, rect.Position, Color.White);
+    //        spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Gold, 3); // for debug
 
-            // Draw a small cross at the origin (center) 
-            var center = rect.Center;
-            float crossSize = 4f;
-            spriteBatch.DrawLine(center - new Vector2(crossSize, 0), center + new Vector2(crossSize, 0), Color.BlueViolet, 2);
-            spriteBatch.DrawLine(center - new Vector2(0, crossSize), center + new Vector2(0, crossSize), Color.BlueViolet, 2);
-        }
-        public void OnCollision(CollisionEventArgs collisionInfo)
-        {
-            if (collisionInfo.Other is PlayerAttack)
-            {
-                if (IsActive)
-                {
-                    IsActive = false;
-                    player.Stats.HP.AddModifier(10); 
-                }
-                //Debug.WriteLine(player.Stats.HP.Value);
-            }
-        }
-    }
+    //        // Draw a small cross at the origin (center) 
+    //        var center = rect.Center;
+    //        float crossSize = 4f;
+    //        spriteBatch.DrawLine(center - new Vector2(crossSize, 0), center + new Vector2(crossSize, 0), Color.BlueViolet, 2);
+    //        spriteBatch.DrawLine(center - new Vector2(0, crossSize), center + new Vector2(0, crossSize), Color.BlueViolet, 2);
+    //    }
+    //    public void OnCollision(CollisionEventArgs collisionInfo)
+    //    {
+    //        if (collisionInfo.Other is PlayerAttack)
+    //        {
+    //            if (IsActive)
+    //            {
+    //                IsActive = false;
+    //                player.Stats.HP.AddModifier(10); 
+    //            }
+    //            //Debug.WriteLine(player.Stats.HP.Value);
+    //        }
+    //    }
+    //}
 
 }

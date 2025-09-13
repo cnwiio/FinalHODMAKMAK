@@ -87,7 +87,7 @@ namespace game
                     foreach (var target in attackTargets)
                     {
                         if (target is MonsterHurtbox monster)
-                            monster.MonsterMelee.isHit = false;
+                            monster.Monster.isHit = false;
                     }
                 }
             }
@@ -140,11 +140,11 @@ namespace game
                 if (target is MonsterHurtbox monsterHurtbox)
                 {
                     if (playerAttack.Bounds.Intersects(monsterHurtbox.Bounds) &&
-                        !monsterHurtbox.MonsterMelee.isHit)
+                        !monsterHurtbox.Monster.isHit)
                     {
-                        monsterHurtbox.MonsterMelee.HP -= _stats.AttackDamage.Value;
-                        monsterHurtbox.MonsterMelee.isHit = true;
-                        Debug.WriteLine($"Hit monster! Remaining HP: {monsterHurtbox.MonsterMelee.HP}");
+                        monsterHurtbox.Monster.HP -= _stats.AttackDamage.Value;
+                        monsterHurtbox.Monster.isHit = true;
+                        Debug.WriteLine($"Hit monster! Remaining HP: {monsterHurtbox.Monster.HP}");
                     }
                 }
             }

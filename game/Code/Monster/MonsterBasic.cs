@@ -226,11 +226,8 @@ namespace game
             Random r = new Random();
             if (r.Next(1, 101) <= 75) // Percentage, Ex: 75 mean 75%
             {
-                entities.Add(new HealDrops(
-                                new RectangleF(
-                                    animation.Position,
-                                    new SizeF(texture.Width, texture.Height)
-                                    ),
+                entities.Add(new HealPickup(
+                                animation.Position,
                                 texture,
                                 player
                             )); // Add drops

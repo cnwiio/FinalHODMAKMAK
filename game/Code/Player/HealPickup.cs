@@ -5,12 +5,13 @@ using MonoGame.Extended.Collisions;
 
 namespace game
 {
-    public class HealPickup : IEntity, ICollisionActor
+    public class HealPickup : IEntity
     {
         public IShapeF Bounds { get; private set; }
         private Texture2D _texture;
         private int _healAmount;
         private Player _player;
+        public string LayerName { get; set; }
 
         public HealPickup(Vector2 position, Texture2D texture, Player player, int healAmount = 25)
         {
@@ -18,6 +19,7 @@ namespace game
             _player = player;
             _healAmount = healAmount;
             Bounds = new RectangleF(position, new SizeF(texture.Width, texture.Height));
+            Bounds.Position -= (Bounds.BoundingRectangle.Size / 2f);
         }
 
         public void OnCollected()

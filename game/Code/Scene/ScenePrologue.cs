@@ -83,19 +83,19 @@ namespace game
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
 
             // Walk Animations
-            _playerTexture.CreateAnimation("Walk", "left", true, 12, 0, 4);
-            _playerTexture.CreateAnimation("Walk", "right", true, 12, 4, 4);
-            _playerTexture.CreateAnimation("Walk", "down", true, 12, 8, 4);
-            _playerTexture.CreateAnimation("Walk", "up", true, 12, 12, 4);
+            _playerTexture.CreateAnimation("Walk", "left", true, 200, 0, 4);
+            _playerTexture.CreateAnimation("Walk", "right", true, 200, 4, 4);
+            _playerTexture.CreateAnimation("Walk", "down", true, 200, 8, 4);
+            _playerTexture.CreateAnimation("Walk", "up", true, 200, 12, 4);
             _playerTexture.CreateAnimation("Walk", "attack", true, 12, 8, 4);
 
             // Idle animation (4 directions, 6 frames per row)
             _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 100, 112);
 
-            _playerTexture.CreateAnimation("Idle", "down", true, 6, 0, 6);   // row 0
-            _playerTexture.CreateAnimation("Idle", "right", true, 6, 6, 6);  // row 1
-            _playerTexture.CreateAnimation("Idle", "left", true, 6, 12, 6);  // row 2
-            _playerTexture.CreateAnimation("Idle", "up", true, 6, 18, 6);    // row 3
+            _playerTexture.CreateAnimation("Idle", "down", true, 200, 0, 6);   // row 0
+            _playerTexture.CreateAnimation("Idle", "right", true, 200, 6, 6);  // row 1
+            _playerTexture.CreateAnimation("Idle", "left", true, 200, 12, 6);  // row 2
+            _playerTexture.CreateAnimation("Idle", "up", true, 200, 18, 6);    // row 3
 
 
             _player = new Player(_playerTexture, new Vector2(400, 400));
@@ -180,14 +180,14 @@ namespace game
             // Monster
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())  
             {
-                monster.Draw(_spriteBatch);
+                //monster.Draw(_spriteBatch);
                 _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
             }
             foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())  
             {
-                monster.Draw(_spriteBatch);
+                //monster.Draw(_spriteBatch);
                 _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
                 _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
@@ -215,7 +215,7 @@ namespace game
             //_collisionComponent.Clear();
             //_playerTexture.UnloadContent();
 
-            foreach (MonsterMelee monster in _monster)
+            foreach (IMonster monster in _monster)
             {
                 monster.UnLoad(); // actually calls UnLoad on each monster
             }
@@ -296,7 +296,7 @@ namespace game
                 // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
                 if (monster.IsDead)
                 {
-                    monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
+                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
                     monster.DeleteHitBox(1f, _collision, _collisionComponent);
                     monster.RemoveMonster();
                     _monster.Remove(monster);
@@ -317,7 +317,7 @@ namespace game
                 // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
                 if (monster.IsDead)
                 {
-                    monster.DropHeal(_collision, _collisionComponent, _dropTexture, _player);
+                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
                     monster.DeleteHitBox(1f);
                     monster.RemoveMonster();
                     _monster.Remove(monster);
