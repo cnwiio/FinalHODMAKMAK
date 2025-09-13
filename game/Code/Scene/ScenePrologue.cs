@@ -196,6 +196,7 @@ namespace game
                 );
                 _ysort.Add(monster);
                 _collision.Add(monster.HurtBox);
+                _collision.Add(monster.Collision);
             }
             foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
             {
@@ -217,6 +218,7 @@ namespace game
                 );
                 _ysort.Add(monster);
                 _collision.Add(monster.HurtBox);
+                _collision.Add(monster.Collision);
             }
         }
         private void UpdateMonster(GameTime gameTime)
