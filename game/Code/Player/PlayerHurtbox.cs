@@ -40,9 +40,10 @@ namespace game
 
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            if (collisionInfo.Other is MonsterAttackHitbox)
+            if (collisionInfo.Other is MonsterAttackHitbox monster)
             {
-                _player.Stats.HP.AddModifier(-5); // take damage
+                var damage = -monster.Monster.Damage;
+                _player.Stats.HP.AddModifier(damage); // take damage
                 Debug.WriteLine($"Player took damage! HP: {_player.Stats.HP.Value}");
             }
         }

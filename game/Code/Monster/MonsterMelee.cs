@@ -181,7 +181,6 @@ namespace game
                     Hitbox.Bounds = rect;
                 }
 
-                _particle.Update(deltaTime);
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
@@ -215,8 +214,6 @@ namespace game
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
                 }
-
-                _particle?.Draw(spriteBatch);
             }
         }
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
@@ -311,6 +308,8 @@ namespace game
             PreventMonster.RemoveMonster(this);
             _collisions.Remove(HurtBox);
             _collisionComponents.Remove(HurtBox);
+            _collisions.Remove(Collision);
+            _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
             animation = null;
         }

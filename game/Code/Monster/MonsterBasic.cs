@@ -69,7 +69,7 @@ namespace game
                     ShakeViewport = true;
                     _hitTimer = 1f;
                     _deadTimer = 1.2f;
-                    ApplyDamage();
+                    //ApplyDamage();
                     ApplyKnockback(250f);
                     _particle.Trigger(Position, -DirectionToPlayer);
                 }
@@ -249,10 +249,10 @@ namespace game
         {
             HP = MAXHP;
         }
-        public void ApplyDamage()
+        public void ApplyDamage(int Value)
         {
-            var Damage = _player.Stats.AttackDamage.Value;
-            HP -= Damage;
+            //var Damage = _player.Stats.AttackDamage.Value;
+            HP -= Value;
             //Debug.WriteLine(Damage);
         }
         public virtual void ChangeState(IMonsterState newState) { }

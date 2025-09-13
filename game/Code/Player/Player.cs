@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace game
 {
-    public class Player
+    public class Player : IYsort
     {
         private PlayerStats _stats;
         private PlayerInput _input;
@@ -32,6 +32,7 @@ namespace game
 
         // Expose stats
         public PlayerStats Stats => _stats;
+        public float SortY { get => _movement.Position.Y + 48;  }
 
         // World references for collisions and entities
         private List<IEntity> _entities;
@@ -53,6 +54,8 @@ namespace game
         {
             _entities = entities;
             _collisionComponent = collisionComponent;
+            _entities.Add(Hurtbox);
+            _collisionComponent.Insert(Hurtbox);
         }
 
         public void Update(GameTime gameTime, List<IEntity> attackTargets)

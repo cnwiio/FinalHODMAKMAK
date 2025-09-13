@@ -102,6 +102,7 @@ namespace game
 
             // **Set world references for collision / pickups**
             _player.SetWorldReferences(_collision, _collisionComponent);
+            _ysort.Add(_player);
 
             // Prevent monster zone
             _preventMonster = new PreventMonster(new Vector2(400, 400), 250f);
@@ -146,8 +147,12 @@ namespace game
             // Camera
             camera.Update(_player._movement.Position - new Vector2(game1.MapWidth / 2, game1.MapHeight / 2));
             camera.AdjustZoom();
+            // Particle
+            particle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             // Monster
             UpdateMonster(gameTime);
+            // Ysort
+            _ysort.Sort((a, b) => a.SortY.CompareTo(b.SortY));
             // Collision
             _collisionComponent.Update(gameTime);
             _tileMaper.UpdateMap(gameTime);
@@ -172,7 +177,7 @@ namespace game
             );
 
             // Player
-            _player.Draw(_spriteBatch);
+            //_player.Draw(_spriteBatch);
 
             // Prevent monster zone
             _preventMonster.Draw(_spriteBatch);
@@ -204,7 +209,8 @@ namespace game
             {
                 item.Draw(_spriteBatch);
             }
-
+            // Particle
+            particle.Draw(_spriteBatch);
             _spriteBatch.End();
         }
 
@@ -248,7 +254,7 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 3,
+                    hp: 200,
                     damage: 10,
                     element: Element.light,
                     attackRange: (int)(monster.Width * 1.5),
@@ -270,7 +276,7 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 3,
+                    hp: 200,
                     damage: 10,
                     element: Element.light,
                     attackRange: (int)(monster.Width * 1.5),

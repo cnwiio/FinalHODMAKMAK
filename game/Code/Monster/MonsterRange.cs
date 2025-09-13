@@ -224,7 +224,6 @@ namespace game
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
                 }
-                _particle?.Draw(spriteBatch);
             }
             if (BulletVisible)
             {
@@ -320,6 +319,8 @@ namespace game
         {
             _collisions.Remove(HurtBox);
             _collisionComponents.Remove(HurtBox);
+            _collisions.Remove(Collision);
+            _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
             animation = null;
         }
