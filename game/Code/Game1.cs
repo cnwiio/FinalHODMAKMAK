@@ -13,7 +13,7 @@ namespace game
     {   
         // monster Branch
         private GraphicsDeviceManager _graphics;
-        private ScreenManager _screenManager;
+        public ScreenManager screenManager;
 
         public GlobalCamera camera;
         public int MapWidth = 1280, MapHeight = 720;
@@ -31,8 +31,8 @@ namespace game
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _screenManager = new ScreenManager();
-            Components.Add(_screenManager);
+            screenManager = new ScreenManager();
+            Components.Add(screenManager);
 
             CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
         }
@@ -51,7 +51,7 @@ namespace game
 
         protected override void LoadContent()
         {
-            _screenManager.LoadScreen(new ScenePrologue(this)); // temporary
+            screenManager.LoadScreen(new ScenePrologue(this)); // temporary
             base.LoadContent();
         }
 

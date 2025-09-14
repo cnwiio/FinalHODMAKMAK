@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.ViewportAdapters;
@@ -40,14 +41,17 @@ namespace game
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
-        private KeyboardState _ks; // keyboard
+        private ScreenManager _screenManager;
+        private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
         private List<IYsort> _ysort = new List<IYsort>();
+        private bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             game1 = (Game1)Game;
+            _screenManager = game1.screenManager;
 
             // Collision
             _collision = game1.Collision;
@@ -72,12 +76,12 @@ namespace game
             // Particle
             particle = new Particle(game1);
             // Game Object
-            var objectLayer = _tileMaper.GetObjectLayer("Object");
-            foreach (var item in objectLayer.Objects)
-            {
-                _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
-                _ysort.Add(_gameObject.Last());
-            }
+            //var objectLayer = _tileMaper.GetObjectLayer("Object");
+            //foreach (var item in objectLayer.Objects)
+            //{
+            //    _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
+            //    _ysort.Add(_gameObject.Last());
+            //}
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
@@ -97,6 +101,14 @@ namespace game
             _playerTexture.CreateAnimation("Idle", "left", true, 200, 12, 6);  // row 2
             _playerTexture.CreateAnimation("Idle", "up", true, 200, 18, 6);    // row 3
 
+            // Attack animation (4 directions, 6 frames per row)
+            _playerTexture.LoadFrame(Content, "Attack", "Player_Attack", 288, 240);
+
+            _playerTexture.CreateAnimation("Attack", "down", false, 25, 0, 8);   // row 0
+            _playerTexture.CreateAnimation("Attack", "left", false, 25, 8, 8);  // row 1
+            _playerTexture.CreateAnimation("Attack", "right", false, 25, 16, 8);  // row 2
+            _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
+
 
             _player = new Player(_playerTexture, new Vector2(400, 400));
 
@@ -105,7 +117,7 @@ namespace game
             _ysort.Add(_player);
 
             // Prevent monster zone
-            _preventMonster = new PreventMonster(new Vector2(400, 400), 250f);
+            _preventMonster = new PreventMonster(new Vector2(400, 400), 350f);
             _collisionComponent.Insert(_preventMonster);
 
 
@@ -132,10 +144,15 @@ namespace game
         public override void Update(GameTime gameTime)
         {
             // Keyboard input
+            _oldKs = _ks;
             _ks = Keyboard.GetState();
-            if (_ks.IsKeyDown(Keys.Enter))
+            if (_ks.IsKeyDown(Keys.O) && !_oldKs.IsKeyDown(Keys.O))
             {
-                // logic here
+                isDebug = !isDebug;
+            }
+            if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
+            {
+                _screenManager.LoadScreen(new SceneMenu(game1));
             }
 
             // Player
@@ -147,6 +164,7 @@ namespace game
             // Camera
             camera.Update(_player._movement.Position - new Vector2(game1.MapWidth / 2, game1.MapHeight / 2));
             camera.AdjustZoom();
+            //Debug.WriteLine(_camera.Zoom);
             // Particle
             particle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             // Monster
@@ -178,26 +196,7 @@ namespace game
 
             // Player
             //_player.Draw(_spriteBatch);
-
-            // Prevent monster zone
-            _preventMonster.Draw(_spriteBatch);
-
-            // Monster
-            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())  
-            {
-                //monster.Draw(_spriteBatch);
-                _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-            }
-            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())  
-            {
-                //monster.Draw(_spriteBatch);
-                _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-            }
+            
             // Object
             foreach (var item in _ysort)
             {
@@ -205,9 +204,30 @@ namespace game
             }
 
             // Draw hitboxes
-            foreach (IEntity item in _collision)
+            if (isDebug)
             {
-                item.Draw(_spriteBatch);
+                foreach (IEntity item in _collision)
+                {
+                    item.Draw(_spriteBatch);
+                }
+                // Prevent monster zone
+                _preventMonster.Draw(_spriteBatch);
+                // Monster
+                foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
+                {
+                    //monster.Draw(_spriteBatch);
+                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
+                }
+                foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
+                {
+                    //monster.Draw(_spriteBatch);
+                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
+                }
             }
             // Particle
             particle.Draw(_spriteBatch);
@@ -223,12 +243,17 @@ namespace game
 
             foreach (IMonster monster in _monster)
             {
+                Debug.WriteLine("clear");
                 monster.UnLoad(); // actually calls UnLoad on each monster
             }
 
-            _monster.Clear();
+            foreach (var item in _collision)
+            {
+                _collisionComponent.Remove(item);
+            }
             _collision.Clear();
-            Content.Unload();
+            _monster.Clear();
+            //Content.Unload();
 
             base.UnloadContent();
         }
@@ -239,9 +264,9 @@ namespace game
             foreach (var obj in spawnPoint.Objects)
             {
                 if (obj.Type == "Melee")
-                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle));
+                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle, Element.light));
                 if (obj.Type == "Range")
-                    _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle));
+                    _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.light));
             }
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
             {
@@ -254,10 +279,10 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 200,
+                    hp: 100,
                     damage: 10,
-                    element: Element.light,
                     attackRange: (int)(monster.Width * 1.5),
+                    activeRadius: (int)(monster.Width * 2),
                     dashForce: monster.Width * 7
                 );
                 _ysort.Add(monster);
@@ -276,11 +301,10 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 200,
+                    hp: 100,
                     damage: 10,
-                    element: Element.light,
-                    attackRange: (int)(monster.Width * 1.5),
-                    dashForce: monster.Width * 7
+                    attackRange: (int)(monster.Width * 2.5f),
+                    dashForce: 300
                 );
                 _ysort.Add(monster);
                 _collision.Add(monster.HurtBox);

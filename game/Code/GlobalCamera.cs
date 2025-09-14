@@ -42,7 +42,7 @@ namespace game
         {
             Cam = new OrthographicCamera(viewportAdapter);
             Position = Vector2.Zero;
-            Cam.ZoomIn(1.5f);
+            //Cam.ZoomIn(1f);
         }
 
         public void Update(Vector2 position)

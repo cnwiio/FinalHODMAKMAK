@@ -17,7 +17,7 @@ namespace game
         public int Width { get; set; }
         public int Height { get; set; }
         public float ActiveRadius { get; set; } = 150f;
-        public float AwaySpawnRadius { get; set; } = 500f;
+        public float AwaySpawnRadius { get; set; } = 2000f;
         public int Damage { get; set; }
         public int AttackRange { get; set; }
         public float DashForce { get; set; }
@@ -63,7 +63,7 @@ namespace game
             get => _isHit;
             set
             {
-                if (value)
+                if (value && !IsDead)
                 {
                     _isHit = true;
                     ShakeViewport = true;

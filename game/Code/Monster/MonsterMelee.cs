@@ -82,19 +82,23 @@ namespace game
                 _HP = value;
                 if (_HP <= 0)
                 {
-                    _HP = 0;
-                    _hitTimer += 2f;
-                    animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                    if (!IsDead)
+                    {
+                        _HP = 0;
+                        _hitTimer += 2f;
+                        animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
+                    }
                 }
             }
         }
-        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, Particle particle)
+        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, Particle particle, Element element)
         {
             Position = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;
             _particle = particle;
+            ElementType = element;
         }
         /*
          IMPORTANT NOTE: Need to change in future
@@ -118,7 +122,7 @@ namespace game
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
         }
         // Need Change in future
-        public void SetProperty(float speed, float sreachRadius, int hp, int damage, Element element, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, int activeRadius, float dashForce)
         {
             SetProperty(
                 speed,
@@ -131,12 +135,12 @@ namespace game
                     this),
                 hp,
                 damage,
-                element,
                 attackRange,
+                activeRadius,
                 dashForce
                 );
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, Element element, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, int attackRange, int activeRadius, float dashForce)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
@@ -145,8 +149,8 @@ namespace game
             HP = hp;
             Damage = dammage;
             MAXHP = hp;
-            ElementType = element;
             AttackRange = attackRange;
+            ActiveRadius = activeRadius;
             DashForce = dashForce;
         }
         public void UpdateState(GameTime gameTime, List<IEntity> collisions, CollisionComponent collisionComponents, Vector2 targetPosition)
@@ -222,7 +226,7 @@ namespace game
             var bounds = HurtBox.Bounds.BoundingRectangle;
             var center = bounds.Center;
             var topleft = bounds.TopLeft;
-            SizeF size = new SizeF(bounds.Width, bounds.Height); // Hitbox size; 
+            SizeF size = new SizeF(bounds.Width * 0.65f, bounds.Height * 0.75f); // Hitbox size; 
             if (Hitbox == null)
             {
                 Hitbox = new MonsterAttackHitbox(
@@ -301,7 +305,7 @@ namespace game
         }
         public void UnLoad()
         {
-            animation.Unload(OnAnimationEvent);
+            RemoveMonster();
         }
         public void RemoveMonster()
         {
