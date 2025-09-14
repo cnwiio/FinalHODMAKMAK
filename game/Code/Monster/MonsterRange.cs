@@ -309,7 +309,7 @@ namespace game
             }
             if (animation.CurrentSpriteSheet == "Charge" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
-                ApplyKnockback(300f);
+                ApplyKnockback(DashForce);
                 CreateHitbox(_collisions, _collisionComponents);
                 animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }

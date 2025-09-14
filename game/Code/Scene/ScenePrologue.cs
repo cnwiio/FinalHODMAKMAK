@@ -109,7 +109,7 @@ namespace game
             _ysort.Add(_player);
 
             // Prevent monster zone
-            _preventMonster = new PreventMonster(new Vector2(400, 400), 250f);
+            _preventMonster = new PreventMonster(new Vector2(400, 400), 350f);
             _collisionComponent.Insert(_preventMonster);
 
 
@@ -156,6 +156,7 @@ namespace game
             // Camera
             camera.Update(_player._movement.Position - new Vector2(game1.MapWidth / 2, game1.MapHeight / 2));
             camera.AdjustZoom();
+            //Debug.WriteLine(_camera.Zoom);
             // Particle
             particle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             // Monster
@@ -217,7 +218,6 @@ namespace game
                     //monster.Draw(_spriteBatch);
                     _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
                     _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
                     _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
                 }
             }
@@ -275,6 +275,7 @@ namespace game
                     damage: 10,
                     element: Element.light,
                     attackRange: (int)(monster.Width * 1.5),
+                    activeRadius: (int)(monster.Width * 2),
                     dashForce: monster.Width * 7
                 );
                 _ysort.Add(monster);
@@ -296,8 +297,8 @@ namespace game
                     hp: 100,
                     damage: 10,
                     element: Element.light,
-                    attackRange: (int)(monster.Width * 1.5),
-                    dashForce: monster.Width * 7
+                    attackRange: (int)(monster.Width * 2.5f),
+                    dashForce: 300
                 );
                 _ysort.Add(monster);
                 _collision.Add(monster.HurtBox);

@@ -14,7 +14,7 @@ namespace game
         public string LayerName { get; set; }
         public Game1 Game { get; set; }
         public List<MonsterMelee> ActiveAttacker { get; private set; } = new List<MonsterMelee>();
-        public const int MAXATTACKER = 1;
+        public const short MAXATTACKER = 2;
         public PreventMonster(Vector2 position, float radius)
         {
             Position = position;

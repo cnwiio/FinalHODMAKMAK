@@ -118,7 +118,7 @@ namespace game
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
         }
         // Need Change in future
-        public void SetProperty(float speed, float sreachRadius, int hp, int damage, Element element, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, int hp, int damage, Element element, int attackRange, int activeRadius, float dashForce)
         {
             SetProperty(
                 speed,
@@ -133,10 +133,11 @@ namespace game
                 damage,
                 element,
                 attackRange,
+                activeRadius,
                 dashForce
                 );
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, Element element, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, Element element, int attackRange, int activeRadius, float dashForce)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
@@ -147,6 +148,7 @@ namespace game
             MAXHP = hp;
             ElementType = element;
             AttackRange = attackRange;
+            ActiveRadius = activeRadius;
             DashForce = dashForce;
         }
         public void UpdateState(GameTime gameTime, List<IEntity> collisions, CollisionComponent collisionComponents, Vector2 targetPosition)
@@ -222,7 +224,7 @@ namespace game
             var bounds = HurtBox.Bounds.BoundingRectangle;
             var center = bounds.Center;
             var topleft = bounds.TopLeft;
-            SizeF size = new SizeF(bounds.Width, bounds.Height); // Hitbox size; 
+            SizeF size = new SizeF(bounds.Width * 0.65f, bounds.Height * 0.75f); // Hitbox size; 
             if (Hitbox == null)
             {
                 Hitbox = new MonsterAttackHitbox(
