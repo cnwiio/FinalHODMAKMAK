@@ -34,7 +34,7 @@ namespace game
             screenManager = new ScreenManager();
             Components.Add(screenManager);
 
-            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
+            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, 64 * 70, 64 * 50));
         }
 
         protected override void Initialize()

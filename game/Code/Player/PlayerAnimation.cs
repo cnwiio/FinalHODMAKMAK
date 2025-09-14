@@ -48,7 +48,7 @@ namespace game
 
         public void TriggerAttack()
         {
-            _animController.SetAnimation("Walk", _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" });
+            _animController.SetAnimation("Attack", _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" });
         }
     }
 }

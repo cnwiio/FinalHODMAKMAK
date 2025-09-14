@@ -233,11 +233,6 @@
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Nature_asset_1.tsx
 
-#begin TileMap/Object.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
-/build:TileMap/Object.tsx
-
 #begin TileMap/ScenePrologue.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
@@ -259,6 +254,18 @@
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Stair_Tileset.tsx
+
+#begin TileMap/Tree_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Tree_1.png
 
 #begin TileMap/Tree1.png
 /importer:TextureImporter

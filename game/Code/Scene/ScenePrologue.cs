@@ -76,12 +76,12 @@ namespace game
             // Particle
             particle = new Particle(game1);
             // Game Object
-            //var objectLayer = _tileMaper.GetObjectLayer("Object");
-            //foreach (var item in objectLayer.Objects)
-            //{
-            //    _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
-            //    _ysort.Add(_gameObject.Last());
-            //}
+            var objectLayer = _tileMaper.GetObjectLayer("Object");
+            foreach (var item in objectLayer.Objects)
+            {
+                _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
+                _ysort.Add(_gameObject.Last());
+            }
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
@@ -110,7 +110,7 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
 
 
-            _player = new Player(_playerTexture, new Vector2(400, 400));
+            _player = new Player(_playerTexture, new Vector2(802, 2603));
 
             // **Set world references for collision / pickups**
             _player.SetWorldReferences(_collision, _collisionComponent);
@@ -263,9 +263,9 @@ namespace game
             var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
             foreach (var obj in spawnPoint.Objects)
             {
-                if (obj.Type == "Melee")
+                if (obj.Name == "Melee")
                     _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle, Element.light));
-                if (obj.Type == "Range")
+                if (obj.Name == "Range")
                     _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.light));
             }
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
@@ -279,7 +279,7 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 100,
+                    hp: 250,
                     damage: 10,
                     attackRange: (int)(monster.Width * 1.5),
                     activeRadius: (int)(monster.Width * 2),
@@ -301,7 +301,7 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 100,
+                    hp: 150,
                     damage: 10,
                     attackRange: (int)(monster.Width * 2.5f),
                     dashForce: 300
