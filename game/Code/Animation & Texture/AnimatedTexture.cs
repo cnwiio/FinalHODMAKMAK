@@ -18,13 +18,13 @@ namespace game
 {
     public class AnimatedTexture
     {
-        private int framecount;
-        private Texture2D myTexture;
+        public int framecount;
+        public Texture2D myTexture;
         private float TimePerFrame;
         private int Frame;
-        private int framerow = 1; // frame row
+        public int framerow = 1; // frame row
         private int frame_r; // count frame row 
-       private int startframe;
+        private int startframe;
         private int endframe;
         private float TotalElapsed;
         private bool Paused;
@@ -37,6 +37,7 @@ namespace game
 
         public float Rotation, Scale, Depth;
         public Vector2 Origin;
+
         public AnimatedTexture(Vector2 origin, float rotation, float scale, float depth)
         {
             this.Origin = origin;
@@ -44,12 +45,22 @@ namespace game
             this.Scale = scale;
             this.Depth = depth;
         }
-        public void Load(ContentManager content, string asset, int frameCount,int frameRow, int framesPerSec)
+
+        // --- Public getters for PlayerAnimation ---
+        public Texture2D MyTexture => myTexture;
+        public int FrameCount => framecount;
+        public int FrameRow => framerow;
+
+        public float TextureWidth => myTexture != null ? myTexture.Width / framecount : 0;
+        public float TextureHeight => myTexture != null ? myTexture.Height / framerow : 0;
+
+        // --- Load, Update, Draw methods (unchanged) ---
+        public void Load(ContentManager content, string asset, int frameCount, int frameRow, int framesPerSec)
         {
             framecount = frameCount;
             framerow = frameRow;
             startframe = 0;
-            endframe = (frameCount * framerow)-1;
+            endframe = (frameCount * framerow) - 1;
             myTexture = content.Load<Texture2D>(asset);
             TimePerFrame = (float)1 / framesPerSec;
             Frame = 0;
@@ -59,7 +70,8 @@ namespace game
             Ended = false;
             Overload = 1;
         }
-        public void Load(ContentManager content, string asset, int frameCount, int frameRow, int framesPerSec,int startRow)
+
+        public void Load(ContentManager content, string asset, int frameCount, int frameRow, int framesPerSec, int startRow)
         {
             framecount = frameCount;
             framerow = frameRow;
@@ -75,21 +87,20 @@ namespace game
             Overload = 2;
             startrow = startRow;
         }
-        // class AnimatedTexture
+
         public void UpdateFrame(float elapsed)
         {
             if (pauseFrame > -1 && pauseRow > -1)
             {
-                
-                    frame_r = pauseRow;
-                    Frame = pauseFrame;
-                    Paused = true;
-                    pauseFrame = -1;
-                    pauseRow = -1;
-                
+                frame_r = pauseRow;
+                Frame = pauseFrame;
+                Paused = true;
+                pauseFrame = -1;
+                pauseRow = -1;
             }
             if (Paused)
                 return;
+
             TotalElapsed += elapsed;
             if (TotalElapsed > TimePerFrame)
             {
@@ -97,121 +108,69 @@ namespace game
                 if (Frame == framecount)
                 {
                     frame_r++;
-                    if (Overload == 2)
-                    {
-                        Ended = true;
-                    }
+                    if (Overload == 2) Ended = true;
                 }
                 if (frame_r == framerow)
                 {
                     frame_r = 0;
-                    if (Overload == 1)
-                    {
-                        Ended = true;
-                    }
+                    if (Overload == 1) Ended = true;
                 }
-                
-                // Keep the Frame between 0 and the total frames, minus one.
-                Frame = Frame % framecount;
-                // check start check end
 
+                Frame %= framecount;
                 TotalElapsed -= TimePerFrame;
             }
         }
 
-        // class AnimatedTexture
         public void DrawFrame(SpriteBatch batch, Vector2 screenPos, bool flip)
         {
             this.flip = flip;
             DrawFrame(batch, Frame, screenPos);
         }
+
         public void DrawFrame(SpriteBatch batch, Vector2 screenPos)
         {
             DrawFrame(batch, Frame, screenPos);
         }
-        public void DrawFrame(SpriteBatch batch, Vector2 screenPos,int row)
+
+        public void DrawFrame(SpriteBatch batch, Vector2 screenPos, int row)
         {
-            DrawFrame(batch, Frame, screenPos,row);
+            DrawFrame(batch, Frame, screenPos, row);
         }
+
         public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos)
         {
             int FrameWidth = myTexture.Width / framecount;
             int FrameHeight = myTexture.Height / framerow;
-            Rectangle sourcerect = new Rectangle();
+            Rectangle sourcerect;
             if (Overload == 1)
             {
-                sourcerect = new Rectangle(FrameWidth * frame, FrameHeight * frame_r,
-                    FrameWidth, FrameHeight);
-            }
-            if (Overload == 2)
-            {
-                sourcerect = new Rectangle(FrameWidth * frame, FrameHeight * (startrow-1),
-                    FrameWidth, FrameHeight);
-            }
-            if (flip == false)
-            {
-                batch.Draw(myTexture, screenPos, sourcerect, Color.White,
-                    Rotation, Origin, Scale, SpriteEffects.None, Depth);
+                sourcerect = new Rectangle(FrameWidth * frame, FrameHeight * frame_r, FrameWidth, FrameHeight);
             }
             else
             {
-                batch.Draw(myTexture, screenPos, sourcerect, Color.White,
-                    Rotation, Origin, Scale, SpriteEffects.FlipHorizontally, Depth);
+                sourcerect = new Rectangle(FrameWidth * frame, FrameHeight * (startrow - 1), FrameWidth, FrameHeight);
             }
+
+            batch.Draw(myTexture, screenPos, sourcerect, Color.White, Rotation, Origin, Scale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, Depth);
         }
-        public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos,int row)
+
+        public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos, int row)
         {
             int FrameWidth = myTexture.Width / framecount;
             int FrameHeight = myTexture.Height / framerow;
             startrow = row;
-            Rectangle sourcerect = new Rectangle();
-            sourcerect = new Rectangle(FrameWidth * frame, FrameHeight * (startrow - 1),
-                    FrameWidth, FrameHeight);
-            if (flip == false)
-            {
-                batch.Draw(myTexture, screenPos, sourcerect, Color.White,
-                    Rotation, Origin, Scale, SpriteEffects.None, Depth);
-            }
-            else
-            {
-                batch.Draw(myTexture, screenPos, sourcerect, Color.White,
-                    Rotation, Origin, Scale, SpriteEffects.FlipHorizontally, Depth);
-            }
-        }
-        public bool IsPaused
-        {
-            get { return Paused; }
-        }
-        public bool IsEnd
-        {
-            get { return Ended; }
-        }
-        public void Reset()
-        {
-            Frame = 0;
-            TotalElapsed = 0f;
-        }
-        public void Stop()
-        {
-            Pause();
-            Reset();
-        }
-        public void Play()
-        {
-            Paused = false;
-        }
-        public void Pause()
-        {
-            Paused = true;
-        }
-        public void Pause(int frame,int row)
-        {
-            this.pauseFrame = frame;
-            this.pauseRow = row;
-            
-                
-            
+            Rectangle sourcerect = new Rectangle(FrameWidth * frame, FrameHeight * (startrow - 1), FrameWidth, FrameHeight);
+            batch.Draw(myTexture, screenPos, sourcerect, Color.White, Rotation, Origin, Scale, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, Depth);
         }
 
+        // --- Pause / Reset / Play / Stop helpers ---
+        public bool IsPaused => Paused;
+        public bool IsEnd => Ended;
+
+        public void Reset() { Frame = 0; TotalElapsed = 0f; }
+        public void Stop() { Pause(); Reset(); }
+        public void Play() { Paused = false; }
+        public void Pause() { Paused = true; }
+        public void Pause(int frame, int row) { pauseFrame = frame; pauseRow = row; }
     }
 }

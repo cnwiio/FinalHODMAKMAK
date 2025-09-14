@@ -1,135 +1,54 @@
-﻿
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Animations;
 using System;
 
 namespace game
-{ 
+{
     public class PlayerAnimation
     {
         private AnimController _animController;
-        private AnimatedTexture _textureChar;
         private int _row = 3;
-        private int overLoad;
+        private Vector2 _lastDirection = new Vector2(0, 1);
 
-        // Track last movement direction for animation facing
-        private Vector2 _lastDirection = new Vector2(0, 1); // default down
+        public float TextureWidth { get; private set; }
+        public float TextureHeight { get; private set; }
 
-        public PlayerAnimation(AnimController texture)
+        public PlayerAnimation(AnimController animController)
         {
-            _animController = texture;
-            overLoad = 1;
-        }
-        public PlayerAnimation(AnimatedTexture texture)
-        {
-            _textureChar = texture;
-            overLoad = 2;
+            _animController = animController;
         }
 
         public void Update(GameTime gameTime, Vector2 direction, Vector2 position, bool isAttacking)
         {
-            // Update last direction if moving
-            if (direction != Vector2.Zero)
-                _lastDirection = direction;
+            if (direction != Vector2.Zero) _lastDirection = direction;
 
-            if (_lastDirection != Vector2.Zero)
-            {
-                if (Math.Abs(_lastDirection.X) >= Math.Abs(_lastDirection.Y))
-                {
-                    // Horizontal dominant
-                    _row = _lastDirection.X < 0 ? 1 : 2; // Left : Right
-                }
-                else
-                {
-                    // Vertical dominant
-                    _row = _lastDirection.Y < 0 ? 4 : 3; // Up : Down
-                }
-            }
+            if (Math.Abs(_lastDirection.X) >= Math.Abs(_lastDirection.Y))
+                _row = _lastDirection.X < 0 ? 1 : 2;
+            else
+                _row = _lastDirection.Y < 0 ? 4 : 3;
 
-            if (overLoad == 1)
-            {
-                // Map last direction to animation name for AnimController
-                string directionName = _row switch
-                {
-                    1 => "left",
-                    2 => "right",
-                    3 => "down",
-                    4 => "up",
-                    _ => "down"
-                };
+            string dirName = _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" };
 
-                // If moving, set walking animation
-                if (direction != Vector2.Zero && !isAttacking)
-                {
-                    // Walking animation
-                    _animController.SetAnimation("Walk", directionName);
-                }
-                else if (direction == Vector2.Zero && !isAttacking)
-                {
-                    // Map last direction to idle animation
-                    string idleDir = _row switch
-                    {
-                        1 => "left",
-                        2 => "right",
-                        3 => "down",
-                        4 => "up",
-                        _ => "down"
-                    };
-                    _animController.SetAnimation("Idle", idleDir);
-                }
+            if (direction != Vector2.Zero && !isAttacking)
+                _animController.SetAnimation("Walk", dirName);
+            else if (!isAttacking)
+                _animController.SetAnimation("Idle", dirName);
 
-                _animController.UpdateFrame(gameTime, position);
-            }
-            else if (overLoad == 2)
-            {
-                // Update AnimatedTexture frame if moving
-                if (direction != Vector2.Zero)
-                    _textureChar.UpdateFrame((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
+            _animController.UpdateFrame(gameTime, position);
+
+            TextureWidth = _animController.TextureWidth;
+            TextureHeight = _animController.TextureHeight;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             _animController.DrawFrame(spriteBatch);
         }
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
-        {
-            _textureChar.DrawFrame(spriteBatch, position, _row);
-        }
 
         public void TriggerAttack()
         {
-            if (overLoad == 1 && _animController != null)
-            {
-                // Use the same walking animation for attack (there's no attack sheet rn)
-                string directionName = _row switch
-                {
-                    1 => "left",
-                    2 => "right",
-                    3 => "down",
-                    4 => "up",
-                    _ => "down"
-                };
-
-                _animController.SetAnimation("Walk", directionName);
-            }
-            else if (overLoad == 2 && _textureChar != null)
-            {
-                // Pause at the row that matches last direction
-                _textureChar.Pause(0, _row);
-            }
-        }
-
-        public void OnAnimationEvent(IAnimationController sender, AnimationEventTrigger trigger)
-        {
-            if (overLoad == 1 && trigger == AnimationEventTrigger.AnimationCompleted)
-            {
-                if (overLoad == 1)
-                {
-                    _animController.SetAnimation("Walk", "up");
-                }
-            }
+            _animController.SetAnimation("Walk", _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" });
         }
     }
 }

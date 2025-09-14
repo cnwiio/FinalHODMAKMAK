@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using System.Collections.Generic;
@@ -16,27 +15,22 @@ namespace game
         private PlayerAnimation _animation;
         public PlayerMovement _movement;
 
-        // Attack properties
-        private float _attackRange = 50f;
         private bool _isAttacking = false;
         private float _attackDuration = 0.2f;
         private float _attackTimer = 0f;
+        private float _attackRange = 50f;
         private RectangleF _attackHitbox;
         private Vector2 _attackPosition;
+        private Vector2 _lastDirection = new Vector2(0, 1);
 
-        // Hurtbox
         public PlayerHurtbox Hurtbox { get; private set; }
+        public PlayerCollisionBox Collision { get; private set; }
 
-        // Track last movement direction for attack facing
-        private Vector2 _lastDirection = new Vector2(0, 1); // default down
-
-        // Expose stats
-        public PlayerStats Stats => _stats;
-        public float SortY { get => _movement.Position.Y + 48;  }
-
-        // World references for collisions and entities
         private List<IEntity> _entities;
         private CollisionComponent _collisionComponent;
+
+        public PlayerStats Stats => _stats;
+        public float SortY => _movement.Position.Y + 48;
 
         public Player(AnimController texture, Vector2 startPosition)
         {
@@ -45,24 +39,30 @@ namespace game
             _movement = new PlayerMovement(startPosition, _stats);
             _animation = new PlayerAnimation(texture);
 
-            // Initialize hurtbox
             Hurtbox = new PlayerHurtbox(this, 64, 96);
+
+            // Manual collision size and offset
+            Vector2 collisionSize = new Vector2(40, 16); // width, height
+            Vector2 collisionOffset = new Vector2(-20, 40); // offset from top-left of sprite
+            Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
         }
 
-        // Call this from your Game class after creating player
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
         {
-            _entities = entities;
+            _entities = entities ?? new List<IEntity>();
             _collisionComponent = collisionComponent;
-            _entities.Add(Hurtbox);
-            _collisionComponent.Insert(Hurtbox);
+
+            if (!_entities.Contains(Hurtbox)) _entities.Add(Hurtbox);
+            _collisionComponent?.Insert(Hurtbox);
+
+            if (!_entities.Contains(Collision)) _entities.Add(Collision);
+            _collisionComponent?.Insert(Collision);
         }
 
         public void Update(GameTime gameTime, List<IEntity> attackTargets)
         {
             _input.Update(gameTime);
 
-            // Handle attack input
             if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
 
@@ -81,36 +81,14 @@ namespace game
             else
             {
                 _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
+                if (_movement.Direction != Vector2.Zero) _lastDirection = _movement.Direction;
 
-                if (_movement.Direction != Vector2.Zero)
-                    _lastDirection = _movement.Direction;
-
-                if (attackTargets != null)
-                {
-                    foreach (var target in attackTargets)
-                    {
-                        if (target is MonsterHurtbox monster)
-                            monster.Monster.isHit = false;
-                    }
-                }
-            }
-
-            // Collect heal pickups
-            if (_entities != null && _collisionComponent != null)
-            {
-                foreach (var heal in _entities.OfType<HealPickup>().ToList())
-                {
-                    if (heal.Bounds.Intersects(Hurtbox.Bounds))
-                    {
-                        heal.OnCollected();
-                        _entities.Remove(heal);
-                        _collisionComponent.Remove(heal);
-                    }
-                }
-
+                attackTargets?.OfType<MonsterHurtbox>().ToList().ForEach(m => m.Monster.isHit = false);
             }
 
             Hurtbox.Update();
+            Collision.Update();
+
             _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
         }
 
@@ -124,31 +102,25 @@ namespace game
 
             Vector2 attackDir = _movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection;
             if (attackDir != Vector2.Zero) attackDir.Normalize();
-            Vector2 attackOffset = attackDir * _attackRange;
 
             _attackHitbox = new RectangleF(
-                _attackPosition + attackOffset - new Vector2(_attackRange / 2, _attackRange / 2),
+                _attackPosition + attackDir * _attackRange - new Vector2(_attackRange / 2),
                 new SizeF(_attackRange, _attackRange)
             );
         }
 
         private void CheckAttackHit(List<IEntity> attackTargets)
         {
-            if (attackTargets == null || attackTargets.Count == 0) return;
-
+            if (attackTargets == null) return;
             var playerAttack = new PlayerAttack(_attackHitbox);
 
-            foreach (var target in attackTargets)
+            foreach (var target in attackTargets.OfType<MonsterHurtbox>())
             {
-                if (target is MonsterHurtbox monsterHurtbox)
+                if (!target.Monster.isHit && playerAttack.Bounds.Intersects(target.Bounds))
                 {
-                    if (playerAttack.Bounds.Intersects(monsterHurtbox.Bounds) &&
-                        !monsterHurtbox.Monster.isHit)
-                    {
-                        monsterHurtbox.Monster.HP -= _stats.AttackDamage.Value;
-                        monsterHurtbox.Monster.isHit = true;
-                        Debug.WriteLine($"Hit monster! Remaining HP: {monsterHurtbox.Monster.HP}");
-                    }
+                    target.Monster.HP -= _stats.AttackDamage.Value;
+                    target.Monster.isHit = true;
+                    Debug.WriteLine($"Hit monster! Remaining HP: {target.Monster.HP}");
                 }
             }
         }
@@ -157,10 +129,9 @@ namespace game
         {
             _animation.Draw(spriteBatch);
 
-            if (_isAttacking)
-                spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2);
-
+            if (_isAttacking) spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2);
             Hurtbox.Draw(spriteBatch);
+            Collision.Draw(spriteBatch); // Yellow debug box
         }
     }
 }
