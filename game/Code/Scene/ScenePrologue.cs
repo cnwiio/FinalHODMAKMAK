@@ -264,9 +264,9 @@ namespace game
             foreach (var obj in spawnPoint.Objects)
             {
                 if (obj.Type == "Melee")
-                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle));
+                    _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle, Element.light));
                 if (obj.Type == "Range")
-                    _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle));
+                    _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.light));
             }
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
             {
@@ -281,7 +281,6 @@ namespace game
                     sreachRadius: 500f,
                     hp: 100,
                     damage: 10,
-                    element: Element.light,
                     attackRange: (int)(monster.Width * 1.5),
                     activeRadius: (int)(monster.Width * 2),
                     dashForce: monster.Width * 7
@@ -304,7 +303,6 @@ namespace game
                     sreachRadius: 500f,
                     hp: 100,
                     damage: 10,
-                    element: Element.light,
                     attackRange: (int)(monster.Width * 2.5f),
                     dashForce: 300
                 );

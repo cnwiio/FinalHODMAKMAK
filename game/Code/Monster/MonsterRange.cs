@@ -99,13 +99,14 @@ namespace game
         }
 
 
-        public MonsterRange(Vector2 position, PreventMonster preventMonster, Player player, Particle particle)
+        public MonsterRange(Vector2 position, PreventMonster preventMonster, Player player, Particle particle, Element element)
         {
             Position = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;
             _particle = particle;
+            ElementType = element;
         }
         public void loadBullet(ContentManager content, string textureName)
         {
@@ -133,7 +134,7 @@ namespace game
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
         }
         // Need Change in future
-        public void SetProperty(float speed, float sreachRadius, int hp, int damage, Element element, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, float dashForce)
         {
             SetProperty(
                 speed,
@@ -146,12 +147,11 @@ namespace game
                     this),
                 hp,
                 damage,
-                element,
                 attackRange,
                 dashForce
                 );
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, Element element, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, int attackRange, float dashForce)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
@@ -160,7 +160,6 @@ namespace game
             HP = hp;
             Damage = dammage;
             MAXHP = hp;
-            ElementType = element;
             AttackRange = attackRange;
             DashForce = dashForce;
         }

@@ -91,13 +91,14 @@ namespace game
                 }
             }
         }
-        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, Particle particle)
+        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, Particle particle, Element element)
         {
             Position = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;
             _particle = particle;
+            ElementType = element;
         }
         /*
          IMPORTANT NOTE: Need to change in future
@@ -121,7 +122,7 @@ namespace game
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
         }
         // Need Change in future
-        public void SetProperty(float speed, float sreachRadius, int hp, int damage, Element element, int attackRange, int activeRadius, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, int activeRadius, float dashForce)
         {
             SetProperty(
                 speed,
@@ -134,13 +135,12 @@ namespace game
                     this),
                 hp,
                 damage,
-                element,
                 attackRange,
                 activeRadius,
                 dashForce
                 );
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, Element element, int attackRange, int activeRadius, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, int attackRange, int activeRadius, float dashForce)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
@@ -149,7 +149,6 @@ namespace game
             HP = hp;
             Damage = dammage;
             MAXHP = hp;
-            ElementType = element;
             AttackRange = attackRange;
             ActiveRadius = activeRadius;
             DashForce = dashForce;
