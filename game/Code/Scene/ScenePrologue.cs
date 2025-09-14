@@ -40,9 +40,10 @@ namespace game
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
-        private KeyboardState _ks; // keyboard
+        private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
         private List<IYsort> _ysort = new List<IYsort>();
+        private bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -132,10 +133,11 @@ namespace game
         public override void Update(GameTime gameTime)
         {
             // Keyboard input
+            _oldKs = _ks;
             _ks = Keyboard.GetState();
-            if (_ks.IsKeyDown(Keys.Enter))
+            if (_ks.IsKeyDown(Keys.O) && !_oldKs.IsKeyDown(Keys.O))
             {
-                // logic here
+                isDebug = !isDebug;
             }
 
             // Player
@@ -178,26 +180,7 @@ namespace game
 
             // Player
             //_player.Draw(_spriteBatch);
-
-            // Prevent monster zone
-            _preventMonster.Draw(_spriteBatch);
-
-            // Monster
-            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())  
-            {
-                //monster.Draw(_spriteBatch);
-                _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-            }
-            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())  
-            {
-                //monster.Draw(_spriteBatch);
-                _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-            }
+            
             // Object
             foreach (var item in _ysort)
             {
@@ -205,9 +188,31 @@ namespace game
             }
 
             // Draw hitboxes
-            foreach (IEntity item in _collision)
+            if (isDebug)
             {
-                item.Draw(_spriteBatch);
+                foreach (IEntity item in _collision)
+                {
+                    item.Draw(_spriteBatch);
+                }
+                // Prevent monster zone
+                _preventMonster.Draw(_spriteBatch);
+                // Monster
+                foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
+                {
+                    //monster.Draw(_spriteBatch);
+                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
+                }
+                foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
+                {
+                    //monster.Draw(_spriteBatch);
+                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
+                }
             }
             // Particle
             particle.Draw(_spriteBatch);
