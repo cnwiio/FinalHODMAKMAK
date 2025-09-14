@@ -82,9 +82,12 @@ namespace game
                 _HP = value;
                 if (_HP <= 0)
                 {
-                    _HP = 0;
-                    _hitTimer += 2f;
-                    animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                    if (!IsDead)
+                    {
+                        _HP = 0;
+                        _hitTimer += 2f;
+                        animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
+                    }
                 }
             }
         }

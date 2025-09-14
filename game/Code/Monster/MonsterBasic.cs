@@ -63,7 +63,7 @@ namespace game
             get => _isHit;
             set
             {
-                if (value)
+                if (value && !IsDead)
                 {
                     _isHit = true;
                     ShakeViewport = true;
