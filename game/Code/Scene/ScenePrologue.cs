@@ -76,12 +76,12 @@ namespace game
             // Particle
             particle = new Particle(game1);
             // Game Object
-            var objectLayer = _tileMaper.GetObjectLayer("Object");
-            foreach (var item in objectLayer.Objects)
-            {
-                _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
-                _ysort.Add(_gameObject.Last());
-            }
+            //var objectLayer = _tileMaper.GetObjectLayer("Object");
+            //foreach (var item in objectLayer.Objects)
+            //{
+            //    _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
+            //    _ysort.Add(_gameObject.Last());
+            //}
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
