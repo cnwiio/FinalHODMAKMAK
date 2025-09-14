@@ -335,7 +335,7 @@ namespace game
         }
         public void UnLoad()
         {
-            animation.Unload(OnAnimationEvent);
+            RemoveMonster();
         }
 
         public override void ChangeState(IMonsterState newState)

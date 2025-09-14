@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.ViewportAdapters;
@@ -40,6 +41,7 @@ namespace game
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
+        private ScreenManager _screenManager;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
         private List<IYsort> _ysort = new List<IYsort>();
@@ -49,6 +51,7 @@ namespace game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             game1 = (Game1)Game;
+            _screenManager = game1.screenManager;
 
             // Collision
             _collision = game1.Collision;
@@ -139,6 +142,10 @@ namespace game
             {
                 isDebug = !isDebug;
             }
+            if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
+            {
+                _screenManager.LoadScreen(new SceneMenu(game1), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+            }
 
             // Player
             _player.Update(gameTime, _attackTargets);
@@ -228,12 +235,17 @@ namespace game
 
             foreach (IMonster monster in _monster)
             {
+                Debug.WriteLine("clear");
                 monster.UnLoad(); // actually calls UnLoad on each monster
             }
 
-            _monster.Clear();
+            foreach (var item in _collision)
+            {
+                _collisionComponent.Remove(item);
+            }
             _collision.Clear();
-            Content.Unload();
+            _monster.Clear();
+            //Content.Unload();
 
             base.UnloadContent();
         }
@@ -259,7 +271,7 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 200,
+                    hp: 100,
                     damage: 10,
                     element: Element.light,
                     attackRange: (int)(monster.Width * 1.5),
@@ -281,7 +293,7 @@ namespace game
                 monster.SetProperty(
                     speed: 100f,
                     sreachRadius: 500f,
-                    hp: 200,
+                    hp: 100,
                     damage: 10,
                     element: Element.light,
                     attackRange: (int)(monster.Width * 1.5),

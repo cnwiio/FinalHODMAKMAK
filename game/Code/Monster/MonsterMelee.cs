@@ -301,7 +301,7 @@ namespace game
         }
         public void UnLoad()
         {
-            animation.Unload(OnAnimationEvent);
+            RemoveMonster();
         }
         public void RemoveMonster()
         {
