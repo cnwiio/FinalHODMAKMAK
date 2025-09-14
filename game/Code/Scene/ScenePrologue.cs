@@ -144,7 +144,7 @@ namespace game
             }
             if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
             {
-                _screenManager.LoadScreen(new SceneMenu(game1), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+                _screenManager.LoadScreen(new SceneMenu(game1));
             }
 
             // Player

@@ -25,6 +25,7 @@ namespace game
 
         public override void LoadContent()
         {
+            ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)
@@ -33,7 +34,6 @@ namespace game
             _ks = Keyboard.GetState();
             if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
             {
-                Debug.WriteLine("sence menu");
                 ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
             }
         }
