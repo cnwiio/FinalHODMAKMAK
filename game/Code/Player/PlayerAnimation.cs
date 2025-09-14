@@ -112,7 +112,7 @@ namespace game
                     _ => "down"
                 };
 
-                _animController.SetAnimation("Walk", directionName);
+                _animController.SetAnimation("Attack", directionName);
             }
             else if (overLoad == 2 && _textureChar != null)
             {
