@@ -110,7 +110,8 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
 
 
-            _player = new Player(_playerTexture, new Vector2(802, 2603));
+            //_player = new Player(_playerTexture, new Vector2(802, 2603));
+            _player = new Player(_playerTexture, new Vector2(0, 2603));
 
             // **Set world references for collision / pickups**
             _player.SetWorldReferences(_collision, _collisionComponent);
@@ -162,7 +163,7 @@ namespace game
             _preventMonster.UpdatePosition(_player._movement.Position);
 
             // Camera
-            camera.Update(_player._movement.Position - new Vector2(game1.MapWidth / 2, game1.MapHeight / 2));
+            camera.Update(_player._movement.Position - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             camera.AdjustZoom();
             //Debug.WriteLine(_camera.Zoom);
             // Particle
@@ -206,6 +207,8 @@ namespace game
             // Draw hitboxes
             if (isDebug)
             {
+                _spriteBatch.DrawRectangle(new RectangleF(camera.Position,
+                    new SizeF(5, 5)), Color.Red, 5, 0);
                 foreach (IEntity item in _collision)
                 {
                     item.Draw(_spriteBatch);
@@ -243,7 +246,6 @@ namespace game
 
             foreach (IMonster monster in _monster)
             {
-                Debug.WriteLine("clear");
                 monster.UnLoad(); // actually calls UnLoad on each monster
             }
 

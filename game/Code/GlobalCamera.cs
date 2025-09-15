@@ -47,8 +47,16 @@ namespace game
 
         public void Update(Vector2 position)
         {
-            Position = position;
-            Cam.Position = position;
+            if (position.X > 0 && position.X < 4480)
+            {
+                Position.X = position.X;
+                Cam.Position = Position;
+            }
+            if (position.Y > 0 && position.Y < 3200)
+            {
+                Position.Y = position.Y;
+                Cam.Position = Position;
+            }
         }
 
         public void AdjustZoom()

@@ -16,7 +16,8 @@ namespace game
         public ScreenManager screenManager;
 
         public GlobalCamera camera;
-        public int MapWidth = 1280, MapHeight = 720;
+        public short MapWidth, MapHeight;
+        public short ScreenWidth = 1280, ScreenHeight = 720;
 
         // Collision 
         public CollisionComponent CollisionComponent { get; set; }
@@ -35,15 +36,17 @@ namespace game
             Components.Add(screenManager);
 
             CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, 64 * 70, 64 * 50));
+            MapWidth = 64 * 70;
+            MapHeight = 64 * 50;
         }
 
         protected override void Initialize()
         {
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, MapWidth, MapHeight);
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, ScreenWidth, ScreenHeight);
             camera = new GlobalCamera(viewportAdapter);
 
-            _graphics.PreferredBackBufferWidth = MapWidth;
-            _graphics.PreferredBackBufferHeight = MapHeight;
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
             _graphics.ApplyChanges();
                 
             base.Initialize();
