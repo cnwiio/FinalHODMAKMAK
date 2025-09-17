@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -85,7 +86,7 @@ namespace game
                     if (!IsDead)
                     {
                         _HP = 0;
-                        _hitTimer += 2f;
+                        _hitTimer += 5f;
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                     }
                 }
@@ -128,7 +129,7 @@ namespace game
                 speed,
                 sreachRadius,
                 new MonsterHurtbox(
-                    animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, Vector2.One)),
+                    animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, new Vector2(0.6f,0.9f))),
                     this),
                 new MonsterCollision(
                     new RectangleF(0, 0, 60, 30), 
@@ -165,6 +166,8 @@ namespace game
             var col = Collision as MonsterCollision;
             TargetPos = targetPosition;
             float deltaTime = gameTime.GetElapsedSeconds();
+            if (DesiredPosition != Vector2.Zero)
+                Position = DesiredPosition;
 
             if (animation != null)
             {
@@ -174,9 +177,9 @@ namespace game
                     CurrentState.Update(this, deltaTime);
                 }
                 DeleteHitBox(deltaTime, collisions, collisionComponents);
-                hurtBox.Update(Position);
-                col.Update(Position);
                 UpdateHitTimer(deltaTime);
+                hurtBox.Update(Position);
+                col.Update(DesiredPosition);
 
                 if (Hitbox != null)
                 {

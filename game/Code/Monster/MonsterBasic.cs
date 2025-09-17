@@ -24,6 +24,7 @@ namespace game
         // ----------------------------------
         public Vector2 Origin { get; set; }
         public Vector2 Position { get; set; }
+        public Vector2 DesiredPosition { get; set; }
         public Vector2 TargetPos { get; set; }
         public Vector2 SpawnPosition { get; set; }
         public Vector2 DirectionToPlayer { get; set; }
@@ -116,7 +117,7 @@ namespace game
             direction.Normalize();
             if (Speed == 0) Speed = 1f;
             Vector2 movement = direction * Speed * deltaTime;
-            Position += movement;
+            DesiredPosition = Position + movement;
             animation.SetAnimation("Walk", GetDirection(direction));
         }
 
@@ -160,7 +161,7 @@ namespace game
             {
                 _knockBackTimer -= deltaTime;
                 _knockBackForce *= MathF.Pow(0.1f, deltaTime);
-                Position += _knockBackDirection * _knockBackForce * deltaTime;
+                DesiredPosition += _knockBackDirection * _knockBackForce * deltaTime;
                 //Debug.WriteLine($"Knockback Force:" + _knockBackDirection * _knockBackForce * deltaTime
                 //    + "\n DeltaTime : " + deltaTime + "\n Force : " + _knockBackForce + "\n Direction : " + _knockBackDirection);
             }

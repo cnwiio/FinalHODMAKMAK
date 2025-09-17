@@ -110,8 +110,8 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
 
 
-            //_player = new Player(_playerTexture, new Vector2(802, 2603));
-            _player = new Player(_playerTexture, new Vector2(0, 2603));
+            _player = new Player(_playerTexture, new Vector2(802, 2603));
+            //_player = new Player(_playerTexture, new Vector2(2600, 2603));
 
             // **Set world references for collision / pickups**
             _player.SetWorldReferences(_collision, _collisionComponent);
@@ -270,6 +270,8 @@ namespace game
                 if (obj.Name == "Range")
                     _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.light));
             }
+            //_monster.Add(new MonsterRange(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
+            //_monster.Add(new MonsterMelee(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
             {
                 monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
