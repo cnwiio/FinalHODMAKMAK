@@ -240,7 +240,7 @@ namespace game
                 direction.Normalize();
             if (Speed == 0) Speed = 1f;
             Vector2 movement = direction * Speed * deltaTime;
-            Position += movement;
+            DesiredPosition = Position + movement;
             animation.SetAnimation("Walk", GetDirection(-direction));
         }
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
