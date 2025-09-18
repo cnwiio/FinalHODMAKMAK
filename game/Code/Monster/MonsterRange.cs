@@ -91,7 +91,7 @@ namespace game
                     if (!IsDead)
                     {
                         _HP = 0;
-                        _hitTimer += 2f;
+                        _hitTimer += 5f;
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                     }
                 }
@@ -140,7 +140,7 @@ namespace game
                 speed,
                 sreachRadius,
                 new MonsterHurtbox(
-                    animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, Vector2.One)),
+                    animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, Vector2.One * 0.85f)),
                 this), 
                 new MonsterCollision(
                     new RectangleF(0, 0, 50, 30),
@@ -175,6 +175,8 @@ namespace game
             var col = Collision as MonsterCollision;
             TargetPos = targetPosition;
             float deltaTime = gameTime.GetElapsedSeconds();
+            if (DesiredPosition != Vector2.Zero)
+                Position = DesiredPosition;
 
             if (animation != null)
             {
@@ -184,9 +186,9 @@ namespace game
                     CurrentState.Update(this, deltaTime);
                 }
                 DeleteHitBox(deltaTime);
-                hurtBox.Update(Position);
-                col.Update(Position);
                 UpdateHitTimer(deltaTime);
+                hurtBox.Update(Position);
+                col.Update(DesiredPosition);
 
                 if (BulletVisible)
                 {
@@ -225,6 +227,12 @@ namespace game
                     {
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
+                    // UI เลือด
+                    var scale = new Vector2(0.1f, 0.2f);
+                    var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
+                    var offset = new Vector2(HealthUI.Width * 0.1f / 2, Height / 1.5f);
+                    spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, 0, HealthUI.Width, HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                    spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * percent), HealthUI.Height / 2), Color.Red, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
                 }
             }
             if (BulletVisible)
@@ -238,7 +246,7 @@ namespace game
                 direction.Normalize();
             if (Speed == 0) Speed = 1f;
             Vector2 movement = direction * Speed * deltaTime;
-            Position += movement;
+            DesiredPosition = Position + movement;
             animation.SetAnimation("Walk", GetDirection(-direction));
         }
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
@@ -311,7 +319,7 @@ namespace game
             }
             if (animation.CurrentSpriteSheet == "Charge" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
-                ApplyKnockback(DashForce);
+                ApplyKnockback(DashForce, -_placeHolderDirection);
                 CreateHitbox(_collisions, _collisionComponents);
                 animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
@@ -325,6 +333,8 @@ namespace game
             _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
             animation = null;
+            HealthUI = null;
+            bullet = null;
         }
         public override void Attack()
         {

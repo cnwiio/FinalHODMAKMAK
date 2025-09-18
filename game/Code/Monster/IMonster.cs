@@ -10,6 +10,7 @@ namespace game
     public interface IMonster
     {
         Vector2 Position { get; set; }
+        Vector2 DesiredPosition { get; set; }
         Vector2 TargetPos { get; set; }
         Vector2 SpawnPosition { get; set; }
         Vector2 DirectionToPlayer { get; set; }

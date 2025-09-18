@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
@@ -39,17 +40,39 @@ namespace game
             var returnState = Monster.CurrentState is ReturnState;
             if (!returnState)
             {
-                if (collisionInfo.Other is MonsterCollision friend)
+                if (collisionInfo.Other is Wall wall)
                 {
-                    if (!Monster.isHit && !(friend.Monster.CurrentState is ReturnState))
+                    var direction = collisionInfo.PenetrationVector;
+                    direction.Normalize();
+                    var rect = (RectangleF)wall.Bounds;
+                    var pos = Monster.DesiredPosition;
+                    var col = (RectangleF)Bounds;
+                    if (direction.Y > 0) // colide from Top
                     {
-                        Monster.Position -= collisionInfo.PenetrationVector;
+                        pos = new Vector2(pos.X, rect.Top - Monster.Height / 2);
                     }
+                    if (direction.Y < 0) // colide from Bottom
+                    {
+                        pos = new Vector2(pos.X, rect.Bottom - Monster.Height / 2 + col.Height);
+                    }
+                    if (direction.X < 0) // colide from Right
+                    {
+                        pos = new Vector2(rect.Right + col.Width /2 , pos.Y);
+                    }
+                    if (direction.X > 0) // colide from Left
+                    {
+                        pos = new Vector2(rect.Left - col.Width /2 , pos.Y);
+                    }
+                    Monster.DesiredPosition = pos;
+                    //Debug.WriteLine("Snaped = " + Monster.DesiredPosition);
                 }
-                if (collisionInfo.Other is Wall)
-                {
-                    Monster.Position -= collisionInfo.PenetrationVector;
-                }
+                //if (collisionInfo.Other is MonsterCollision friend)
+                //{
+                //    if (!Monster.isHit && !(friend.Monster.CurrentState is ReturnState))
+                //    {
+                //        Monster.DesiredPosition -= collisionInfo.PenetrationVector;
+                //    }
+                //}
             }
         }
     }

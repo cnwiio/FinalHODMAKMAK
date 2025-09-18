@@ -98,17 +98,39 @@ namespace game
 
         public void DrawMap(OrthographicCamera camera)
         {
+            // เก็บค่าเก่า
             BlendState previousBlendState = game.GraphicsDevice.BlendState;
+            SamplerState previousSamplerState = game.GraphicsDevice.SamplerStates[0];
+
+            // เปลี่ยนค่า
             game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            game.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+
+            // วาดแมพ
             TiledMapRenderer.Draw(camera.GetViewMatrix());
+
+            // คืนค่า
+            game.GraphicsDevice.BlendState = previousBlendState;
+            game.GraphicsDevice.SamplerStates[0] = previousSamplerState;
         }
 
 
         public void DrawMap(OrthographicCamera camera, int layerIndex)
         {
+            // เก็บค่าเก่า
             BlendState previousBlendState = game.GraphicsDevice.BlendState;
+            SamplerState previousSamplerState = game.GraphicsDevice.SamplerStates[0];
+
+            // เปลี่ยนค่า
             game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-            TiledMapRenderer.Draw(layerIndex ,camera.GetViewMatrix());
+            game.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+            
+            // วาดแมพ
+            TiledMapRenderer.Draw(layerIndex , camera.GetViewMatrix());
+
+            // คืนค่า
+            game.GraphicsDevice.BlendState = previousBlendState;
+            game.GraphicsDevice.SamplerStates[0] = previousSamplerState;
         }
 
 

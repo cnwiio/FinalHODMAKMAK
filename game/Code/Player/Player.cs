@@ -116,7 +116,7 @@ namespace game
 
             foreach (var target in attackTargets.OfType<MonsterHurtbox>())
             {
-                if (!target.Monster.isHit && playerAttack.Bounds.Intersects(target.Bounds))
+                if (!target.Monster.isHit && playerAttack.Bounds.Intersects(target.Bounds) && target.Monster.HP > 0)
                 {
                     target.Monster.HP -= _stats.AttackDamage.Value;
                     target.Monster.isHit = true;

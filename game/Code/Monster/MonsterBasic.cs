@@ -24,6 +24,7 @@ namespace game
         // ----------------------------------
         public Vector2 Origin { get; set; }
         public Vector2 Position { get; set; }
+        public Vector2 DesiredPosition { get; set; }
         public Vector2 TargetPos { get; set; }
         public Vector2 SpawnPosition { get; set; }
         public Vector2 DirectionToPlayer { get; set; }
@@ -39,6 +40,7 @@ namespace game
         public IEntity Collision { get; set; }
         public PreventMonster PreventMonster;
         public AnimController animation {  get; set; }
+        protected Texture2D HealthUI {  get; set; }
         public IMonsterState CurrentState { get; set; } = new IdleState();
         public Element ElementType { get; set; }
         protected Player _player { get; set; }
@@ -69,7 +71,7 @@ namespace game
                     ShakeViewport = true;
                     _hitTimer = 1f;
                     _deadTimer = 1.2f;
-                    //ApplyDamage();
+                    ApplyDamage(50);
                     ApplyKnockback(250f);
                     _particle.Trigger(Position, -DirectionToPlayer);
                 }
@@ -105,6 +107,10 @@ namespace game
                 animation = new AnimController(position);
             }
             animation.LoadFrame(content, spriteSheetName, textureName, width, height);
+        } 
+        public void LoadUI(ContentManager content, string name)
+        {
+            HealthUI = content.Load<Texture2D>("Texture/" + name);
         }
         /*
          IMPORTANT NOTE: Need to change in future
@@ -116,7 +122,7 @@ namespace game
             direction.Normalize();
             if (Speed == 0) Speed = 1f;
             Vector2 movement = direction * Speed * deltaTime;
-            Position += movement;
+            DesiredPosition = Position + movement;
             animation.SetAnimation("Walk", GetDirection(direction));
         }
 
@@ -160,7 +166,7 @@ namespace game
             {
                 _knockBackTimer -= deltaTime;
                 _knockBackForce *= MathF.Pow(0.1f, deltaTime);
-                Position += _knockBackDirection * _knockBackForce * deltaTime;
+                DesiredPosition += _knockBackDirection * _knockBackForce * deltaTime;
                 //Debug.WriteLine($"Knockback Force:" + _knockBackDirection * _knockBackForce * deltaTime
                 //    + "\n DeltaTime : " + deltaTime + "\n Force : " + _knockBackForce + "\n Direction : " + _knockBackDirection);
             }
@@ -223,16 +229,16 @@ namespace game
         }
         public void DropHeal(List<IEntity> entities, CollisionComponent collisionComponent, Texture2D texture, Player player)
         {
-            Random r = new Random();
-            if (r.Next(1, 101) <= 75) // Percentage, Ex: 75 mean 75%
-            {
-                entities.Add(new HealPickup(
-                                animation.Position,
-                                texture,
-                                player
-                            )); // Add drops
-                collisionComponent.Insert(entities.Last());
-            }
+            //Random r = new Random();
+            //if (r.Next(1, 101) <= 75) // Percentage, Ex: 75 mean 75%
+            //{
+            //    entities.Add(new HealPickup(
+            //                    animation.Position,
+            //                    texture,
+            //                    player
+            //                )); // Add drops
+            //    collisionComponent.Insert(entities.Last());
+            //}
         }
         public void Return(float deltaTime)
         {
