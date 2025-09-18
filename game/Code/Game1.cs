@@ -35,9 +35,9 @@ namespace game
             screenManager = new ScreenManager();
             Components.Add(screenManager);
 
-            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, 64 * 70, 64 * 50));
             MapWidth = 64 * 70;
             MapHeight = 64 * 50;
+            CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
         }
 
         protected override void Initialize()
@@ -47,6 +47,7 @@ namespace game
 
             _graphics.PreferredBackBufferWidth = ScreenWidth;
             _graphics.PreferredBackBufferHeight = ScreenHeight;
+            //_graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
                 
             base.Initialize();

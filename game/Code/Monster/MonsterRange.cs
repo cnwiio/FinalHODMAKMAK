@@ -333,6 +333,8 @@ namespace game
             _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
             animation = null;
+            HealthUI = null;
+            bullet = null;
         }
         public override void Attack()
         {

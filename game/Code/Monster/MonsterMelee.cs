@@ -325,6 +325,7 @@ namespace game
             _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
             animation = null;
+            HealthUI = null;
         }
         public override void ChangeState(IMonsterState newState)
         {

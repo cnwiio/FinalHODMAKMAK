@@ -122,10 +122,9 @@ namespace game
             _preventMonster = new PreventMonster(new Vector2(400, 400), 350f);
             _collision.Add(_preventMonster);
 
-
-
             // Monster
             LoadMonster();
+
             // Fill attack targets list
             _attackTargets.Clear();
             foreach (var monster in _monster)
@@ -152,7 +151,7 @@ namespace game
             {
                 isDebug = !isDebug;
             }
-            if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
+            if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
                 _screenManager.LoadScreen(new SceneMenu(game1));
             }
