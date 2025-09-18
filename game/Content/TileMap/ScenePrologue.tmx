@@ -532,14 +532,14 @@
   <object id="469" name="Tree4" type="Tree4" gid="249" x="2048" y="2112" width="192" height="256"/>
   <object id="470" name="Tree1" type="Tree1" gid="247" x="1152" y="1920" width="192" height="256"/>
  </objectgroup>
- <objectgroup id="23" name="SpawnPoint" visible="0">
+ <objectgroup id="23" name="SpawnPoint">
   <object id="255" name="Range" type="Light" x="2665.33" y="1566.67">
    <point/>
   </object>
-  <object id="256" name="Melee" type="Light" x="2814" y="1491.33">
+  <object id="256" name="Melee" type="Dark" x="2814" y="1491.33">
    <point/>
   </object>
-  <object id="257" name="Melee" type="Class" x="2849" y="1653">
+  <object id="257" name="Melee" type="Light" x="2849" y="1653">
    <point/>
   </object>
   <object id="258" name="Range" type="Light" x="2570" y="1477.33">

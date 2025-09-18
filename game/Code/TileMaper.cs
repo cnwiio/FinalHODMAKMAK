@@ -101,6 +101,7 @@ namespace game
             BlendState previousBlendState = game.GraphicsDevice.BlendState;
             game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
             TiledMapRenderer.Draw(camera.GetViewMatrix());
+            game.GraphicsDevice.BlendState = previousBlendState;
         }
 
 
@@ -109,6 +110,7 @@ namespace game
             BlendState previousBlendState = game.GraphicsDevice.BlendState;
             game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
             TiledMapRenderer.Draw(layerIndex ,camera.GetViewMatrix());
+            game.GraphicsDevice.BlendState = previousBlendState;
         }
 
 
