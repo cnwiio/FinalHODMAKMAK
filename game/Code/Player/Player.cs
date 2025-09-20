@@ -82,7 +82,9 @@ namespace game
             else
             {
                 _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
-                if (_movement.Direction != Vector2.Zero) _lastDirection = _movement.Direction;
+
+                if (_movement.Direction != Vector2.Zero)
+                    _lastDirection = SnapDirection(_movement.Direction);
 
                 attackTargets?.OfType<MonsterHurtbox>().ToList().ForEach(m => m.Monster.isHit = false);
             }
@@ -101,21 +103,36 @@ namespace game
             _attackPosition = _movement.Position;
             _animation.TriggerAttack();
 
-            Vector2 attackDir = _movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection;
+            Vector2 attackDir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
-            // Snap to 4 directions, horizontal priority
-            if (Math.Abs(attackDir.X) >= Math.Abs(attackDir.Y))
-                attackDir = new Vector2(Math.Sign(attackDir.X), 0); // left or right
-            else
-                attackDir = new Vector2(0, Math.Sign(attackDir.Y)); // up or down
+            // Default size values (tweak these!)
+            float horizontalWidth = 70f;   // narrower
+            float horizontalHeight = 110f;  // taller
+            float verticalWidth = 110f;     // wider
+            float verticalHeight = 70f;    // shorter
 
+            SizeF hitboxSize;
+            if (attackDir.X != 0) // Left or Right
+                hitboxSize = new SizeF(horizontalWidth, horizontalHeight);
+            else                  // Up or Down
+                hitboxSize = new SizeF(verticalWidth, verticalHeight);
+
+            // Position the hitbox so it extends in the attack direction
             _attackHitbox = new RectangleF(
-                _attackPosition + attackDir * _attackRange - new Vector2(_attackRange / 2),
-                new SizeF(_attackRange, _attackRange)
+                _attackPosition + attackDir * _attackRange - new Vector2(hitboxSize.Width / 2, hitboxSize.Height / 2),
+                hitboxSize
             );
         }
 
 
+        private Vector2 SnapDirection(Vector2 dir)
+        {
+            if (dir == Vector2.Zero) return _lastDirection;
+
+            return Math.Abs(dir.X) >= Math.Abs(dir.Y)
+                ? new Vector2(Math.Sign(dir.X), 0)   // Left or Right
+                : new Vector2(0, Math.Sign(dir.Y)); // Up or Down
+        }
 
         private void CheckAttackHit(List<IEntity> attackTargets)
         {
