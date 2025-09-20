@@ -36,7 +36,7 @@ namespace game
             Components.Add(screenManager);
 
             MapWidth = 64 * 70;
-            MapHeight = 64 * 50;
+            MapHeight = 64 * 70;
             CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
         }
 

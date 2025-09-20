@@ -111,7 +111,16 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
 
 
-            _player = new Player(_playerTexture, new Vector2(802, 2603));
+            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+            foreach (var obj in spawnPoint.Objects)
+            {
+                if (obj.Name == "Player")
+                {
+                    _player = new Player(_playerTexture, new Vector2(obj.Position.X, obj.Position.Y));
+                    break;
+                }
+            }
+                //_player = new Player(_playerTexture, new Vector2(802, 2603));
             //_player = new Player(_playerTexture, new Vector2(2600, 2603));
 
             // **Set world references for collision / pickups**
@@ -255,6 +264,7 @@ namespace game
             }
             _collision.Clear();
             _monster.Clear();
+            //particle.Dispose();
             //Content.Unload();
 
             base.UnloadContent();

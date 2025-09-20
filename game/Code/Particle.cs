@@ -29,6 +29,7 @@ namespace game
         public Range<float> Speed;
         public Particle(Game game)
         {
+
             particleTexture = new Texture2D(game.GraphicsDevice, 1, 1); // particle size(Ex. GraphicsDevice, 1, 1) mean 1x1 square pixel) 
             particleTexture.SetData(new[] { Color.White }); // color
 
@@ -94,8 +95,8 @@ namespace game
                                 }
                             },
                             //new OpacityFastFadeModifier(),
+                            //new LinearGravityModifier {Direction = -Vector2.UnitX, Strength = 30f},
                             new RotationModifier {RotationRate = -2.1f},
-                            new LinearGravityModifier {Direction = -Vector2.UnitX, Strength = 30f},
                         },
                         AutoTrigger = false
                     }

@@ -47,6 +47,7 @@ namespace game
         void Reset();
         string GetDirection(Vector2 direction);
         void UnLoad();
+        void ApplyDamage(int value);
     }
 }
 

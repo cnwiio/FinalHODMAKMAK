@@ -254,6 +254,23 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Player_Walk.png
 
+#begin TileMap/Bridge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Bridge.png
+
+#begin TileMap/Bridge.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Bridge.tsx
+
 #begin TileMap/Cliff_Tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -304,6 +321,23 @@
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Nature_asset_1.tsx
+
+#begin TileMap/Path_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Path_1.png
+
+#begin TileMap/Path_1.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Path_1.tsx
 
 #begin TileMap/ScenePrologue.tmx
 /importer:TiledMapImporter
