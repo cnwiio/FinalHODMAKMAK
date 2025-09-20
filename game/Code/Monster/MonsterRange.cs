@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -75,6 +76,7 @@ namespace game
         // -------------Property-------------
         public float BulletSpeed { get; set; } = 350;
         public float SortY {  get => Position.Y + Height / 2; }
+        public float SortX {  get => Position.X; }
         // ----------------------------------
         public Texture2D bullet { get; set; }
         // ----------------Bool----------------
@@ -92,6 +94,7 @@ namespace game
                     {
                         _HP = 0;
                         _hitTimer += 5f;
+                        _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                     }
                 }
@@ -99,13 +102,14 @@ namespace game
         }
 
 
-        public MonsterRange(Vector2 position, PreventMonster preventMonster, Player player, Particle particle, Element element)
+        public MonsterRange(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, Element element)
         {
             Position = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;
-            _particle = particle;
+            _hitParticle = particle;
+            _deadParticle = deadParticle;
             ElementType = element;
         }
         public void loadBullet(ContentManager content, string textureName)

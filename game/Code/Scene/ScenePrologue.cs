@@ -38,7 +38,8 @@ namespace game
         private GlobalCamera camera;
         private OrthographicCamera _camera;
         // Particle
-        private Particle particle;
+        private HitParticle hitParticle;
+        private DeadParticle deadParticle;
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
@@ -71,11 +72,12 @@ namespace game
             // Camera setup
             camera = game1.camera;
             _camera = camera.Cam;
+            // Particle
+            hitParticle = new HitParticle(game1);
+            deadParticle = new DeadParticle(game1);
             //Tile Map
             _tileMaper.LoadMap(Content, "ScenePrologue");
             _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
-            // Particle
-            particle = new Particle(game1);
             // Game Object
             var objectLayer = _tileMaper.GetObjectLayer("Object");
             foreach (var item in objectLayer.Objects)
@@ -176,11 +178,22 @@ namespace game
             camera.AdjustZoom();
             //Debug.WriteLine(_camera.Zoom);
             // Particle
-            particle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            hitParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            deadParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             // Monster
             UpdateMonster(gameTime);
             // Ysort
-            _ysort.Sort((a, b) => a.SortY.CompareTo(b.SortY));
+            //_ysort.Sort((a, b) => a.SortY.CompareTo(b.SortY));
+            _ysort.Sort((a, b) => 
+            {
+                // เปรียบเทียบ SortY ก่อน
+                int yComparison = a.SortY.CompareTo(b.SortY);
+                if (yComparison != 0)
+                    return yComparison;
+
+                // ถ้า SortY เท่ากัน ใช้ Position.X เป็นเงื่อนไขรอง
+                return b.SortX.CompareTo(a.SortX);
+            });
             // Collision
             _collisionComponent.Update(gameTime);
             _tileMaper.UpdateMap(gameTime);
@@ -242,7 +255,8 @@ namespace game
                 }
             }
             // Particle
-            particle.Draw(_spriteBatch);
+            hitParticle.Draw(_spriteBatch);
+            deadParticle.Draw(_spriteBatch);
             _spriteBatch.End();
         }
 
@@ -279,22 +293,22 @@ namespace game
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle, Element.light)); 
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.light)); 
                     } 
                     else
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle, Element.dark));
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.dark));
                     }
                 }
                 if (obj.Name == "Range")
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.light)); 
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.light)); 
                     }
                     else
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.dark));
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.dark));
                     }
                 }
             }

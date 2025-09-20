@@ -44,7 +44,8 @@ namespace game
         public IMonsterState CurrentState { get; set; } = new IdleState();
         public Element ElementType { get; set; }
         protected Player _player { get; set; }
-        protected Particle _particle;
+        protected HitParticle _hitParticle;
+        protected DeadParticle _deadParticle;
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -73,7 +74,10 @@ namespace game
                     _deadTimer = 1.2f;
                     ApplyDamage(50);
                     ApplyKnockback(250f);
-                    _particle.Trigger(Position, -DirectionToPlayer);
+                    if (HP > 0)
+                    {
+                        _hitParticle.Trigger(Position, -DirectionToPlayer);
+                    }
                 }
             }
         }

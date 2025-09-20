@@ -31,6 +31,7 @@ namespace game
 
         public PlayerStats Stats => _stats;
         public float SortY => _movement.Position.Y + 48;
+        public float SortX => _movement.Position.X;
 
         public Player(AnimController texture, Vector2 startPosition)
         {
