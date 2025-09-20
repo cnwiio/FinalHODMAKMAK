@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -42,8 +43,8 @@ namespace game
             Hurtbox = new PlayerHurtbox(this, 64, 96);
 
             // Manual collision size and offset
-            Vector2 collisionSize = new Vector2(40, 16); // width, height
-            Vector2 collisionOffset = new Vector2(-20, 40); // offset from top-left of sprite
+            Vector2 collisionSize = new Vector2(40, 21); // width, height
+            Vector2 collisionOffset = new Vector2(-20, 35); // offset from top-left of sprite
             Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
         }
 
@@ -101,13 +102,20 @@ namespace game
             _animation.TriggerAttack();
 
             Vector2 attackDir = _movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection;
-            if (attackDir != Vector2.Zero) attackDir.Normalize();
+
+            // Snap to 4 directions, horizontal priority
+            if (Math.Abs(attackDir.X) >= Math.Abs(attackDir.Y))
+                attackDir = new Vector2(Math.Sign(attackDir.X), 0); // left or right
+            else
+                attackDir = new Vector2(0, Math.Sign(attackDir.Y)); // up or down
 
             _attackHitbox = new RectangleF(
                 _attackPosition + attackDir * _attackRange - new Vector2(_attackRange / 2),
                 new SizeF(_attackRange, _attackRange)
             );
         }
+
+
 
         private void CheckAttackHit(List<IEntity> attackTargets)
         {
