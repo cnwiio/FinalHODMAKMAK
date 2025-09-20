@@ -28,6 +28,7 @@ namespace game
         public PlayerCollisionBox Collision { get; private set; }
 
         private List<IEntity> _entities;
+        private List<PlayerAttackHitbox> _activeHitboxes = new List<PlayerAttackHitbox>();
         private CollisionComponent _collisionComponent;
 
         public PlayerStats Stats => _stats;
@@ -93,6 +94,9 @@ namespace game
                 attackTargets?.OfType<MonsterHurtbox>().ToList().ForEach(m => m.Monster.isHit = false);
             }
 
+            foreach (var hitbox in _activeHitboxes.ToList())
+                hitbox.Update(gameTime);
+
             Hurtbox.Update();
             Collision.Update();
 
@@ -109,23 +113,31 @@ namespace game
 
             Vector2 attackDir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
-            // rectangle shape logic as before
-            SizeF hitboxSize = (attackDir.X != 0)
-                ? new SizeF(70, 110)
-                : new SizeF(110, 70);
+            // Hitbox size
+            float horizontalWidth = 70f;
+            float horizontalHeight = 110f;
+            float verticalWidth = 110f;
+            float verticalHeight = 70f;
 
-            _attackHitbox = new RectangleF(
+            SizeF hitboxSize = attackDir.X != 0
+                ? new SizeF(horizontalWidth, horizontalHeight)
+                : new SizeF(verticalWidth, verticalHeight);
+
+            RectangleF attackBounds = new RectangleF(
                 _attackPosition + attackDir * _attackRange - new Vector2(hitboxSize.Width / 2, hitboxSize.Height / 2),
                 hitboxSize
             );
 
-            // Insert into collision system
-            var attackEntity = new PlayerAttackHitbox(this, _attackHitbox);
-            _entities.Add(attackEntity);
-            _collisionComponent?.Insert(attackEntity);
+            var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent);
+            _activeHitboxes.Add(attackEntity);
+            if (_entities != null) _entities.Add(attackEntity); // insert to entities list for update/draw
         }
 
 
+        public void RemoveAttackHitbox(PlayerAttackHitbox hitbox)
+        {
+            _activeHitboxes.Remove(hitbox);
+        }
 
         private Vector2 SnapDirection(Vector2 dir)
         {
@@ -156,9 +168,13 @@ namespace game
         {
             _animation.Draw(spriteBatch);
 
-            if (_isAttacking) spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2);
+            // Draw active attack hitboxes (for debugging)
+            foreach (var hitbox in _activeHitboxes)
+                hitbox.Draw(spriteBatch);
+
             Hurtbox.Draw(spriteBatch);
             Collision.Draw(spriteBatch); // Yellow debug box
         }
+
     }
 }
