@@ -360,7 +360,12 @@ namespace game
                 }
                 else if (monster.ElementType == Element.dark)
                 {
-                    // ค่อยใส่
+                    monster.loadBullet(Content, "Health");
+                    monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Attack", "DarkRegimogusAttack", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Charge", "DarkRegimogusCharge", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Idle", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
                 }
                 monster.LoadUI(Content, "HealthBar_thumb");
                 monster.CreateAnimation();
