@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace game
 {
-    public class Player : IYsort
+    public partial class Player : IYsort
     {
         private PlayerStats _stats;
         private PlayerInput _input;
@@ -64,6 +64,10 @@ namespace game
         {
             _input.Update(gameTime);
 
+            // Handle Element Toggle
+            if (_input.ElementToggleTriggered)
+                ToggleElement();
+
             if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
 
@@ -105,24 +109,22 @@ namespace game
 
             Vector2 attackDir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
-            // Default size values (tweak these!)
-            float horizontalWidth = 70f;   // narrower
-            float horizontalHeight = 110f;  // taller
-            float verticalWidth = 110f;     // wider
-            float verticalHeight = 70f;    // shorter
+            // rectangle shape logic as before
+            SizeF hitboxSize = (attackDir.X != 0)
+                ? new SizeF(70, 110)
+                : new SizeF(110, 70);
 
-            SizeF hitboxSize;
-            if (attackDir.X != 0) // Left or Right
-                hitboxSize = new SizeF(horizontalWidth, horizontalHeight);
-            else                  // Up or Down
-                hitboxSize = new SizeF(verticalWidth, verticalHeight);
-
-            // Position the hitbox so it extends in the attack direction
             _attackHitbox = new RectangleF(
                 _attackPosition + attackDir * _attackRange - new Vector2(hitboxSize.Width / 2, hitboxSize.Height / 2),
                 hitboxSize
             );
+
+            // Insert into collision system
+            var attackEntity = new PlayerAttackHitbox(this, _attackHitbox);
+            _entities.Add(attackEntity);
+            _collisionComponent?.Insert(attackEntity);
         }
+
 
 
         private Vector2 SnapDirection(Vector2 dir)
