@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 namespace game
 {
-    public class Player : IYsort
+    public partial class Player : IYsort
     {
         private PlayerStats _stats;
         private PlayerInput _input;
@@ -27,6 +28,7 @@ namespace game
         public PlayerCollisionBox Collision { get; private set; }
 
         private List<IEntity> _entities;
+        private List<PlayerAttackHitbox> _activeHitboxes = new List<PlayerAttackHitbox>();
         private CollisionComponent _collisionComponent;
 
         public PlayerStats Stats => _stats;
@@ -43,8 +45,8 @@ namespace game
             Hurtbox = new PlayerHurtbox(this, 64, 96);
 
             // Manual collision size and offset
-            Vector2 collisionSize = new Vector2(40, 16); // width, height
-            Vector2 collisionOffset = new Vector2(-20, 40); // offset from top-left of sprite
+            Vector2 collisionSize = new Vector2(40, 21); // width, height
+            Vector2 collisionOffset = new Vector2(-20, 35); // offset from top-left of sprite
             Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
         }
 
@@ -64,6 +66,10 @@ namespace game
         {
             _input.Update(gameTime);
 
+            // Handle Element Toggle
+            if (_input.ElementToggleTriggered)
+                ToggleElement();
+
             if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
 
@@ -82,10 +88,15 @@ namespace game
             else
             {
                 _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
-                if (_movement.Direction != Vector2.Zero) _lastDirection = _movement.Direction;
+
+                if (_movement.Direction != Vector2.Zero)
+                    _lastDirection = SnapDirection(_movement.Direction);
 
                 attackTargets?.OfType<MonsterHurtbox>().ToList().ForEach(m => m.Monster.isHit = false);
             }
+
+            foreach (var hitbox in _activeHitboxes.ToList())
+                hitbox.Update(gameTime);
 
             Hurtbox.Update();
             Collision.Update();
@@ -101,13 +112,41 @@ namespace game
             _attackPosition = _movement.Position;
             _animation.TriggerAttack();
 
-            Vector2 attackDir = _movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection;
-            if (attackDir != Vector2.Zero) attackDir.Normalize();
+            Vector2 attackDir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
-            _attackHitbox = new RectangleF(
-                _attackPosition + attackDir * _attackRange - new Vector2(_attackRange / 2),
-                new SizeF(_attackRange, _attackRange)
+            // Hitbox size
+            float horizontalWidth = 70f;
+            float horizontalHeight = 110f;
+            float verticalWidth = 110f;
+            float verticalHeight = 70f;
+
+            SizeF hitboxSize = attackDir.X != 0
+                ? new SizeF(horizontalWidth, horizontalHeight)
+                : new SizeF(verticalWidth, verticalHeight);
+
+            RectangleF attackBounds = new RectangleF(
+                _attackPosition + attackDir * _attackRange - new Vector2(hitboxSize.Width / 2, hitboxSize.Height / 2),
+                hitboxSize
             );
+
+            var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent);
+            _activeHitboxes.Add(attackEntity);
+            if (_entities != null) _entities.Add(attackEntity); // insert to entities list for update/draw
+        }
+
+
+        public void RemoveAttackHitbox(PlayerAttackHitbox hitbox)
+        {
+            _activeHitboxes.Remove(hitbox);
+        }
+
+        private Vector2 SnapDirection(Vector2 dir)
+        {
+            if (dir == Vector2.Zero) return _lastDirection;
+
+            return Math.Abs(dir.X) >= Math.Abs(dir.Y)
+                ? new Vector2(Math.Sign(dir.X), 0)   // Left or Right
+                : new Vector2(0, Math.Sign(dir.Y)); // Up or Down
         }
 
         private void CheckAttackHit(List<IEntity> attackTargets)
@@ -130,9 +169,13 @@ namespace game
         {
             _animation.Draw(spriteBatch);
 
-            if (_isAttacking) spriteBatch.DrawRectangle(_attackHitbox, Color.Red, 2);
+            // Draw active attack hitboxes (for debugging)
+            foreach (var hitbox in _activeHitboxes)
+                hitbox.Draw(spriteBatch);
+
             Hurtbox.Draw(spriteBatch);
             Collision.Draw(spriteBatch); // Yellow debug box
         }
+
     }
 }
