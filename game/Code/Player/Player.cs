@@ -77,7 +77,7 @@ namespace game
             {
                 _attackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _movement.SetPosition(_attackPosition);
-                CheckAttackHit(attackTargets);
+                //CheckAttackHit(attackTargets); // ไม่ต้องเช็คเองแล้ว เพราะไปใช้ของ Extended
 
                 if (_attackTimer <= 0f)
                 {
@@ -92,7 +92,7 @@ namespace game
                 if (_movement.Direction != Vector2.Zero)
                     _lastDirection = SnapDirection(_movement.Direction);
 
-                attackTargets?.OfType<MonsterHurtbox>().ToList().ForEach(m => m.Monster.isHit = false);
+                //attackTargets?.OfType<MonsterHurtbox>().ToList().ForEach(m => m.Monster.isHit = false); // ไม่ต้องใช้แล้ว
             }
 
             foreach (var hitbox in _activeHitboxes.ToList())
@@ -129,15 +129,23 @@ namespace game
                 hitboxSize
             );
 
-            var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent);
+            var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent); 
+            // ให้เพิ่มเข้า List แค่ตรงนี้ เพราะจะได้เรียกแค่ที่เดียว
             _activeHitboxes.Add(attackEntity);
-            if (_entities != null) _entities.Add(attackEntity); // insert to entities list for update/draw
+            if (_entities != null)
+            {
+                _entities.Add(attackEntity); // insert to entities list for update/draw
+                _collisionComponent.Insert(attackEntity);
+            }
         }
 
 
         public void RemoveAttackHitbox(PlayerAttackHitbox hitbox)
         {
+            // ให้มันลบตรงนี้ที่เดียว จะได้ไม่ต้องไปปรับที่อื่น
             _activeHitboxes.Remove(hitbox);
+            _entities.Remove(hitbox);
+            _collisionComponent.Remove(hitbox);
         }
 
         private Vector2 SnapDirection(Vector2 dir)

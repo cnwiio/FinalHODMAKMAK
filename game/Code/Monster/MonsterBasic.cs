@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -42,7 +43,7 @@ namespace game
         public AnimController animation {  get; set; }
         protected Texture2D HealthUI {  get; set; }
         public IMonsterState CurrentState { get; set; } = new IdleState();
-        public Element ElementType { get; set; }
+        public ElementType ElementType { get; set; }
         protected Player _player { get; set; }
         protected HitParticle _hitParticle;
         protected DeadParticle _deadParticle;
@@ -72,7 +73,7 @@ namespace game
                     ShakeViewport = true;
                     _hitTimer = 1f;
                     _deadTimer = 1.2f;
-                    ApplyDamage(50);
+                    //ApplyDamage(50);
                     ApplyKnockback(250f);
                     if (HP > 0)
                     {
@@ -261,9 +262,18 @@ namespace game
         }
         public void ApplyDamage(int Value)
         {
-            //var Damage = _player.Stats.AttackDamage.Value;
+            if (_player.CurrentElement == ElementType)
+            {
+                Value /= 2; // ลดลง 50%
+                //Debug.WriteLine("same element");
+            }
+            else
+            {
+                Value *= 2; 
+                //Debug.WriteLine("dif element");
+            }
             HP -= Value;
-            //Debug.WriteLine(Damage);
+            Debug.WriteLine("Damge : " + Value);
         }
         public virtual void ChangeState(IMonsterState newState) { }
         public virtual void Attack() { }

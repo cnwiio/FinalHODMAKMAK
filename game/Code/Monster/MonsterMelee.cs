@@ -95,7 +95,7 @@ namespace game
                 }
             }
         }
-        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, Element element)
+        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, ElementType element)
         {
             Position = position;
             SpawnPosition = position;

@@ -293,22 +293,22 @@ namespace game
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.light)); 
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light)); 
                     } 
                     else
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.dark));
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
                     }
                 }
                 if (obj.Name == "Range")
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.light)); 
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light)); 
                     }
                     else
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, Element.dark));
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
                     }
                 }
             }
@@ -316,7 +316,7 @@ namespace game
             //_monster.Add(new MonsterMelee(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
             {
-                if (monster.ElementType == Element.light)
+                if (monster.ElementType == ElementType.Light)
                 {
                     monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
@@ -324,7 +324,7 @@ namespace game
                     monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content); 
                 } 
-                else if (monster.ElementType == Element.dark)
+                else if (monster.ElementType == ElementType.Dark)
                 {
                     monster.LoadAnim("Walk", "DarkGoonWalk", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Idle", "DarkGoonIdle", monster.Position, 128, 128, Content);
@@ -349,7 +349,7 @@ namespace game
             }
             foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
             {
-                if (monster.ElementType == Element.light)
+                if (monster.ElementType == ElementType.Light)
                 {
                     monster.loadBullet(Content, "Health");
                     monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
@@ -358,7 +358,7 @@ namespace game
                     monster.LoadAnim("Idle", "LightRegimogusIdle", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Die", "LightRegimogusFuckingDie", monster.Position, 128, 128, Content); 
                 }
-                else if (monster.ElementType == Element.dark)
+                else if (monster.ElementType == ElementType.Dark)
                 {
                     monster.loadBullet(Content, "Health");
                     monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);

@@ -2,13 +2,14 @@
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using System;
+using System.Diagnostics;
 
 namespace game
 {
     public class PlayerAttackHitbox : IEntity
     {
         public IShapeF Bounds { get; private set; }
-        public string LayerName { get; set; } = "PlayerAttack";
+        public string LayerName { get; set; } /*= "PlayerAttack";*/ // ยังไม่มีเลเยอร์นี้ เลยคอมเม้นไว้ก่อน
         private Player _player;
         private float _lifetime;
         private float _elapsed;
@@ -28,17 +29,17 @@ namespace game
         {
             _elapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (!_addedToWorld && _collisionComponent != null)
-            {
-                _collisionComponent.Insert(this);
-                _addedToWorld = true;
-            }
+            //if (!_addedToWorld && _collisionComponent != null)
+            //{
+            //    //_collisionComponent.Insert(this); // ย้ายไปเพิ่มที่ player // ทั้งบรรทัด if ลบทิ้งได้เลย
+            //    _addedToWorld = true;
+            //}
 
             // Lifetime expired → remove from world
             if (_elapsed >= _lifetime && _collisionComponent != null)
             {
-                _collisionComponent.Remove(this);
                 _player.RemoveAttackHitbox(this);
+                //_collisionComponent.Remove(this); // ย้ายไปเพิ่มที่ player
             }
         }
 
@@ -52,13 +53,19 @@ namespace game
         {
             if (collisionInfo.Other is MonsterHurtbox monster)
             {
-                float multiplier = _player.CurrentElement != monster.Monster.Element
-                    ? 2.0f
-                    : 0.5f;
+                if (!monster.Monster.isHit)
+                {
+                    // ย้ายไปเช็คที่มอนแต่ละตัวแทน
+                    //float multiplier = _player.CurrentElement != monster.Monster.ElementType
+                    //    ? 2.0f
+                    //    : 0.5f;
 
-                monster.Monster.HP -= (int)(_player.Stats.AttackDamage.Value * multiplier);
-                monster.Monster.isHit = true;
-                System.Diagnostics.Debug.WriteLine($"Hit monster! HP: {monster.Monster.HP}, Multiplier: {multiplier}");
+                    monster.Monster.isHit = true;
+                    monster.Monster.ApplyDamage(_player.Stats.AttackDamage.Value); // ใส่ดาเมจไปเลยตรงๆ
+                    //System.Diagnostics.Debug.WriteLine($"Hit monster! HP: {monster.Monster.HP}");
+
+                    //monster.Monster.HP -= (int)(_player.Stats.AttackDamage.Value * multiplier); ไม่ใช้แล้ว
+                }
             }
         }
     }
