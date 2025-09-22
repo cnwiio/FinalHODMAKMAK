@@ -195,6 +195,8 @@ namespace game
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
+        private float _percent = 1;
+        private float _percent2;
         public void Draw(SpriteBatch spriteBatch)
         {
 
@@ -225,11 +227,7 @@ namespace game
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
                     // UI เลือด
-                    var scale = new Vector2(0.1f, 0.2f);
-                    var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
-                    var offset = new Vector2(HealthUI.Width * 0.1f / 2, Height / 1.5f);
-                    spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, 0, HealthUI.Width, HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-                    spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * percent), HealthUI.Height / 2), Color.Red, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                    DrawUI(spriteBatch);
                 } 
             }
         }

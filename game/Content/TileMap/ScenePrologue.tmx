@@ -1066,10 +1066,10 @@
   <object id="986" name="Melee" type="Light" x="2602" y="3654">
    <point/>
   </object>
-  <object id="1014" name="Melee" type="Light" x="2268" y="1528">
+  <object id="1014" name="Melee" type="Dark" x="2268" y="1528">
    <point/>
   </object>
-  <object id="1015" name="Range" type="Light" x="1820" y="1568">
+  <object id="1015" name="Range" type="Dark" x="1820" y="1568">
    <point/>
   </object>
   <object id="1016" name="Range" type="Light" x="2820" y="1433.33">

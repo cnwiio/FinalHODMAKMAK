@@ -79,6 +79,7 @@ namespace game
         public float SortX {  get => Position.X; }
         // ----------------------------------
         public Texture2D bullet { get; set; }
+        private FireParticle _fireParticle;
         // ----------------Bool----------------
         public bool BulletVisible = false;
         // ----------------------------------
@@ -102,7 +103,7 @@ namespace game
         }
 
 
-        public MonsterRange(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, ElementType element)
+        public MonsterRange(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, FireParticle fireParticle, ElementType element)
         {
             Position = position;
             SpawnPosition = position;
@@ -110,6 +111,7 @@ namespace game
             _player = player;
             _hitParticle = particle;
             _deadParticle = deadParticle;
+            _fireParticle = fireParticle;
             ElementType = element;
         }
         public void loadBullet(ContentManager content, string textureName)
@@ -232,16 +234,13 @@ namespace game
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
                     // UI เลือด
-                    var scale = new Vector2(0.1f, 0.2f);
-                    var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
-                    var offset = new Vector2(HealthUI.Width * 0.1f / 2, Height / 1.5f);
-                    spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, 0, HealthUI.Width, HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-                    spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * percent), HealthUI.Height / 2), Color.Red, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                    DrawUI(spriteBatch);
                 }
             }
             if (BulletVisible)
             {
-                spriteBatch.Draw(bullet, Hitbox.Bounds.BoundingRectangle.Position, Color.White);
+                var size = new SizeF(bullet.Width, bullet.Height);
+                spriteBatch.Draw(bullet, Hitbox.Bounds.Position - (size * 0.15f), Color.White); // 10 - คูณ hitbox / 2 เช่น 10 - 0.8f / 2
             }
         }
         public void MoveToDirection(float deltaTime, Vector2 direction)
@@ -257,7 +256,7 @@ namespace game
         {
             const float ttl = 2f; // ms
             var bounds = bullet.Bounds;
-            SizeF size = new SizeF(bounds.Width, bounds.Height); // Hitbox size; 
+            SizeF size = new SizeF(bounds.Width, bounds.Height) * 0.7f; // Hitbox size; 
             if (Hitbox == null)
             {
                 Hitbox = new MonsterAttackHitbox(
@@ -304,9 +303,9 @@ namespace game
         }
         public void UpdateHitbox(float deltaTime)
         {
-            if (_placeHolderDirection.LengthSquared() != 0)
-                _placeHolderDirection.Normalize();
             var direction = _placeHolderDirection;
+            if (direction.LengthSquared() != 0)
+                direction.Normalize();
             Hitbox.Bounds.Position += direction * BulletSpeed * deltaTime;
         }
         private Vector2 _placeHolderDirection;
@@ -323,8 +322,19 @@ namespace game
             }
             if (animation.CurrentSpriteSheet == "Charge" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
+                _placeHolderDirection = DirectionToPlayer;
                 ApplyKnockback(DashForce, -_placeHolderDirection);
                 CreateHitbox(_collisions, _collisionComponents);
+
+                if (ElementType == ElementType.Light)
+                {
+                    _fireParticle.Trigger(Position, new Color(255, 248, 174));
+                }
+                else
+                {
+                    _fireParticle.Trigger(Position, new Color(202, 174, 255));
+                }
+
                 animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
 
@@ -345,8 +355,7 @@ namespace game
             if (!isAttack)
             {
                 isAttack = true;
-                _placeHolderDirection = DirectionToPlayer;
-                animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                animation.SetAnimation("Charge", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
         }
         public void UnLoad()

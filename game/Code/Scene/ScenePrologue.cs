@@ -40,6 +40,8 @@ namespace game
         // Particle
         private HitParticle hitParticle;
         private DeadParticle deadParticle;
+        private FireParticle fireParticleLight;
+        private FireParticle fireParticleDark;
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
@@ -75,6 +77,8 @@ namespace game
             // Particle
             hitParticle = new HitParticle(game1);
             deadParticle = new DeadParticle(game1);
+            fireParticleLight = new FireParticle(game1);
+            fireParticleDark = new FireParticle(game1);
             //Tile Map
             _tileMaper.LoadMap(Content, "ScenePrologue");
             _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
@@ -113,17 +117,17 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
 
 
-            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
-            foreach (var obj in spawnPoint.Objects)
-            {
-                if (obj.Name == "Player")
-                {
-                    _player = new Player(_playerTexture, new Vector2(obj.Position.X, obj.Position.Y));
-                    break;
-                }
-            }
-                //_player = new Player(_playerTexture, new Vector2(802, 2603));
-            //_player = new Player(_playerTexture, new Vector2(2600, 2603));
+            //var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+            //foreach (var obj in spawnPoint.Objects)
+            //{
+            //    if (obj.Name == "Player")
+            //    {
+            //        _player = new Player(_playerTexture, new Vector2(obj.Position.X, obj.Position.Y));
+            //        break;
+            //    }
+            //}
+            //_player = new Player(_playerTexture, new Vector2(802, 2603));
+            _player = new Player(_playerTexture, new Vector2(2600, 1603));
 
             // **Set world references for collision / pickups**
             _player.SetWorldReferences(_collision, _collisionComponent);
@@ -180,6 +184,8 @@ namespace game
             // Particle
             hitParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             deadParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            fireParticleLight.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            fireParticleDark.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             // Monster
             UpdateMonster(gameTime);
             // Ysort
@@ -257,6 +263,8 @@ namespace game
             // Particle
             hitParticle.Draw(_spriteBatch);
             deadParticle.Draw(_spriteBatch);
+            fireParticleLight.Draw(_spriteBatch);
+            fireParticleDark.Draw(_spriteBatch);
             _spriteBatch.End();
         }
 
@@ -304,11 +312,11 @@ namespace game
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light)); 
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleLight, ElementType.Light)); 
                     }
                     else
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleDark, ElementType.Dark));
                     }
                 }
             }
@@ -351,7 +359,7 @@ namespace game
             {
                 if (monster.ElementType == ElementType.Light)
                 {
-                    monster.loadBullet(Content, "Health");
+                    monster.loadBullet(Content, "LightBullet");
                     monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Attack", "LightRegimogusAttack", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Charge", "LightRegimogusCharge", monster.Position, 128, 128, Content);
@@ -360,7 +368,7 @@ namespace game
                 }
                 else if (monster.ElementType == ElementType.Dark)
                 {
-                    monster.loadBullet(Content, "Health");
+                    monster.loadBullet(Content, "DarkBullet");
                     monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Attack", "DarkRegimogusAttack", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Charge", "DarkRegimogusCharge", monster.Position, 128, 128, Content);
