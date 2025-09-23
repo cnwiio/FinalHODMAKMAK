@@ -98,6 +98,7 @@ namespace game
         public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, ElementType element)
         {
             Position = position;
+            DesiredPosition = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;

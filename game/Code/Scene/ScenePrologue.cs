@@ -301,7 +301,7 @@ namespace game
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light)); 
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
                     } 
                     else
                     {

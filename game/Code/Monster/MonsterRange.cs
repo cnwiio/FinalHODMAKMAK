@@ -106,6 +106,7 @@ namespace game
         public MonsterRange(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, FireParticle fireParticle, ElementType element)
         {
             Position = position;
+            DesiredPosition = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;
