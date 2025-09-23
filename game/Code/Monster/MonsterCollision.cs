@@ -40,16 +40,6 @@ namespace game
             var returnState = Monster.CurrentState is ReturnState;
             if (!returnState)
             {
-                if (collisionInfo.Other is MonsterCollision friend)
-                {
-                    if (!Monster.isHit && !(friend.Monster.CurrentState is ReturnState))
-                    {
-                        //var direction = collisionInfo.PenetrationVector;
-                        //direction.Normalize();
-                        //Monster.Position -=  Monster.Speed * direction * deltaTime;
-                        Monster.DesiredPosition -= collisionInfo.PenetrationVector;
-                    }
-                }
                 if (collisionInfo.Other is Wall wall)
                 {
                     var direction = collisionInfo.PenetrationVector;
@@ -76,6 +66,13 @@ namespace game
                     Monster.DesiredPosition = pos;
                     //Debug.WriteLine("Snaped = " + Monster.DesiredPosition);
                 }
+                //if (collisionInfo.Other is MonsterCollision friend)
+                //{
+                //    if (!Monster.isHit && !(friend.Monster.CurrentState is ReturnState))
+                //    {
+                //        Monster.DesiredPosition -= collisionInfo.PenetrationVector;
+                //    }
+                //}
             }
         }
     }

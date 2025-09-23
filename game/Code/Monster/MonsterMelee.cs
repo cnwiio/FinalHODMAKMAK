@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,6 +75,7 @@ namespace game
     {
         // -------------Property-------------
         public float SortY { get => Position.Y + Height / 2; }
+        public float SortX { get => Position.X; }
         // ----------------------------------
         public override int HP
         {
@@ -87,18 +89,20 @@ namespace game
                     {
                         _HP = 0;
                         _hitTimer += 5f;
+                        _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                     }
                 }
             }
         }
-        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, Particle particle, Element element)
+        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, ElementType element)
         {
             Position = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;
-            _particle = particle;
+            _hitParticle = particle;
+            _deadParticle = deadParticle;
             ElementType = element;
         }
         /*
@@ -191,6 +195,8 @@ namespace game
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
+        private float _percent = 1;
+        private float _percent2;
         public void Draw(SpriteBatch spriteBatch)
         {
 
@@ -220,7 +226,9 @@ namespace game
                     {
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
-                }
+                    // UI เลือด
+                    DrawUI(spriteBatch);
+                } 
             }
         }
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
@@ -319,6 +327,7 @@ namespace game
             _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
             animation = null;
+            HealthUI = null;
         }
         public override void ChangeState(IMonsterState newState)
         {

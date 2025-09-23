@@ -17,7 +17,7 @@ namespace game
     /*
      IMPORTANT NOTE: Currently a bulit-in particle. Cannot custom a particle
     */
-    public class Particle : IDisposable
+    public class HitParticle : IDisposable
     {
         public ParticleEffect ParticleEffect;
         private Texture2D particleTexture;
@@ -27,8 +27,9 @@ namespace game
         public int Capacity, Quantity;
         public float LifeSpan;
         public Range<float> Speed;
-        public Particle(Game game)
+        public HitParticle(Game game)
         {
+
             particleTexture = new Texture2D(game.GraphicsDevice, 1, 1); // particle size(Ex. GraphicsDevice, 1, 1) mean 1x1 square pixel) 
             particleTexture.SetData(new[] { Color.White }); // color
 
@@ -94,8 +95,8 @@ namespace game
                                 }
                             },
                             //new OpacityFastFadeModifier(),
+                            //new LinearGravityModifier {Direction = -Vector2.UnitX, Strength = 30f},
                             new RotationModifier {RotationRate = -2.1f},
-                            new LinearGravityModifier {Direction = -Vector2.UnitX, Strength = 30f},
                         },
                         AutoTrigger = false
                     }

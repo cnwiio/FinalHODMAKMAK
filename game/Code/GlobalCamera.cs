@@ -38,21 +38,27 @@ namespace game
     {
         public OrthographicCamera Cam;
         public Vector2 Position;
+        private short _cameraWidth;
+        private short _cameraHeight;
         public GlobalCamera(ViewportAdapter viewportAdapter)
         {
             Cam = new OrthographicCamera(viewportAdapter);
+            _cameraWidth = (short)viewportAdapter.VirtualWidth;
+            _cameraHeight = (short)viewportAdapter.VirtualHeight;
             Position = Vector2.Zero;
-            //Cam.ZoomIn(1f);
+            Cam.MaximumZoom = 2f;
+            Cam.MinimumZoom = 1f;
+            Cam.Zoom = 1.5f;
         }
 
         public void Update(Vector2 position)
         {
-            if (position.X > 0 && position.X < 4480)
+            if (position.X > 0 && position.X < 64 * 70 - _cameraWidth)
             {
                 Position.X = position.X;
                 Cam.Position = Position;
             }
-            if (position.Y > 0 && position.Y < 3200)
+            if (position.Y > 0 && position.Y < 64 * 70 - _cameraHeight)
             {
                 Position.Y = position.Y;
                 Cam.Position = Position;
@@ -78,6 +84,10 @@ namespace game
             if (state.IsKeyDown(Keys.V))
             {
                 Cam.ZoomOut(zoomPerTick * 0.1f);
+            }
+            if (state.IsKeyDown(Keys.P))
+            {
+                Cam.Zoom = 1.5f;
             }
         }
 
