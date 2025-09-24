@@ -26,6 +26,18 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Char01.png
 
+#begin Texture/DarkBullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/DarkBullet.png
+
 #begin Texture/DarkGoonAttack.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -86,6 +98,54 @@
 /processorParam:TextureFormat=Color
 /build:Texture/DarkGoonWalk.png
 
+#begin Texture/DarkRegimogusAttack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/DarkRegimogusAttack.png
+
+#begin Texture/DarkRegimogusCharge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/DarkRegimogusCharge.png
+
+#begin Texture/DarkRegimogusFuckingDie.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/DarkRegimogusFuckingDie.png
+
+#begin Texture/DarkRegimogusIdle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/DarkRegimogusIdle.png
+
 #begin Texture/Health.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -109,6 +169,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/HealthBar_thumb.png
+
+#begin Texture/LightBullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/LightBullet.png
 
 #begin Texture/LightGoonAttack.png
 /importer:TextureImporter
@@ -254,6 +326,23 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Player_Walk.png
 
+#begin TileMap/Bridge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Bridge.png
+
+#begin TileMap/Bridge.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Bridge.tsx
+
 #begin TileMap/Cliff_Tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -305,10 +394,49 @@
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Nature_asset_1.tsx
 
+#begin TileMap/Path_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Path_1.png
+
+#begin TileMap/Path_1.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Path_1.tsx
+
+#begin TileMap/SceneHome.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TileMap/SceneHome.tmx
+
 #begin TileMap/ScenePrologue.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TileMap/ScenePrologue.tmx
+
+#begin TileMap/soil.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/soil.png
+
+#begin TileMap/soil.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/soil.tsx
 
 #begin TileMap/Stair_Tileset.png
 /importer:TextureImporter
@@ -403,4 +531,21 @@
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Water_tileset.tsx
+
+#begin TileMap/WaterFall-Sheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/WaterFall-Sheet.png
+
+#begin TileMap/WaterFall-Sheet.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/WaterFall-Sheet.tsx
 

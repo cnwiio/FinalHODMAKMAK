@@ -24,7 +24,7 @@ namespace game
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            if (collisionInfo.Other is Wall && Monster is MonsterRange)
+            if ((collisionInfo.Other is Wall || collisionInfo.Other is PlayerHurtbox) && Monster is MonsterRange)
             {
                 var mon = Monster as MonsterRange;
                 mon.BulletVisible = false;

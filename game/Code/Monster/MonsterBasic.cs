@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -42,9 +43,10 @@ namespace game
         public AnimController animation {  get; set; }
         protected Texture2D HealthUI {  get; set; }
         public IMonsterState CurrentState { get; set; } = new IdleState();
-        public Element ElementType { get; set; }
+        public ElementType ElementType { get; set; }
         protected Player _player { get; set; }
-        protected Particle _particle;
+        protected HitParticle _hitParticle;
+        protected DeadParticle _deadParticle;
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -71,9 +73,12 @@ namespace game
                     ShakeViewport = true;
                     _hitTimer = 1f;
                     _deadTimer = 1.2f;
-                    ApplyDamage(50);
+                    //ApplyDamage(50);
                     ApplyKnockback(250f);
-                    _particle.Trigger(Position, -DirectionToPlayer);
+                    if (HP > 0)
+                    {
+                        _hitParticle.Trigger(Position, -DirectionToPlayer);
+                    }
                 }
             }
         }
@@ -111,6 +116,42 @@ namespace game
         public void LoadUI(ContentManager content, string name)
         {
             HealthUI = content.Load<Texture2D>("Texture/" + name);
+        }
+        private float _HPScale = 1;
+        private float _followUpUI = 1;
+        public void DrawUI(SpriteBatch spriteBatch)
+        {
+            // UI เลือด
+            var scale = new Vector2(0.1f, 0.2f);
+            var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
+            if (_HPScale < percent - 0.05)
+            {
+                _HPScale += 0.025f;
+            }
+            else if (_HPScale > percent + 0.05)
+            {
+                _HPScale -= 0.025f;
+            }
+            else
+            {
+                _HPScale = percent;
+                if (_followUpUI < _HPScale - 0.05)
+                {
+                    _followUpUI += 0.025f;
+                }
+                else if (_followUpUI > _HPScale + 0.05)
+                {
+                    _followUpUI -= 0.025f;
+                }
+                else
+                {
+                    _followUpUI = _HPScale;
+                }
+            }
+            var offset = new Vector2(HealthUI.Width * 0.1f / 2, Height / 1.5f);
+            spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, 0, HealthUI.Width, HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _followUpUI), HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _HPScale), HealthUI.Height / 2), Color.Crimson, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
         }
         /*
          IMPORTANT NOTE: Need to change in future
@@ -257,9 +298,18 @@ namespace game
         }
         public void ApplyDamage(int Value)
         {
-            //var Damage = _player.Stats.AttackDamage.Value;
+            if (_player.CurrentElement == ElementType)
+            {
+                Value /= 2; // ลดลง 50%
+                //Debug.WriteLine("same element");
+            }
+            else
+            {
+                Value *= 2; 
+                //Debug.WriteLine("dif element");
+            }
             HP -= Value;
-            //Debug.WriteLine(Damage);
+            Debug.WriteLine("Damge : " + Value);
         }
         public virtual void ChangeState(IMonsterState newState) { }
         public virtual void Attack() { }

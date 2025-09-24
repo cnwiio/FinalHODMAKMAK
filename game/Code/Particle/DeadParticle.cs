@@ -17,7 +17,7 @@ namespace game
     /*
      IMPORTANT NOTE: Currently a bulit-in particle. Cannot custom a particle
     */
-    public class Particle : IDisposable
+    public class DeadParticle : IDisposable, IParticle
     {
         public ParticleEffect ParticleEffect;
         private Texture2D particleTexture;
@@ -27,7 +27,7 @@ namespace game
         public int Capacity, Quantity;
         public float LifeSpan;
         public Range<float> Speed;
-        public Particle(Game game)
+        public DeadParticle(Game game)
         {
             particleTexture = new Texture2D(game.GraphicsDevice, 1, 1); // particle size(Ex. GraphicsDevice, 1, 1) mean 1x1 square pixel) 
             particleTexture.SetData(new[] { Color.White }); // color
@@ -35,14 +35,14 @@ namespace game
             textureRegion = new Texture2DRegion(particleTexture);
             ParticleEffect = BulitInParticle();
         }
-        public void SetParameter(Vector2 position, int capacity, float lifeSpan, Range<float> speed, int quantity)
-        {
-            Position = position;
-            Capacity = capacity;
-            LifeSpan = lifeSpan;
-            Speed = speed;
-            Quantity = quantity;
-        }
+        //public void SetParameter(Vector2 position, int capacity, float lifeSpan, Range<float> speed, int quantity)
+        //{
+        //    Position = position;
+        //    Capacity = capacity;
+        //    LifeSpan = lifeSpan;
+        //    Speed = speed;
+        //    Quantity = quantity;
+        //}
         public void Update(float deltaTime)
         {
             ParticleEffect.Update(deltaTime);
@@ -56,14 +56,14 @@ namespace game
             particleTexture.Dispose();
             ParticleEffect.Dispose();
         }
-        public void Trigger(Vector2 position,Vector2 direction)
+        public void Trigger(Vector2 position, Vector2 direction, float spread)
         {
             ParticleEffect.Position = position;
 
             if (ParticleEffect.Emitters.Count > 0)
             {
                 var emitter = ParticleEffect.Emitters[0];
-                emitter.Profile = Profile.Spray(direction, 1f); 
+                emitter.Profile = Profile.Spray(direction, (float)Math.PI);
             }
 
             ParticleEffect.Trigger();
@@ -75,12 +75,12 @@ namespace game
                 Position = Vector2.Zero,
                 Emitters = new List<ParticleEmitter>
                 {
-                    new ParticleEmitter(textureRegion, 600, TimeSpan.FromSeconds(0.5), // capacity and life span
-                        Profile.Spray(new Vector2(1,0), 1f)) // direction and spray cone size
+                    new ParticleEmitter(textureRegion, 300, TimeSpan.FromSeconds(1.25), // capacity and life span
+                        Profile.Spray(new Vector2(1,0), 0)) // direction and spray cone size
                     {
                         Parameters = new ParticleReleaseParameters()
                         {
-                            Speed = new Range<float>(450f, 550f),
+                            Speed = new Range<float>(200f, 300),
                             Quantity = 15,
                             Rotation = new Range<float>(-1f, 1f)
                         },
@@ -94,8 +94,8 @@ namespace game
                                 }
                             },
                             //new OpacityFastFadeModifier(),
-                            new RotationModifier {RotationRate = -2.1f},
-                            new LinearGravityModifier {Direction = -Vector2.UnitX, Strength = 30f},
+                            //new RotationModifier {RotationRate = -2.1f},
+                            new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 350f},
                         },
                         AutoTrigger = false
                     }

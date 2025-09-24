@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Reflection.Metadata;
 using Microsoft.Toolkit.HighPerformance;
 using Microsoft.Xna.Framework;
@@ -81,6 +82,11 @@ namespace game
             var collisionLayer = TiledMap.GetLayer<TiledMapObjectLayer>(layerName);
             foreach (var obj in collisionLayer.Objects)
             {
+                if (obj.Name == "Door")
+                {
+                    collisionList.Add(new Door(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height), obj.Type, game));
+                    continue;
+                }
                 collisionList.Add(new Wall(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height)));
             }
             foreach (IEntity obj in collisionList)

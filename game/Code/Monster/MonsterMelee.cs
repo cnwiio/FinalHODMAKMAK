@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,6 +75,7 @@ namespace game
     {
         // -------------Property-------------
         public float SortY { get => Position.Y + Height / 2; }
+        public float SortX { get => Position.X; }
         // ----------------------------------
         public override int HP
         {
@@ -87,18 +89,22 @@ namespace game
                     {
                         _HP = 0;
                         _hitTimer += 5f;
+                        _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
+                        if (_placeHolderDirection == Vector2.Zero) _placeHolderDirection = DirectionToPlayer;
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                     }
                 }
             }
         }
-        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, Particle particle, Element element)
+        public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, ElementType element)
         {
             Position = position;
+            DesiredPosition = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;
-            _particle = particle;
+            _hitParticle = particle;
+            _deadParticle = deadParticle;
             ElementType = element;
         }
         /*
@@ -191,6 +197,8 @@ namespace game
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
+        private float _percent = 1;
+        private float _percent2;
         public void Draw(SpriteBatch spriteBatch)
         {
 
@@ -221,11 +229,7 @@ namespace game
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
                     // UI เลือด
-                    var scale = new Vector2(0.1f, 0.2f);
-                    var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
-                    var offset = new Vector2(HealthUI.Width * 0.1f / 2, Height / 1.5f);
-                    spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, 0, HealthUI.Width, HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-                    spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * percent), HealthUI.Height / 2), Color.Red, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                    DrawUI(spriteBatch);
                 } 
             }
         }

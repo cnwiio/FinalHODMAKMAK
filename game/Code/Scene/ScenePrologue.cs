@@ -20,6 +20,7 @@ namespace game
     {
         // Tile Map
         private TileMaper _tileMaper;
+        private List<IYsort> _ysort = new List<IYsort>();
 
         // Monster
         private List<IMonster> _monster = new List<IMonster>();
@@ -30,6 +31,7 @@ namespace game
         private CollisionComponent _collisionComponent;
         private PreventMonster _preventMonster;
         private List<GameObject> _gameObject = new List<GameObject>();
+
         // Player
         private AnimController _playerTexture;
         private Player _player;
@@ -38,21 +40,21 @@ namespace game
         private GlobalCamera camera;
         private OrthographicCamera _camera;
         // Particle
-        private Particle particle;
+        private HitParticle hitParticle;
+        private DeadParticle deadParticle;
+        private FireParticle fireParticleLight;
+        private FireParticle fireParticleDark;
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
-        private ScreenManager _screenManager;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
-        private List<IYsort> _ysort = new List<IYsort>();
         private bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             game1 = (Game1)Game;
-            _screenManager = game1.screenManager;
 
             // Collision
             _collision = game1.Collision;
@@ -71,11 +73,16 @@ namespace game
             // Camera setup
             camera = game1.camera;
             _camera = camera.Cam;
+
+            // Particle
+            hitParticle = new HitParticle(game1);
+            deadParticle = new DeadParticle(game1);
+            fireParticleLight = new FireParticle(game1);
+            fireParticleDark = new FireParticle(game1);
+
             //Tile Map
             _tileMaper.LoadMap(Content, "ScenePrologue");
             _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
-            // Particle
-            particle = new Particle(game1);
             // Game Object
             var objectLayer = _tileMaper.GetObjectLayer("Object");
             foreach (var item in objectLayer.Objects)
@@ -111,8 +118,17 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
 
 
-            _player = new Player(_playerTexture, new Vector2(802, 2603));
-            //_player = new Player(_playerTexture, new Vector2(2600, 2603));
+            //var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+            //foreach (var obj in spawnPoint.Objects)
+            //{
+            //    if (obj.Name == "Player")
+            //    {
+            //        _player = new Player(_playerTexture, new Vector2(obj.Position.X, obj.Position.Y));
+            //        break;
+            //    }
+            //}
+            //_player = new Player(_playerTexture, new Vector2(802, 2603));
+            _player = new Player(_playerTexture, new Vector2(2600, 1603));
 
             // **Set world references for collision / pickups**
             _player.SetWorldReferences(_collision, _collisionComponent);
@@ -125,12 +141,12 @@ namespace game
             // Monster
             LoadMonster();
 
-            // Fill attack targets list
-            _attackTargets.Clear();
-            foreach (var monster in _monster)
-            {
-                _attackTargets.Add(monster.HurtBox);
-            }
+            // Fill attack targets list ไม่ต้องใช้ละ ลบได้
+            //_attackTargets.Clear();
+            //foreach (var monster in _monster)
+            //{
+            //    _attackTargets.Add(monster.HurtBox);
+            //}
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -153,7 +169,7 @@ namespace game
             }
             if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
-                _screenManager.LoadScreen(new SceneMenu(game1));
+                ScreenManager.LoadScreen(new SceneMenu(game1));
             }
 
             // Player
@@ -166,12 +182,30 @@ namespace game
             camera.Update(_player._movement.Position - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             camera.AdjustZoom();
             //Debug.WriteLine(_camera.Zoom);
+
             // Particle
-            particle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            if (hitParticle != null && deadParticle != null && fireParticleLight != null && fireParticleDark != null)
+            {
+                hitParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                deadParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                fireParticleLight.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                fireParticleDark.Update((float)gameTime.ElapsedGameTime.TotalSeconds); 
+            }
+
             // Monster
             UpdateMonster(gameTime);
             // Ysort
-            _ysort.Sort((a, b) => a.SortY.CompareTo(b.SortY));
+            _ysort.Sort((a, b) => 
+            {
+                // เปรียบเทียบ SortY ก่อน
+                int yComparison = a.SortY.CompareTo(b.SortY);
+                if (yComparison != 0)
+                    return yComparison;
+
+                // ถ้า SortY เท่ากัน ใช้ Position.X เป็นเงื่อนไขรอง
+                return b.SortX.CompareTo(a.SortX);
+            });
+
             // Collision
             _collisionComponent.Update(gameTime);
             _tileMaper.UpdateMap(gameTime);
@@ -233,7 +267,10 @@ namespace game
                 }
             }
             // Particle
-            particle.Draw(_spriteBatch);
+            hitParticle.Draw(_spriteBatch);
+            deadParticle.Draw(_spriteBatch);
+            fireParticleLight.Draw(_spriteBatch);
+            fireParticleDark.Draw(_spriteBatch);
             _spriteBatch.End();
         }
 
@@ -255,6 +292,13 @@ namespace game
             }
             _collision.Clear();
             _monster.Clear();
+            _ysort.Clear();
+            _gameObject.Clear();
+            hitParticle = null;
+            deadParticle = null;
+            fireParticleDark = null;
+            fireParticleLight = null;
+            //particle.Dispose();
             //Content.Unload();
 
             base.UnloadContent();
@@ -269,22 +313,22 @@ namespace game
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle, Element.light)); 
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
                     } 
                     else
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, particle, Element.dark));
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
                     }
                 }
                 if (obj.Name == "Range")
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.light)); 
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleLight, ElementType.Light)); 
                     }
                     else
                     {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, particle, Element.dark));
+                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleDark, ElementType.Dark));
                     }
                 }
             }
@@ -292,7 +336,7 @@ namespace game
             //_monster.Add(new MonsterMelee(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
             {
-                if (monster.ElementType == Element.light)
+                if (monster.ElementType == ElementType.Light)
                 {
                     monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
@@ -300,7 +344,7 @@ namespace game
                     monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content); 
                 } 
-                else if (monster.ElementType == Element.dark)
+                else if (monster.ElementType == ElementType.Dark)
                 {
                     monster.LoadAnim("Walk", "DarkGoonWalk", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Idle", "DarkGoonIdle", monster.Position, 128, 128, Content);
@@ -325,18 +369,23 @@ namespace game
             }
             foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
             {
-                if (monster.ElementType == Element.light)
+                if (monster.ElementType == ElementType.Light)
                 {
-                    monster.loadBullet(Content, "Health");
+                    monster.loadBullet(Content, "LightBullet");
                     monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Attack", "LightRegimogusAttack", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Charge", "LightRegimogusCharge", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Idle", "LightRegimogusIdle", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Die", "LightRegimogusFuckingDie", monster.Position, 128, 128, Content); 
                 }
-                else if (monster.ElementType == Element.dark)
+                else if (monster.ElementType == ElementType.Dark)
                 {
-                    // ค่อยใส่
+                    monster.loadBullet(Content, "DarkBullet");
+                    monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Attack", "DarkRegimogusAttack", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Charge", "DarkRegimogusCharge", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Idle", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+                    monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
                 }
                 monster.LoadUI(Content, "HealthBar_thumb");
                 monster.CreateAnimation();
