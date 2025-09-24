@@ -90,6 +90,7 @@ namespace game
                         _HP = 0;
                         _hitTimer += 5f;
                         _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
+                        if (_placeHolderDirection == Vector2.Zero) _placeHolderDirection = DirectionToPlayer;
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                     }
                 }
@@ -98,6 +99,7 @@ namespace game
         public MonsterMelee(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, ElementType element)
         {
             Position = position;
+            DesiredPosition = position;
             SpawnPosition = position;
             PreventMonster = preventMonster;
             _player = player;

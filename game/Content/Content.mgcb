@@ -411,10 +411,32 @@
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Path_1.tsx
 
+#begin TileMap/SceneHome.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TileMap/SceneHome.tmx
+
 #begin TileMap/ScenePrologue.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TileMap/ScenePrologue.tmx
+
+#begin TileMap/soil.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/soil.png
+
+#begin TileMap/soil.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/soil.tsx
 
 #begin TileMap/Stair_Tileset.png
 /importer:TextureImporter
@@ -509,4 +531,21 @@
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Water_tileset.tsx
+
+#begin TileMap/WaterFall-Sheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/WaterFall-Sheet.png
+
+#begin TileMap/WaterFall-Sheet.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/WaterFall-Sheet.tsx
 

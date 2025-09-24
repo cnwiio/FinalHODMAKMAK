@@ -20,6 +20,7 @@ namespace game
     {
         // Tile Map
         private TileMaper _tileMaper;
+        private List<IYsort> _ysort = new List<IYsort>();
 
         // Monster
         private List<IMonster> _monster = new List<IMonster>();
@@ -30,6 +31,7 @@ namespace game
         private CollisionComponent _collisionComponent;
         private PreventMonster _preventMonster;
         private List<GameObject> _gameObject = new List<GameObject>();
+
         // Player
         private AnimController _playerTexture;
         private Player _player;
@@ -45,17 +47,14 @@ namespace game
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
-        private ScreenManager _screenManager;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
-        private List<IYsort> _ysort = new List<IYsort>();
         private bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             game1 = (Game1)Game;
-            _screenManager = game1.screenManager;
 
             // Collision
             _collision = game1.Collision;
@@ -74,11 +73,13 @@ namespace game
             // Camera setup
             camera = game1.camera;
             _camera = camera.Cam;
+
             // Particle
             hitParticle = new HitParticle(game1);
             deadParticle = new DeadParticle(game1);
             fireParticleLight = new FireParticle(game1);
             fireParticleDark = new FireParticle(game1);
+
             //Tile Map
             _tileMaper.LoadMap(Content, "ScenePrologue");
             _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
@@ -140,12 +141,12 @@ namespace game
             // Monster
             LoadMonster();
 
-            // Fill attack targets list
-            _attackTargets.Clear();
-            foreach (var monster in _monster)
-            {
-                _attackTargets.Add(monster.HurtBox);
-            }
+            // Fill attack targets list ไม่ต้องใช้ละ ลบได้
+            //_attackTargets.Clear();
+            //foreach (var monster in _monster)
+            //{
+            //    _attackTargets.Add(monster.HurtBox);
+            //}
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -168,7 +169,7 @@ namespace game
             }
             if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
-                _screenManager.LoadScreen(new SceneMenu(game1));
+                ScreenManager.LoadScreen(new SceneMenu(game1));
             }
 
             // Player
@@ -181,15 +182,19 @@ namespace game
             camera.Update(_player._movement.Position - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             camera.AdjustZoom();
             //Debug.WriteLine(_camera.Zoom);
+
             // Particle
-            hitParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            deadParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            fireParticleLight.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            fireParticleDark.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            if (hitParticle != null && deadParticle != null && fireParticleLight != null && fireParticleDark != null)
+            {
+                hitParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                deadParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                fireParticleLight.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                fireParticleDark.Update((float)gameTime.ElapsedGameTime.TotalSeconds); 
+            }
+
             // Monster
             UpdateMonster(gameTime);
             // Ysort
-            //_ysort.Sort((a, b) => a.SortY.CompareTo(b.SortY));
             _ysort.Sort((a, b) => 
             {
                 // เปรียบเทียบ SortY ก่อน
@@ -200,6 +205,7 @@ namespace game
                 // ถ้า SortY เท่ากัน ใช้ Position.X เป็นเงื่อนไขรอง
                 return b.SortX.CompareTo(a.SortX);
             });
+
             // Collision
             _collisionComponent.Update(gameTime);
             _tileMaper.UpdateMap(gameTime);
@@ -286,6 +292,12 @@ namespace game
             }
             _collision.Clear();
             _monster.Clear();
+            _ysort.Clear();
+            _gameObject.Clear();
+            hitParticle = null;
+            deadParticle = null;
+            fireParticleDark = null;
+            fireParticleLight = null;
             //particle.Dispose();
             //Content.Unload();
 
@@ -301,7 +313,7 @@ namespace game
                 {
                     if (obj.Type == "Light")
                     {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light)); 
+                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
                     } 
                     else
                     {
