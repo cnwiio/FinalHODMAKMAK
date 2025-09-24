@@ -33,7 +33,7 @@ namespace game
             {
                 if (TargetScene == "SceneHome" && !db)
                 {
-                    screenManager.LoadScreen(new SceneMenu(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f)); 
+                    screenManager.LoadScreen(new SceneHome(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f)); 
                     db = true;
                 }
             }

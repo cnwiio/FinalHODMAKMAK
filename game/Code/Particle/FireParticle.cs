@@ -14,7 +14,7 @@ using MonoGame.Extended.Particles.Profiles;
 
 namespace game
 {
-    public class FireParticle : IDisposable
+    public class FireParticle : IDisposable, IParticle
     {
         public ParticleEffect ParticleEffect;
         private Texture2D particleTexture;
