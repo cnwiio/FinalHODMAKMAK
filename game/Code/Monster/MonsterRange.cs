@@ -294,9 +294,11 @@ namespace game
                 if (Hitbox.TimeToLiveSeconds > 0f)
                 {
                     Hitbox.TimeToLiveSeconds -= deltaTime;
-                    if (Hitbox.TimeToLiveSeconds <= 0f || !BulletVisible)
+                    if (Hitbox.TimeToLiveSeconds < 0f || !BulletVisible)
                     {
                         BulletVisible = false;
+                        Hitbox.TimeToLiveSeconds = 0;
+                        _fireParticle.Trigger(Hitbox.Bounds.Position);
                         _collisions.Remove(Hitbox);
                         _collisionComponents.Remove(Hitbox);
                     }
