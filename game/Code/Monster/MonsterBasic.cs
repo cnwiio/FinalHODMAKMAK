@@ -122,7 +122,7 @@ namespace game
         public void DrawUI(SpriteBatch spriteBatch)
         {
             // UI เลือด
-            var scale = new Vector2(0.1f, 0.2f);
+            var scale = new Vector2(1f, 1);
             var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
             if (_HPScale < percent - 0.05)
             {
@@ -148,10 +148,10 @@ namespace game
                     _followUpUI = _HPScale;
                 }
             }
-            var offset = new Vector2(HealthUI.Width * 0.1f / 2, Height / 1.5f);
+            var offset = new Vector2(HealthUI.Width / 2 * scale.X, Height / 1.5f);
+            spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _followUpUI), HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _HPScale), HealthUI.Height / 2), Color.Crimson, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, 0, HealthUI.Width, HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _followUpUI), HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _HPScale), HealthUI.Height / 2), Color.Crimson, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
         }
         /*
          IMPORTANT NOTE: Need to change in future

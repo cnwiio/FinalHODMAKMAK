@@ -170,6 +170,18 @@
 /processorParam:TextureFormat=Color
 /build:Texture/HealthBar_thumb.png
 
+#begin Texture/HealthBar5.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/HealthBar5.png
+
 #begin Texture/LightBullet.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -118,17 +118,17 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
 
 
-            //var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
-            //foreach (var obj in spawnPoint.Objects)
-            //{
-            //    if (obj.Name == "Player")
-            //    {
-            //        _player = new Player(_playerTexture, new Vector2(obj.Position.X, obj.Position.Y));
-            //        break;
-            //    }
-            //}
+            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+            foreach (var obj in spawnPoint.Objects)
+            {
+                if (obj.Name == "Player")
+                {
+                    _player = new Player(_playerTexture, new Vector2(obj.Position.X, obj.Position.Y));
+                    break;
+                }
+            }
             //_player = new Player(_playerTexture, new Vector2(802, 2603));
-            _player = new Player(_playerTexture, new Vector2(2600, 1603));
+            //_player = new Player(_playerTexture, new Vector2(2600, 1603));
 
             // **Set world references for collision / pickups**
             _player.SetWorldReferences(_collision, _collisionComponent);
@@ -352,7 +352,7 @@ namespace game
                     monster.LoadAnim("Charge", "DarkGoonCharge", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
                 }
-                monster.LoadUI(Content, "HealthBar_thumb");
+                monster.LoadUI(Content, "HealthBar5");
                 monster.CreateAnimation();
                 monster.SetProperty(
                     speed: 100f,
@@ -387,7 +387,7 @@ namespace game
                     monster.LoadAnim("Idle", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
                     monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
                 }
-                monster.LoadUI(Content, "HealthBar_thumb");
+                monster.LoadUI(Content, "HealthBar5");
                 monster.CreateAnimation();
                 monster.SetProperty(
                     speed: 100f,
