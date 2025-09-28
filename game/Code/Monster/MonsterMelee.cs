@@ -197,8 +197,7 @@ namespace game
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
-        private float _percent = 1;
-        private float _percent2;
+
         public void Draw(SpriteBatch spriteBatch)
         {
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assimp.Configs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,7 +75,7 @@ namespace game
     public class MonsterRange : MonsterBasic, IMonster, IYsort
     {
         // -------------Property-------------
-        public float BulletSpeed { get; set; } = 350;
+        public float BulletSpeed { get; set; } = 350; // ค่า Default
         public float SortY {  get => Position.Y + Height / 2; }
         public float SortX {  get => Position.X; }
         // ----------------------------------
@@ -142,7 +143,7 @@ namespace game
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
         }
         // Need Change in future
-        public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, float dashForce, float bulletSpeed)
         {
             SetProperty(
                 speed,
@@ -156,10 +157,11 @@ namespace game
                 hp,
                 damage,
                 attackRange,
-                dashForce
+                dashForce,
+                bulletSpeed
                 );
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, int attackRange, float dashForce, float bulletSpeed)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
@@ -170,6 +172,7 @@ namespace game
             MAXHP = hp;
             AttackRange = attackRange;
             DashForce = dashForce;
+            BulletSpeed = bulletSpeed;
         }
         public void UpdateState(GameTime gameTime, List<IEntity> collisions, CollisionComponent collisionComponents, Vector2 targetPosition)
         {

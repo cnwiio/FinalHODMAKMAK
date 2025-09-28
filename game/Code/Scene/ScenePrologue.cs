@@ -319,6 +319,7 @@ namespace game
                     {
                         _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
                     }
+                    LoadMonsterMelee((MonsterMelee)_monster.Last());
                 }
                 if (obj.Name == "Range")
                 {
@@ -330,78 +331,83 @@ namespace game
                     {
                         _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleDark, ElementType.Dark));
                     }
+                    LoadMonsterRange((MonsterRange)_monster.Last());
                 }
             }
             //_monster.Add(new MonsterRange(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
             //_monster.Add(new MonsterMelee(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
-            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
-            {
-                if (monster.ElementType == ElementType.Light)
-                {
-                    monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content); 
-                } 
-                else if (monster.ElementType == ElementType.Dark)
-                {
-                    monster.LoadAnim("Walk", "DarkGoonWalk", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Idle", "DarkGoonIdle", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Attack", "DarkGoonAttack", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Charge", "DarkGoonCharge", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
-                }
-                monster.LoadUI(Content, "HealthBar5");
-                monster.CreateAnimation();
-                monster.SetProperty(
-                    speed: 100f,
-                    sreachRadius: 500f,
-                    hp: 250,
-                    damage: 10,
-                    attackRange: (int)(monster.Width * 1.5),
-                    activeRadius: (int)(monster.Width * 2),
-                    dashForce: monster.Width * 7
-                );
-                _ysort.Add(monster);
-                _collision.Add(monster.HurtBox);
-                _collision.Add(monster.Collision);
-            }
-            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
-            {
-                if (monster.ElementType == ElementType.Light)
-                {
-                    monster.loadBullet(Content, "LightBullet");
-                    monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Attack", "LightRegimogusAttack", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Charge", "LightRegimogusCharge", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Idle", "LightRegimogusIdle", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Die", "LightRegimogusFuckingDie", monster.Position, 128, 128, Content); 
-                }
-                else if (monster.ElementType == ElementType.Dark)
-                {
-                    monster.loadBullet(Content, "DarkBullet");
-                    monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Attack", "DarkRegimogusAttack", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Charge", "DarkRegimogusCharge", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Idle", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
-                    monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
-                }
-                monster.LoadUI(Content, "HealthBar5");
-                monster.CreateAnimation();
-                monster.SetProperty(
-                    speed: 100f,
-                    sreachRadius: 500f,
-                    hp: 150,
-                    damage: 10,
-                    attackRange: (int)(monster.Width * 2.5f),
-                    dashForce: 300
-                );
-                _ysort.Add(monster);
-                _collision.Add(monster.HurtBox);
-                _collision.Add(monster.Collision);
-            }
         }
+
+        private void LoadMonsterMelee(MonsterMelee monster)
+        {
+            if (monster.ElementType == ElementType.Light)
+            {
+                monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+            }
+            else if (monster.ElementType == ElementType.Dark)
+            {
+                monster.LoadAnim("Walk", "DarkGoonWalk", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Idle", "DarkGoonIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Attack", "DarkGoonAttack", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Charge", "DarkGoonCharge", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
+            }
+            monster.LoadUI(Content, "HealthBar5");
+            monster.CreateAnimation();
+            monster.SetProperty(
+                speed: 100f,
+                sreachRadius: 500f,
+                hp: 250,
+                damage: 10,
+                attackRange: (int)(monster.Width * 1.5),
+                activeRadius: (int)(monster.Width * 2),
+                dashForce: monster.Width * 7
+            );
+            _ysort.Add(monster);
+            _collision.Add(monster.HurtBox);
+            _collision.Add(monster.Collision);
+        }
+
+        private void LoadMonsterRange(MonsterRange monster)
+        {
+            if (monster.ElementType == ElementType.Light)
+            {
+                monster.loadBullet(Content, "LightBullet");
+                monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Attack", "LightRegimogusAttack", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Charge", "LightRegimogusCharge", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Idle", "LightRegimogusIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Die", "LightRegimogusFuckingDie", monster.Position, 128, 128, Content);
+            }
+            else if (monster.ElementType == ElementType.Dark)
+            {
+                monster.loadBullet(Content, "DarkBullet");
+                monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Attack", "DarkRegimogusAttack", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Charge", "DarkRegimogusCharge", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Idle", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+                monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
+            }
+            monster.LoadUI(Content, "HealthBar5");
+            monster.CreateAnimation();
+            monster.SetProperty(
+                speed: 100f,
+                sreachRadius: 500f,
+                hp: 150,
+                damage: 10,
+                attackRange: (int)(monster.Width * 2.5f),
+                dashForce: 300,
+                bulletSpeed: 750
+            );
+            _ysort.Add(monster);
+            _collision.Add(monster.HurtBox);
+            _collision.Add(monster.Collision);
+        }
+
         private void UpdateMonster(GameTime gameTime)
         {
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
