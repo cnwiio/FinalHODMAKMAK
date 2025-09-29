@@ -117,15 +117,17 @@ namespace game
         */
         public void CreateAnimation()
         {
-            animation.CreateAnimation("Idle", "right", true, 200, 0, 4);
-            animation.CreateAnimation("Idle", "left", true, 200, 0, 4);
+            animation.CreateAnimation("Idle", "left", true, 200, 0, 8);
+            animation.CreateAnimation("Idle", "right", true, 200, 0, 8);
 
             animation.CreateAnimation("Walk", "left", true, 200, 0, 8);
             animation.CreateAnimation("Walk", "right", true, 200, 0, 8);
 
             animation.CreateAnimation("Charge", "right", false, 200, 0, 6);
             animation.CreateAnimation("Charge", "left", false, 200, 0, 6);
-            animation.CreateAnimation("Charge", "casting", true, 200, 0, 6);
+
+            animation.CreateAnimation("Casting", "left", true, 100, 0, 4);
+            animation.CreateAnimation("Casting", "right", true, 100, 0, 4);
 
             animation.CreateAnimation("Attack", "left", false, 100, 0, 9);
             animation.CreateAnimation("Attack", "right", false, 100, 0, 9);
@@ -140,7 +142,7 @@ namespace game
                 speed,
                 sreachRadius,
                 new MonsterHurtbox(
-                    animation.AnimSprite["Walk"].GetBoundingRectangle(new Transform2(animation.Position, 0f, new Vector2(0.6f, 0.9f))),
+                    animation.AnimSprite["Idle"].GetBoundingRectangle(new Transform2(animation.Position, 0f, new Vector2(0.6f, 0.9f))),
                     this),
                 new MonsterCollision(
                     new RectangleF(0, 0, 60, 30),
@@ -216,7 +218,7 @@ namespace game
                 if (HP <= 0)
                 {
                     Color tint = _deadTimer > 0.16 ? _deadTimer <= 0.6 ? Color.White * _deadTimer : Color.White : Color.White * 0.05f;
-                    if (animation.CurrentAnimation == "left")
+                    if (animation.CurrentAnimation == "right")
                     {
                         animation.DrawFrame(spriteBatch, true, tint);
                     }
@@ -230,7 +232,7 @@ namespace game
                 {
                     bool shouldFlash = _isHit && (_blinkTimer < _blinkInterval);
                     Color tint = shouldFlash ? Color.Red : Color.White; // transparent and normal
-                    if (animation.CurrentAnimation == "left")
+                    if (animation.CurrentAnimation == "right")
                     {
                         animation.DrawFrame(spriteBatch, true, tint);
                     }
@@ -412,19 +414,22 @@ namespace game
             }
             if (animation.CurrentSpriteSheet == "Attack" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
-                if (dashCounter < 3)
+                if (currentBossAttack == 3)
                 {
-                    dashCounter++;
-                    _placeHolderDirection = DirectionToPlayer;
-                    ApplyKnockback(DashForce, _placeHolderDirection);
-                    CreateHitbox(_collisions, _collisionComponents);
-                    animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
-                    animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
-                    return;
-                }
-                else
-                {
-                    dashCounter = 1;
+                    if (dashCounter < 3)
+                    {
+                        dashCounter++;
+                        _placeHolderDirection = DirectionToPlayer;
+                        ApplyKnockback(DashForce, _placeHolderDirection);
+                        CreateHitbox(_collisions, _collisionComponents);
+                        animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                        animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                        return;
+                    }
+                    else
+                    {
+                        dashCounter = 1;
+                    } 
                 }
 
                 _attackCD = 1f;
@@ -461,8 +466,8 @@ namespace game
                     animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
                 }
             }
-
         }
+
         private short currentBossAttack;
         public override void Attack()
         {
@@ -489,15 +494,15 @@ namespace game
             {
                 case 1:
                     CreateTelegraph();
-                    animation.SetAnimation("Charge", "casting");
+                    animation.SetAnimation("Casting", GetDirection(DirectionToPlayer));
                     break;
                 case 2:
                     CreateTelegraph2();
-                    animation.SetAnimation("Charge", "casting");
+                    animation.SetAnimation("Casting", GetDirection(DirectionToPlayer));
                     break;
                 case 6:
                     FireBullet();
-                    animation.SetAnimation("Charge", "casting");
+                    animation.SetAnimation("Casting", GetDirection(DirectionToPlayer));
                     break;
                 default:
                     break;

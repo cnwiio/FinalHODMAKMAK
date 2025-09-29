@@ -171,7 +171,7 @@ namespace game
          IMPORTANT NOTE: Need to change in future
          Based on the animation sprite sheet
         */
-        public void MoveTo(float deltaTime, Vector2 position)
+        public virtual void MoveTo(float deltaTime, Vector2 position)
         {
             Vector2 direction = position - Position;
             direction.Normalize();
@@ -279,6 +279,17 @@ namespace game
             }
             knockbackDirection.Normalize();
             _knockBackTimer = 0.7f;
+            _knockBackDirection = knockbackDirection;
+            _knockBackForce = knockbackForce;
+        }
+        public void ApplyKnockback(float knockbackForce, Vector2 knockbackDirection, float knockbackTimer)
+        {
+            if (knockbackDirection.LengthSquared() == 0)
+            {
+                return;
+            }
+            knockbackDirection.Normalize();
+            _knockBackTimer = knockbackTimer;
             _knockBackDirection = knockbackDirection;
             _knockBackForce = knockbackForce;
         }

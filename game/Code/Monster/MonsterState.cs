@@ -136,6 +136,30 @@ namespace game
                 {
                     monster.animation.SetAnimation("Idle", "right");
                 }
+            } else if (monster is MonsterSlime)
+            {
+                if (monster.isAwayHome)
+                {
+                    monster.IgnorePlayer = true;
+                    monster.ChangeState(new ReturnState());
+                }
+                else if (monster.isInRange)
+                {
+                    monster.ChangeState(new ChasingState());
+                }
+                else if (monster.isInWander)
+                {
+                    if (monster.WaitingToReturn == false)
+                    {
+                        //monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
+                        monster.WanderTimer = 2f;
+                        monster.WaitingToReturn = true;
+                    }
+                }
+                else
+                {
+                    monster.animation.SetAnimation("Idle", "right");
+                }
             }
         }
         public virtual void Exit(IMonster monster)
@@ -155,33 +179,33 @@ namespace game
             {
                 var melee = monster as MonsterMelee;
 
-                if (!melee.isInRange || melee.isAwayHome)
+                if (!monster.isInRange || monster.isAwayHome)
                 {
                     monster.ChangeState(new IdleState());
                 }
-                else if (melee.isInAttack)
+                else if (monster.isInAttack)
                 {
                     monster.ChangeState(new AttackState());
                 }
-                else if (melee.isInAttackList)
+                else if (monster.isInAttackList)
                 {
-                    melee.MoveTo(deltaTime, melee.TargetPos);
+                    monster.MoveTo(deltaTime, monster.TargetPos);
                 }
-                else if (melee.isInActiveRadius)
+                else if (monster.isInActiveRadius)
                 {
-                    if (!melee.isInAttackList)
-                        melee.PreventMonster.ActiveAttacker.Add(melee);
+                    if (!monster.isInAttackList)
+                        melee.PreventMonster.ActiveAttacker.Add(monster);
                 }
-                else if (melee.preventMonsterEdge >= 1f)
+                else if (monster.preventMonsterEdge >= 1f)
                 {
-                    melee.MoveTo(deltaTime, melee.TargetPos);
+                    monster.MoveTo(deltaTime, melee.TargetPos);
                 }
                 else 
                 {
-                    melee.animation.SetAnimation("Idle", melee.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
+                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
                 }
             }
-            if (monster is MonsterRange)
+            else if (monster is MonsterRange)
             {
                 var range = monster as MonsterRange;
                 var distance = Vector2.Distance(range.Position, range.TargetPos);
@@ -237,6 +261,36 @@ namespace game
                     monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
                 }
             }
+            else if (monster is MonsterSlime)
+            {
+                var slime = monster as MonsterSlime;
+
+                if (!monster.isInRange || monster.isAwayHome)
+                {
+                    monster.ChangeState(new IdleState());
+                }
+                else if (monster.isInAttack)
+                {
+                    monster.ChangeState(new AttackState());
+                }
+                else if (monster.isInAttackList)
+                {
+                    monster.MoveTo(deltaTime, slime.TargetPos);
+                }
+                else if (monster.isInActiveRadius)
+                {
+                    if (!monster.isInAttackList)
+                        slime.PreventMonster.ActiveAttacker.Add(monster);
+                }
+                else if (monster.preventMonsterEdge >= 1f)
+                {
+                    monster.MoveTo(deltaTime, monster.TargetPos);
+                }
+                else
+                {
+                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
+                }
+            }
         }
         public virtual void Exit(IMonster monster)
         {
@@ -261,6 +315,7 @@ namespace game
                 {
                     monster.ChangeState(new IdleState());
                 }
+                return;
             }
 
 
@@ -286,6 +341,7 @@ namespace game
     {
         public virtual void Enter(IMonster monster)
         {
+            //Debug.WriteLine("Enter Return");
         }
         public virtual void Update(IMonster monster, float deltaTime)
         {
