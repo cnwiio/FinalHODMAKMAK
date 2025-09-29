@@ -327,8 +327,13 @@ namespace game
             _collisions.Remove(Collision);
             _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
+            HurtBox = null;
+            Collision = null;
+            Hitbox = null;
             animation = null;
             HealthUI = null;
+            _hitParticle = null;
+            _deadParticle = null;
         }
         public override void ChangeState(IMonsterState newState)
         {

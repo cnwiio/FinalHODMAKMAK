@@ -62,7 +62,7 @@ namespace game
         protected bool _isHit;
         protected float _hitTimer = 0f;
         protected float _deadTimer = 0f;
-        public bool isHit // togle I-frame state; check if monster is attacked
+        public virtual bool isHit // togle I-frame state; check if monster is attacked
         {
             get => _isHit;
             set
@@ -71,7 +71,7 @@ namespace game
                 {
                     _isHit = true;
                     ShakeViewport = true;
-                    _hitTimer = 1f;
+                    _hitTimer = 0.25f;
                     _deadTimer = 1.2f;
                     //ApplyDamage(50);
                     ApplyKnockback(250f);
@@ -92,6 +92,10 @@ namespace game
                 if (value)
                 {
                     _isAttack = true;
+                }
+                else
+                {
+                    _attackCD = 1f;
                 }
             }
         }
@@ -119,6 +123,7 @@ namespace game
         }
         private float _HPScale = 1;
         private float _followUpUI = 1;
+        private float _frameCount = 0;
         public void DrawUI(SpriteBatch spriteBatch)
         {
             // UI เลือด
@@ -134,19 +139,28 @@ namespace game
             }
             else
             {
-                _HPScale = percent;
-                if (_followUpUI < _HPScale - 0.05)
+                if (_HPScale != percent)
                 {
-                    _followUpUI += 0.025f;
+                    _HPScale = percent;
+                    _frameCount = 0;
                 }
-                else if (_followUpUI > _HPScale + 0.05)
+                if (_frameCount >= 30)
                 {
-                    _followUpUI -= 0.025f;
+                    if (_followUpUI < _HPScale - 0.05)
+                    {
+                        _followUpUI += 0.025f;
+                    }
+                    else if (_followUpUI > _HPScale + 0.05)
+                    {
+                        _followUpUI -= 0.025f;
+                    }
+                    else
+                    {
+                        _followUpUI = _HPScale;
+                        _frameCount = 0;
+                    }
                 }
-                else
-                {
-                    _followUpUI = _HPScale;
-                }
+                _frameCount += 1;
             }
             var offset = new Vector2(HealthUI.Width / 2 * scale.X, Height / 1.5f);
             spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _followUpUI), HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);

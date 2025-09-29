@@ -61,7 +61,8 @@ namespace game
                 {
                     monster.animation.SetAnimation("Idle", "right");
                 } 
-            } else if (monster is MonsterRange)
+            } 
+            else if (monster is MonsterRange)
             {
                 var range = monster as MonsterRange;
                 
@@ -74,6 +75,45 @@ namespace game
                 {
                     monster.ChangeState(new ChasingState());
                     return;
+                }
+                else if (monster.isInAttack)
+                {
+                    monster.ChangeState(new AttackState());
+                }
+                else if (monster.isInRange)
+                {
+                    monster.ChangeState(new ChasingState());
+                }
+                else if (monster.isInWander)
+                {
+                    if (monster.WaitingToReturn == false)
+                    {
+                        monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
+                        monster.WanderTimer = 2f;
+                        monster.WaitingToReturn = true;
+                    }
+                }
+                else
+                {
+                    monster.animation.SetAnimation("Idle", "right");
+                }
+            } 
+            else if (monster is MonsterBoss)
+            {
+                if (!monster.isInActiveRadius)
+                {
+                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
+                    return;
+                }
+                else if (monster.isAttack)
+                {
+                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer));
+                    return;
+                }
+                else if (monster.isAwayHome)
+                {
+                    monster.IgnorePlayer = true;
+                    monster.ChangeState(new ReturnState());
                 }
                 else if (monster.isInAttack)
                 {
@@ -176,6 +216,27 @@ namespace game
                     range.animation.SetAnimation("Idle", range.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
                 }
             }
+            else if (monster is MonsterBoss)
+            {
+                var boss = monster as MonsterBoss;
+                var distance = Vector2.Distance(boss.Position, boss.TargetPos);
+                if (!monster.isInRange || monster.isAwayHome)
+                {
+                    monster.ChangeState(new IdleState());
+                }
+                else if (monster.isInAttack)
+                {
+                    monster.ChangeState(new AttackState());
+                }
+                else if (distance > boss.AttackRange)
+                {
+                    boss.MoveTo(deltaTime, boss.TargetPos);
+                }
+                else
+                {
+                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
+                }
+            }
         }
         public virtual void Exit(IMonster monster)
         {
@@ -190,6 +251,18 @@ namespace game
         }
         public virtual void Update(IMonster monster, float deltaTime)
         {
+            if (monster is MonsterBoss)
+            {
+                if (monster.isInAttack || monster.isAttack)
+                {
+                    monster.Attack();
+                }
+                else
+                {
+                    monster.ChangeState(new IdleState());
+                }
+            }
+
 
             if (monster.isInAttack)
             {

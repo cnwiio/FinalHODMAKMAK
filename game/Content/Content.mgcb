@@ -26,6 +26,18 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Char01.png
 
+#begin Texture/Circle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Circle.png
+
 #begin Texture/DarkBullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -181,6 +193,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/HealthBar5.png
+
+#begin Texture/HealthBar7.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/HealthBar7.png
 
 #begin Texture/LightBullet.png
 /importer:TextureImporter

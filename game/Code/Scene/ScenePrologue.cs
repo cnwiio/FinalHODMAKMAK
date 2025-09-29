@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -231,7 +232,16 @@ namespace game
 
             // Player
             //_player.Draw(_spriteBatch);
-            
+
+            // วาดสกิลของบอส
+            if (_monster.Exists(x => x is MonsterBoss)) {
+                var Boss = (MonsterBoss)_monster.Find(x => x.GetType() == typeof(MonsterBoss));
+                if (!Boss.IsDead)
+                {
+                    Boss.DrawSkill(_spriteBatch);
+                }
+            }
+
             // Object
             foreach (var item in _ysort)
             {
@@ -265,12 +275,36 @@ namespace game
                     _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
                     _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
                 }
+                foreach (MonsterBoss monster in _monster.OfType<MonsterBoss>().ToList())
+                {
+                    if (!monster.IsDead)
+                    {
+                        _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
+                    }
+                }
             }
+
             // Particle
             hitParticle.Draw(_spriteBatch);
             deadParticle.Draw(_spriteBatch);
             fireParticleLight.Draw(_spriteBatch);
             fireParticleDark.Draw(_spriteBatch);
+            _spriteBatch.End();
+
+            // UI
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            foreach (IYsort item in _ysort)
+            {
+                if (item is MonsterBoss)
+                {
+                    var boss = (MonsterBoss)item;
+                    var pos = new Vector2(game1.ScreenWidth / 2 , 50); // 320 = ครึ่งนีงของความยาว UI
+                    if (!boss.IsDead && boss.isInActiveRadius) boss.DrawUI(_spriteBatch, pos);
+                }
+            }
             _spriteBatch.End();
         }
 
@@ -321,7 +355,7 @@ namespace game
                     }
                     LoadMonsterMelee((MonsterMelee)_monster.Last());
                 }
-                if (obj.Name == "Range")
+                else if (obj.Name == "Range")
                 {
                     if (obj.Type == "Light")
                     {
@@ -332,6 +366,11 @@ namespace game
                         _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleDark, ElementType.Dark));
                     }
                     LoadMonsterRange((MonsterRange)_monster.Last());
+                }
+                else if (obj.Name == "Boss")
+                {
+                    _monster.Add(new MonsterBoss(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleLight, ElementType.Light));
+                    LoadMonsterBoss((MonsterBoss)_monster.Last());
                 }
             }
             //_monster.Add(new MonsterRange(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
@@ -408,6 +447,32 @@ namespace game
             _collision.Add(monster.Collision);
         }
 
+        private void LoadMonsterBoss(MonsterBoss monster)
+        {
+            monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
+            monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
+            monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
+            monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+            monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+            monster.loadBullet(Content, "LightBullet", "DarkBullet");
+            monster.LoadAssets(Content);
+            monster.LoadUI(Content, "HealthBar7");
+            monster.CreateAnimation();
+            monster.SetProperty(
+                speed: 100f,
+                sreachRadius: 2000f,
+                hp: 1000,
+                damage: 10,
+                attackRange: (int)(monster.Width * 7),
+                activeRadius: (int)(monster.Width * 3),
+                dashForce: monster.Width * 10,
+                bulletSpeed: 350
+            );
+            _ysort.Add(monster);
+            _collision.Add(monster.HurtBox);
+            _collision.Add(monster.Collision);
+        }
+
         private void UpdateMonster(GameTime gameTime)
         {
             foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
@@ -446,6 +511,27 @@ namespace game
                 {
                     monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
                     monster.DeleteHitBox(1f);
+                    monster.RemoveMonster();
+                    _monster.Remove(monster);
+                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
+                }
+                //--------------
+            }
+            foreach (MonsterBoss monster in _monster.OfType<MonsterBoss>().ToList())
+            {
+                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                if (monster.ShakeViewport)
+                {
+                    camera.ShakeCamera(gameTime);
+                    monster.ShakeViewport = camera.ShakeViewport;
+                }
+                // Temporary
+                // Will make additional method for monster dead and drop
+                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
+                if (monster.IsDead)
+                {
+                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
+                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
                     monster.RemoveMonster();
                     _monster.Remove(monster);
                     break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
