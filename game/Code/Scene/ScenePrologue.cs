@@ -32,6 +32,7 @@ namespace game
         private CollisionComponent _collisionComponent;
         private PreventMonster _preventMonster;
         private List<GameObject> _gameObject = new List<GameObject>();
+        private List<GameObject> _shadow = new List<GameObject>();
 
         // Player
         private AnimController _playerTexture;
@@ -90,6 +91,11 @@ namespace game
             {
                 _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
                 _ysort.Add(_gameObject.Last());
+            }
+            var shadowLayer = _tileMaper.GetObjectLayer("Shadow");
+            foreach (var item in shadowLayer.Objects)
+            {
+                _shadow.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
             }
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
@@ -241,6 +247,12 @@ namespace game
                     Boss.DrawSkill(_spriteBatch);
                 }
             }
+            
+            // Shadow
+            foreach (GameObject item in _shadow)
+            {
+                item.Draw(_spriteBatch);
+            }
 
             // Object
             foreach (var item in _ysort)
@@ -328,6 +340,7 @@ namespace game
             _monster.Clear();
             _ysort.Clear();
             _gameObject.Clear();
+            _shadow.Clear();
             hitParticle = null;
             deadParticle = null;
             fireParticleDark = null;

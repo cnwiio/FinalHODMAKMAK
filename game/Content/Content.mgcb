@@ -503,6 +503,47 @@
 /processorParam:TextureFormat=Color
 /build:TileMap/Tree_1.png
 
+#begin TileMap/Tree_Shadow.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Tree_Shadow.png
+
+#begin TileMap/Tree_Shadow.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Tree_Shadow.tsx
+
+#begin TileMap/Tree_Shadow1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Tree_Shadow1.png
+
+#begin TileMap/Tree_Shadow2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Tree_Shadow2.png
+
 #begin TileMap/Tree1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -568,7 +609,7 @@
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Water_tileset.tsx
 
-#begin TileMap/WaterFall-Sheet.png
+#begin TileMap/Waterfall_Tileset.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -578,10 +619,10 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:TileMap/WaterFall-Sheet.png
+/build:TileMap/Waterfall_Tileset.png
 
-#begin TileMap/WaterFall-Sheet.tsx
+#begin TileMap/Waterfall_Tileset.tsx
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
-/build:TileMap/WaterFall-Sheet.tsx
+/build:TileMap/Waterfall_Tileset.tsx
 
