@@ -479,7 +479,7 @@ namespace game
                 attackRange: (int)(monster.Width * 7),
                 activeRadius: (int)(monster.Width * 3),
                 dashForce: monster.Width * 10,
-                bulletSpeed: 350
+                bulletSpeed: 750
             );
             _ysort.Add(monster);
             _collision.Add(monster.HurtBox);

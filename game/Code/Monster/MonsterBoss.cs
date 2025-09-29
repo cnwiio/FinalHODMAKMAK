@@ -403,6 +403,7 @@ namespace game
             }
         }
         private Vector2 _placeHolderDirection;
+        private short dashCounter = 1;
         public void OnAnimationEvent(IAnimationController sender, AnimationEventTrigger trigger)
         {
             if (animation.CurrentSpriteSheet == "Die" && trigger == AnimationEventTrigger.AnimationCompleted)
@@ -411,6 +412,21 @@ namespace game
             }
             if (animation.CurrentSpriteSheet == "Attack" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
+                if (dashCounter < 3)
+                {
+                    dashCounter++;
+                    _placeHolderDirection = DirectionToPlayer;
+                    ApplyKnockback(DashForce, _placeHolderDirection);
+                    CreateHitbox(_collisions, _collisionComponents);
+                    animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                    animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                    return;
+                }
+                else
+                {
+                    dashCounter = 1;
+                }
+
                 _attackCD = 1f;
                 ChangeState(new IdleState());
             }
@@ -456,7 +472,7 @@ namespace game
                 isAttack = true;
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
-                //currentBossAttack = 6;
+                //currentBossAttack = 3;
                 if (currentBossAttack == 3 || currentBossAttack == 5)
                 {
                     animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);

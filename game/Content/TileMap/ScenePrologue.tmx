@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="30" nextobjectid="1775">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="30" nextobjectid="1776">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="9" source="Water_tileset.tsx"/>
  <tileset firstgid="100" source="Nature_asset_1.tsx"/>
@@ -1288,8 +1288,11 @@
   <object id="1493" name="Range" type="Dark" x="2318" y="1230">
    <point/>
   </object>
+  <object id="1775" name="Boss" x="1804" y="3670.67">
+   <point/>
+  </object>
  </objectgroup>
- <objectgroup id="21" name="Collision">
+ <objectgroup id="21" name="Collision" visible="0">
   <object id="9" x="1728" y="3200" width="64" height="228"/>
   <object id="20" x="704" y="3264" width="64" height="230"/>
   <object id="21" x="640" y="3328" width="64" height="228"/>
