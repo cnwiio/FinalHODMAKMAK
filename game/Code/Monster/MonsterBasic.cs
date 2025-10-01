@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
@@ -47,6 +49,9 @@ namespace game
         protected Player _player { get; set; }
         protected HitParticle _hitParticle;
         protected DeadParticle _deadParticle;
+        public AudioController audioController;
+        public SoundEffect hitSound;
+        public SoundEffect deadSound;
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -77,6 +82,9 @@ namespace game
                     ApplyKnockback(250f);
                     if (HP > 0)
                     {
+                        var r = new Random();
+                        var pitch = r.NextSingle(0.75f);
+                        audioController.PlaySoundEffect(hitSound, 1, pitch, 0, false);
                         _hitParticle.Trigger(Position, -DirectionToPlayer);
                     }
                 }
@@ -121,6 +129,14 @@ namespace game
         {
             HealthUI = content.Load<Texture2D>("Texture/" + name);
         }
+
+        public virtual void LoadSound(ContentManager content, AudioController controller,string hitSfxName, string deadSfxName/*, string? jumpSfxName = null*/)
+        {
+            audioController = controller;
+            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
+            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
+        }
+
         private float _HPScale = 1;
         private float _followUpUI = 1;
         private float _frameCount = 0;
@@ -254,7 +270,6 @@ namespace game
                 }
             }
         }
-        private Vector2 _placeHolderDirection;
         public bool IsKnockBack()
         {
             return _knockBackTimer > 0f && _knockBackForce > 0.01f;
@@ -295,16 +310,16 @@ namespace game
         }
         public void DropHeal(List<IEntity> entities, CollisionComponent collisionComponent, Texture2D texture, Player player)
         {
-            //Random r = new Random();
-            //if (r.Next(1, 101) <= 75) // Percentage, Ex: 75 mean 75%
-            //{
-            //    entities.Add(new HealPickup(
-            //                    animation.Position,
-            //                    texture,
-            //                    player
-            //                )); // Add drops
-            //    collisionComponent.Insert(entities.Last());
-            //}
+            Random r = new Random();
+            if (r.Next(1, 101) <= 100) // Percentage, Ex: 75 mean 75%
+            {
+                entities.Add(new HealPickup(
+                                animation.Position,
+                                texture,
+                                player
+                            )); // Add drops
+                collisionComponent.Insert(entities.Last());
+            }
         }
         public void Return(float deltaTime)
         {

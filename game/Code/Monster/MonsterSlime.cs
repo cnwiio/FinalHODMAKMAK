@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Animations;
@@ -32,6 +34,7 @@ namespace game
                         _HP = 0;
                         _hitTimer += 5f;
                         _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
+                        audioController.PlaySoundEffect(deadSound);
                         if (_placeHolderDirection == Vector2.Zero) _placeHolderDirection = DirectionToPlayer;
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent);
                     }
@@ -174,6 +177,12 @@ namespace game
                 }
             }
         }
+        //private SoundEffect jumpSound;
+        //public override void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string? jumpSfxName = null)
+        //{
+        //    base.LoadSound(content, controller, hitSfxName, deadSfxName);
+        //    jumpSound = content.Load<SoundEffect>("Audio/" + jumpSfxName);
+        //}
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
         {
             const float ttl = 0.7f; // ms

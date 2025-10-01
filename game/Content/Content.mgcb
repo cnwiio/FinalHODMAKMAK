@@ -14,6 +14,60 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/SlimeDie.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SlimeDie.mp3
+
+#begin Audio/SlimeHit.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SlimeHit.mp3
+
+#begin Audio/SlimeJump.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SlimeJump.mp3
+
+#begin Audio/StoneDie.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/StoneDie.mp3
+
+#begin Audio/StoneHit.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/StoneHit.mp3
+
+#begin Audio/WoodDie.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/WoodDie.mp3
+
+#begin Audio/WoodHit.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/WoodHit.mp3
+
+#begin C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodDie.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodDie.mp3;Audio/WoodDie.mp3
+
+#begin C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodHit.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodHit.mp3;Audio/WoodHit.mp3
+
 #begin Texture/Char01.png
 /importer:TextureImporter
 /processor:TextureProcessor

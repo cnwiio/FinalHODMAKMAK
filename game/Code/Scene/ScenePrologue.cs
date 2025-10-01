@@ -41,11 +41,16 @@ namespace game
         // Camera
         private GlobalCamera camera;
         private OrthographicCamera _camera;
+
         // Particle
         private HitParticle hitParticle;
         private DeadParticle deadParticle;
         private FireParticle fireParticleLight;
         private FireParticle fireParticleDark;
+
+        // Audio
+        private AudioController _audioController;
+
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
@@ -75,6 +80,9 @@ namespace game
             // Camera setup
             camera = game1.camera;
             _camera = camera.Cam;
+
+            // Audio
+            _audioController = game1.audioController;
 
             // Particle
             hitParticle = new HitParticle(game1);
@@ -209,7 +217,7 @@ namespace game
                 if (yComparison != 0)
                     return yComparison;
 
-                // ถ้า SortY เท่ากัน ใช้ Position.X เป็นเงื่อนไขรอง
+                // ถ้า SortY เท่ากัน ใช้ SortX เป็นเงื่อนไขรอง
                 return b.SortX.CompareTo(a.SortX);
             });
 
@@ -428,6 +436,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
+            monster.LoadSound(Content, _audioController, "WoodHit", "WoodDie");
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
@@ -464,6 +473,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
+            monster.LoadSound(Content, _audioController, "StoneHit", "StoneDie");
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
@@ -524,6 +534,7 @@ namespace game
             //    monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
             //}
             monster.LoadUI(Content, "HealthBar5");
+            monster.LoadSound(Content, _audioController, "SlimeHit", "SlimeDie");
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,

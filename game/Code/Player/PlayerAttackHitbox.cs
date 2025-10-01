@@ -60,8 +60,8 @@ namespace game
                     //    ? 2.0f
                     //    : 0.5f;
 
-                    monster.Monster.isHit = true;
                     monster.Monster.ApplyDamage(_player.Stats.AttackDamage.Value); // ใส่ดาเมจไปเลยตรงๆ
+                    monster.Monster.isHit = true;
                     //System.Diagnostics.Debug.WriteLine($"Hit monster! HP: {monster.Monster.HP}");
 
                     //monster.Monster.HP -= (int)(_player.Stats.AttackDamage.Value * multiplier); ไม่ใช้แล้ว

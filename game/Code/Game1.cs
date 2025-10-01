@@ -15,6 +15,9 @@ namespace game
         private GraphicsDeviceManager _graphics;
         public ScreenManager screenManager;
 
+        // Audio
+        public AudioController audioController;
+
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
         public short ScreenWidth = 1280, ScreenHeight = 720;
@@ -31,6 +34,8 @@ namespace game
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            audioController = new AudioController();
 
             screenManager = new ScreenManager();
             Components.Add(screenManager);
