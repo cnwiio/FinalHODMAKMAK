@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assimp.Configs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,7 +75,7 @@ namespace game
     public class MonsterRange : MonsterBasic, IMonster, IYsort
     {
         // -------------Property-------------
-        public float BulletSpeed { get; set; } = 350;
+        public float BulletSpeed { get; set; } = 350; // ค่า Default
         public float SortY {  get => Position.Y + Height / 2; }
         public float SortX {  get => Position.X; }
         // ----------------------------------
@@ -96,6 +97,7 @@ namespace game
                         _HP = 0;
                         _hitTimer += 5f;
                         _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
+                        audioController.PlaySoundEffect(deadSound);
                         if (_placeHolderDirection == Vector2.Zero) _placeHolderDirection = DirectionToPlayer;
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                     }
@@ -142,7 +144,7 @@ namespace game
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
         }
         // Need Change in future
-        public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, float dashForce, float bulletSpeed)
         {
             SetProperty(
                 speed,
@@ -156,10 +158,11 @@ namespace game
                 hp,
                 damage,
                 attackRange,
-                dashForce
+                dashForce,
+                bulletSpeed
                 );
         }
-        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, int attackRange, float dashForce)
+        public void SetProperty(float speed, float sreachRadius, IEntity hurtBox, IEntity collision, int hp, int dammage, int attackRange, float dashForce, float bulletSpeed)
         {
             Speed = speed;
             SreachRadius = sreachRadius;
@@ -170,6 +173,7 @@ namespace game
             MAXHP = hp;
             AttackRange = attackRange;
             DashForce = dashForce;
+            BulletSpeed = bulletSpeed;
         }
         public void UpdateState(GameTime gameTime, List<IEntity> collisions, CollisionComponent collisionComponents, Vector2 targetPosition)
         {
@@ -294,9 +298,11 @@ namespace game
                 if (Hitbox.TimeToLiveSeconds > 0f)
                 {
                     Hitbox.TimeToLiveSeconds -= deltaTime;
-                    if (Hitbox.TimeToLiveSeconds <= 0f || !BulletVisible)
+                    if (Hitbox.TimeToLiveSeconds < 0f || !BulletVisible)
                     {
                         BulletVisible = false;
+                        Hitbox.TimeToLiveSeconds = 0;
+                        _fireParticle.Trigger(Hitbox.Bounds.Position);
                         _collisions.Remove(Hitbox);
                         _collisionComponents.Remove(Hitbox);
                     }
@@ -348,9 +354,15 @@ namespace game
             _collisions.Remove(Collision);
             _collisionComponents.Remove(Collision);
             animation.Unload(OnAnimationEvent);
+            HurtBox = null;
+            Collision = null;
+            Hitbox = null;
             animation = null;
             HealthUI = null;
             bullet = null;
+            _hitParticle = null;
+            _fireParticle = null;
+            _deadParticle = null;
         }
         public override void Attack()
         {

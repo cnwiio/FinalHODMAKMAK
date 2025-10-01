@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
@@ -47,6 +49,9 @@ namespace game
         protected Player _player { get; set; }
         protected HitParticle _hitParticle;
         protected DeadParticle _deadParticle;
+        public AudioController audioController;
+        public SoundEffect hitSound;
+        public SoundEffect deadSound;
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -62,7 +67,7 @@ namespace game
         protected bool _isHit;
         protected float _hitTimer = 0f;
         protected float _deadTimer = 0f;
-        public bool isHit // togle I-frame state; check if monster is attacked
+        public virtual bool isHit // togle I-frame state; check if monster is attacked
         {
             get => _isHit;
             set
@@ -71,13 +76,20 @@ namespace game
                 {
                     _isHit = true;
                     ShakeViewport = true;
-                    _hitTimer = 1f;
-                    _deadTimer = 1.2f;
+                    _hitTimer = 0.25f;
                     //ApplyDamage(50);
                     ApplyKnockback(250f);
                     if (HP > 0)
                     {
+                        var r = new Random();
+                        var pitch = r.NextSingle(0.75f);
+                        audioController.PlaySoundEffect(hitSound, 1, pitch, 0, false);
                         _hitParticle.Trigger(Position, -DirectionToPlayer);
+                    }
+                    else if (HP <= 0)
+                    {
+                        _deadTimer = 1.2f;
+                        _hitTimer = 5f;
                     }
                 }
             }
@@ -92,6 +104,10 @@ namespace game
                 if (value)
                 {
                     _isAttack = true;
+                }
+                else
+                {
+                    _attackCD = 1f;
                 }
             }
         }
@@ -117,12 +133,21 @@ namespace game
         {
             HealthUI = content.Load<Texture2D>("Texture/" + name);
         }
+
+        public virtual void LoadSound(ContentManager content, AudioController controller,string hitSfxName, string deadSfxName/*, string? jumpSfxName = null*/)
+        {
+            audioController = controller;
+            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
+            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
+        }
+
         private float _HPScale = 1;
         private float _followUpUI = 1;
+        private float _frameCount = 0;
         public void DrawUI(SpriteBatch spriteBatch)
         {
             // UI เลือด
-            var scale = new Vector2(0.1f, 0.2f);
+            var scale = new Vector2(1f, 1);
             var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
             if (_HPScale < percent - 0.05)
             {
@@ -134,30 +159,39 @@ namespace game
             }
             else
             {
-                _HPScale = percent;
-                if (_followUpUI < _HPScale - 0.05)
+                if (_HPScale != percent)
                 {
-                    _followUpUI += 0.025f;
+                    _HPScale = percent;
+                    _frameCount = 0;
                 }
-                else if (_followUpUI > _HPScale + 0.05)
+                if (_frameCount >= 30)
                 {
-                    _followUpUI -= 0.025f;
+                    if (_followUpUI < _HPScale - 0.05)
+                    {
+                        _followUpUI += 0.025f;
+                    }
+                    else if (_followUpUI > _HPScale + 0.05)
+                    {
+                        _followUpUI -= 0.025f;
+                    }
+                    else
+                    {
+                        _followUpUI = _HPScale;
+                        _frameCount = 0;
+                    }
                 }
-                else
-                {
-                    _followUpUI = _HPScale;
-                }
+                _frameCount += 1;
             }
-            var offset = new Vector2(HealthUI.Width * 0.1f / 2, Height / 1.5f);
+            var offset = new Vector2(HealthUI.Width / 2 * scale.X, Height / 1.5f);
+            spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _followUpUI), HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _HPScale), HealthUI.Height / 2), Color.Crimson, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, 0, HealthUI.Width, HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _followUpUI), HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(HealthUI, Position - offset + new Vector2(0.8f, 0), new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _HPScale), HealthUI.Height / 2), Color.Crimson, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
         }
         /*
          IMPORTANT NOTE: Need to change in future
          Based on the animation sprite sheet
         */
-        public void MoveTo(float deltaTime, Vector2 position)
+        public virtual void MoveTo(float deltaTime, Vector2 position)
         {
             Vector2 direction = position - Position;
             direction.Normalize();
@@ -240,7 +274,6 @@ namespace game
                 }
             }
         }
-        private Vector2 _placeHolderDirection;
         public bool IsKnockBack()
         {
             return _knockBackTimer > 0f && _knockBackForce > 0.01f;
@@ -268,18 +301,29 @@ namespace game
             _knockBackDirection = knockbackDirection;
             _knockBackForce = knockbackForce;
         }
+        public void ApplyKnockback(float knockbackForce, Vector2 knockbackDirection, float knockbackTimer)
+        {
+            if (knockbackDirection.LengthSquared() == 0)
+            {
+                return;
+            }
+            knockbackDirection.Normalize();
+            _knockBackTimer = knockbackTimer;
+            _knockBackDirection = knockbackDirection;
+            _knockBackForce = knockbackForce;
+        }
         public void DropHeal(List<IEntity> entities, CollisionComponent collisionComponent, Texture2D texture, Player player)
         {
-            //Random r = new Random();
-            //if (r.Next(1, 101) <= 75) // Percentage, Ex: 75 mean 75%
-            //{
-            //    entities.Add(new HealPickup(
-            //                    animation.Position,
-            //                    texture,
-            //                    player
-            //                )); // Add drops
-            //    collisionComponent.Insert(entities.Last());
-            //}
+            Random r = new Random();
+            if (r.Next(1, 101) <= 100) // Percentage, Ex: 75 mean 75%
+            {
+                entities.Add(new HealPickup(
+                                animation.Position,
+                                texture,
+                                player
+                            )); // Add drops
+                collisionComponent.Insert(entities.Last());
+            }
         }
         public void Return(float deltaTime)
         {

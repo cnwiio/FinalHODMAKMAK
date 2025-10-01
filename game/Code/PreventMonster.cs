@@ -13,7 +13,7 @@ namespace game
         public float Radius { get; set; }
         public string LayerName { get; set; }
         public Game1 Game { get; set; }
-        public List<MonsterMelee> ActiveAttacker { get; private set; } = new List<MonsterMelee>();
+        public List<IMonster> ActiveAttacker { get; private set; } = new List<IMonster>();
         public const short MAXATTACKER = 2;
         public PreventMonster(Vector2 position, float radius)
         {
@@ -32,9 +32,9 @@ namespace game
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            if (collisionInfo.Other is MonsterHurtbox hurtbox && hurtbox.Monster is MonsterMelee)
+            if (collisionInfo.Other is MonsterHurtbox hurtbox && (hurtbox.Monster is MonsterMelee || hurtbox.Monster is MonsterSlime))
             {
-                var monster = hurtbox.Monster as MonsterMelee;
+                var monster = hurtbox.Monster;
                 if (!ActiveAttacker.Contains(monster) && ActiveAttacker.Count < MAXATTACKER)
                 {
                     ActiveAttacker.Add(monster);
@@ -42,9 +42,12 @@ namespace game
             }
         }
 
-        public void RemoveMonster(MonsterMelee monster)
+        public void RemoveMonster(IMonster monster)
         {
-            ActiveAttacker.Remove(monster);
+            if (ActiveAttacker.Contains(monster))
+            {
+                ActiveAttacker.Remove(monster); 
+            }
         }
     }
 }

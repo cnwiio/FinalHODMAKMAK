@@ -184,7 +184,8 @@ namespace game
                     hp: 150,
                     damage: 10,
                     attackRange: (int)(monster.Width * 2.5f),
-                    dashForce: 300
+                    dashForce: 300,
+                    bulletSpeed: 750
                 );
                 Ysort.Add(monster);
                 Collisions.Add(monster.HurtBox);
