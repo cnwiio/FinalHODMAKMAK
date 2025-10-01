@@ -107,14 +107,13 @@ namespace game
             }
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
-            _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 64, 96);
+            _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 128, 128);
 
             // Walk Animations
-            _playerTexture.CreateAnimation("Walk", "left", true, 200, 0, 4);
-            _playerTexture.CreateAnimation("Walk", "right", true, 200, 4, 4);
-            _playerTexture.CreateAnimation("Walk", "down", true, 200, 8, 4);
-            _playerTexture.CreateAnimation("Walk", "up", true, 200, 12, 4);
-            _playerTexture.CreateAnimation("Walk", "attack", true, 12, 8, 4);
+            _playerTexture.CreateAnimation("Walk", "down", true, 98, 0, 8);
+            _playerTexture.CreateAnimation("Walk", "right", true, 98, 8, 8);
+            _playerTexture.CreateAnimation("Walk", "left", true, 98, 16, 8);
+            _playerTexture.CreateAnimation("Walk", "up", true, 98, 24, 8);
 
             // Idle animation (4 directions, 6 frames per row)
             _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 100, 112);

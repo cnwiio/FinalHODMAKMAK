@@ -77,7 +77,6 @@ namespace game
                     _isHit = true;
                     ShakeViewport = true;
                     _hitTimer = 0.25f;
-                    _deadTimer = 1.2f;
                     //ApplyDamage(50);
                     ApplyKnockback(250f);
                     if (HP > 0)
@@ -86,6 +85,11 @@ namespace game
                         var pitch = r.NextSingle(0.75f);
                         audioController.PlaySoundEffect(hitSound, 1, pitch, 0, false);
                         _hitParticle.Trigger(Position, -DirectionToPlayer);
+                    }
+                    else if (HP <= 0)
+                    {
+                        _deadTimer = 1.2f;
+                        _hitTimer = 5f;
                     }
                 }
             }

@@ -177,12 +177,12 @@ namespace game
         {
             _animation.Draw(spriteBatch);
 
-            // Draw active attack hitboxes (for debugging)
-            foreach (var hitbox in _activeHitboxes)
-                hitbox.Draw(spriteBatch);
+            //// Draw active attack hitboxes (for debugging)
+            //foreach (var hitbox in _activeHitboxes)
+            //    hitbox.Draw(spriteBatch);
 
-            Hurtbox.Draw(spriteBatch);
-            Collision.Draw(spriteBatch); // Yellow debug box
+            //Hurtbox.Draw(spriteBatch);
+            //Collision.Draw(spriteBatch); // Yellow debug box
         }
 
     }
