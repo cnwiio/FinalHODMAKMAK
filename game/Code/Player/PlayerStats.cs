@@ -16,7 +16,7 @@ namespace game
         public Stat AttackPower { get; } = new Stat() { BaseValue = 50 };
         public Stat Defense { get; } = new Stat() { BaseValue = 10 };
         public Stat MagicResistance { get; } = new Stat() { BaseValue = 5 };
-        public Stat Speed { get; } = new Stat() { BaseValue = 250 };
+        public Stat Speed { get; } = new Stat() { BaseValue = 300 };
         public Stat AttackSpeed { get; } = new Stat() { BaseValue = 1 };
 
         // EXP & Level

@@ -15,6 +15,9 @@ namespace game
         private GraphicsDeviceManager _graphics;
         public ScreenManager screenManager;
 
+        // Audio
+        public AudioController audioController;
+
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
         public short ScreenWidth = 1280, ScreenHeight = 720;
@@ -32,11 +35,13 @@ namespace game
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
+            audioController = new AudioController();
+
             screenManager = new ScreenManager();
             Components.Add(screenManager);
 
             MapWidth = 64 * 70;
-            MapHeight = 64 * 50;
+            MapHeight = 64 * 70;
             CollisionComponent = new CollisionComponent(new RectangleF(0 , 0, MapWidth, MapHeight));
         }
 
@@ -55,7 +60,7 @@ namespace game
 
         protected override void LoadContent()
         {
-            screenManager.LoadScreen(new ScenePrologue(this)); // temporary
+            screenManager.LoadScreen(new SceneMenu(this)); // temporary
             base.LoadContent();
         }
 

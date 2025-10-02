@@ -2,46 +2,81 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace game
 {
     public class HealPickup : IEntity
     {
         public IShapeF Bounds { get; private set; }
+        public string LayerName { get; set; }
+        public bool AlwaysDraw => true;
         private Texture2D _texture;
+        private Vector2 _position;
         private int _healAmount;
         private Player _player;
-        public string LayerName { get; set; }
+        private CollisionComponent _collisionComponent;
+        private bool IsActive = true;
+        private List<IEntity> _scenePendingRemove;
+        public bool DrawDebugOutline { get; set; } = false;
 
-        public HealPickup(Vector2 position, Texture2D texture, Player player, int healAmount = 25)
+
+
+        public HealPickup(Vector2 position, Texture2D texture, Player player,
+            CollisionComponent collisionComponent, List<IEntity> scenePendingRemove, int healAmount = 25)
         {
             _texture = texture;
             _player = player;
             _healAmount = healAmount;
-            Bounds = new RectangleF(position, new SizeF(texture.Width, texture.Height));
-            Bounds.Position -= (Bounds.BoundingRectangle.Size / 2f);
+            _collisionComponent = collisionComponent;
+            _scenePendingRemove = scenePendingRemove;
+
+            Bounds = new RectangleF(
+                position.X - texture.Width / 2f,
+                position.Y - texture.Height / 2f,
+                texture.Width,
+                texture.Height
+            );
+
+            _collisionComponent.Insert(this);
         }
 
-        public void OnCollected()
-        {
-            _player.Stats.HP.AddModifier(_healAmount);
 
-            if (_player.Stats.HP.Value > _player.Stats.HP.BaseValue)
-            {
-                int excess = _player.Stats.HP.Value - _player.Stats.HP.BaseValue;
-                _player.Stats.HP.RemoveModifier(excess);
-            }
+        private void Collect()
+        {
+            if (!IsActive) return;
+
+            // Heal the player using PlayerStats.Heal
+            _player.Stats.Heal(_healAmount);
+
+            Debug.WriteLine($"[HealPickup] Collected! Player HP: {_player.Stats.CurrentHP}");
+
+            IsActive = false;
+
+            // Tell the scene to remove me later
+            _scenePendingRemove.Add(this);
         }
 
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            // nothing here
+            if (!IsActive) return;
+
+            // Player collides with Heal
+            if (collisionInfo.Other is PlayerHurtbox)
+            {
+                Collect();
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            if (!IsActive) return;
+
             spriteBatch.Draw(_texture, ((RectangleF)Bounds).Position, Color.White);
+
+            if (DrawDebugOutline)
+            spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Yellow, 2);
         }
     }
-
 }

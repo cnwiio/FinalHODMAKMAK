@@ -15,7 +15,9 @@ namespace game
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
         public Player _player { get; set; }
-
+        public bool AlwaysDraw => true;
+        private float _invincibleTimer = 0f;
+        private float _invincibleDuration = 0.3f; // 0.3 seconds i-frame
         public PlayerHurtbox(Player player, float width, float height)
         {
             _player = player;
@@ -24,11 +26,14 @@ namespace game
         }
 
         // Update hurtbox position to match player
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             var rect = (RectangleF)Bounds;
             rect.Position = _player._movement.Position - (rect.Size / 2f); // center on player
             Bounds = rect;
+
+            if (_invincibleTimer > 0)
+                _invincibleTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
 
@@ -40,11 +45,17 @@ namespace game
 
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
+            if (_player._movement.IsDashing || _invincibleTimer > 0) return; // still invincible or dashing
+
             if (collisionInfo.Other is MonsterAttackHitbox monster)
             {
-                var damage = -monster.Monster.Damage;
-                _player.Stats.HP.AddModifier(damage); // take damage
-                Debug.WriteLine($"Player took damage! HP: {_player.Stats.HP.Value}");
+                // Reduce CurrentHP, not Stat.Value
+                _player.Stats.TakeDamage(monster.Monster.Damage);
+
+                // Start i-frames
+                _invincibleTimer = _invincibleDuration;
+
+                Debug.WriteLine($"Player took damage! HP: {_player.Stats.CurrentHP}");
             }
         }
     }
