@@ -72,17 +72,15 @@ namespace game
 
             // Audio
             audioController = _Game1.audioController;
+
+            // Camera
+            Camera = _Game1.camera;
+            _Camera = Camera.Cam;
         }
 
         // ----------------------------------------------------------------------------------------------------- //
         //                                          LOAD                                                         //
         // ----------------------------------------------------------------------------------------------------- //
-
-        public void LoadCamera()
-        {
-            Camera = _Game1.camera;
-            _Camera = Camera.Cam;
-        }
 
         public void LoadParticle()
         {
@@ -115,7 +113,7 @@ namespace game
         }
 
         #region Load All Monster
-        private void LoadMonster(PreventMonster _preventMonster, Player _player)
+        public void LoadMonster(PreventMonster _preventMonster, Player _player)
         {
             var spawnPoint = TileMaper.GetObjectLayer("SpawnPoint");
             foreach (var obj in spawnPoint.Objects)
@@ -317,7 +315,6 @@ namespace game
         // IMPORTANT NOTE : อาจจะไม่ค่อยเสถียรและแก้ไขยาก
         public void LoadAll(ContentManager Content, string sceneName/*, PreventMonster preventMonster, Player player*/)
         {
-            LoadCamera();
             LoadParticle();
             LoadTiledMap(Content, sceneName);
             //LoadMonster(Content, preventMonster, player);
@@ -425,7 +422,7 @@ namespace game
         // ----------------------------------------------------------------------------------------------------- //
 
         #region Update Monster
-        private void UpdateMonster(GameTime gameTime, Player _player, Texture2D healTexture)
+        public void UpdateMonster(GameTime gameTime, Player _player, Texture2D healTexture)
         {
             // Loop through all monsters
             foreach (var monster in Monsters.ToList())
@@ -462,17 +459,6 @@ namespace game
                         break;
                 }
             }
-
-
-            // Remove dead monsters
-            foreach (var deadMonster in _pendingMonsterRemove)
-                Monsters.Remove(deadMonster);
-            _pendingMonsterRemove.Clear();
-
-            // Add new entities to collision system
-            foreach (var entity in _pendingAdd)
-                Collisions.Add(entity);
-            _pendingAdd.Clear();
         }
         #endregion
 
@@ -508,7 +494,6 @@ namespace game
                 monster.DeleteHitBox(1f, Collisions, _collisionComponent); // 3 parameters
 
             monster.RemoveMonster();
-            _pendingMonsterRemove.Add(monster);
         }
 
         /// <summary>

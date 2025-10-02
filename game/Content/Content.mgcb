@@ -599,23 +599,6 @@
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Grass_Tileset_1.tsx
 
-#begin TileMap/Nature_asset_1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:TileMap/Nature_asset_1.png
-
-#begin TileMap/Nature_asset_1.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
-/build:TileMap/Nature_asset_1.tsx
-
 #begin TileMap/Path_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -632,6 +615,23 @@
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Path_1.tsx
+
+#begin TileMap/Rock&Bush.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Rock&Bush.png
+
+#begin TileMap/Rock&Bush.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Rock&Bush.tsx
 
 #begin TileMap/SceneHome.tmx
 /importer:TiledMapImporter
@@ -688,6 +688,11 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:TileMap/Tree_1.png
+
+#begin TileMap/Tree_1.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Tree_1.tsx
 
 #begin TileMap/Tree_Shadow.png
 /importer:TextureImporter
@@ -811,4 +816,38 @@
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Waterfall_Tileset.tsx
+
+#begin TileMap/Waterfall_Tileset2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/Waterfall_Tileset2.png
+
+#begin TileMap/Waterfall_Tileset2.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/Waterfall_Tileset2.tsx
+
+#begin TileMap/WaterFall-Sheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileMap/WaterFall-Sheet.png
+
+#begin TileMap/WaterFall-Sheet.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:TileMap/WaterFall-Sheet.tsx
 

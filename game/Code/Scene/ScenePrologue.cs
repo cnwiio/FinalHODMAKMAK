@@ -175,7 +175,7 @@ namespace game
             {
                 _collisionComponent.Insert(entity);
             }
-            
+
             base.LoadContent();
         }
 
@@ -231,12 +231,6 @@ namespace game
 
             // Monster
             UpdateMonster(gameTime);
-
-            // Flush queued removals
-            foreach (var monster in _pendingRemove.OfType<IMonster>())
-            {
-                _monster.Remove(monster);
-            }
 
             // Flush queued additions
             foreach (var entity in _pendingAdd)
@@ -410,7 +404,6 @@ namespace game
             }
             _collision.Clear();
             _monster.Clear();
-            _ysort.Clear();
             _gameObject.Clear();
             _shadow.Clear();
             hitParticle = null;
@@ -656,17 +649,6 @@ namespace game
                         break;
                 }
             }
-            
-
-            // Remove dead monsters
-            foreach (var deadMonster in _pendingMonsterRemove)
-                _monster.Remove(deadMonster);
-            _pendingMonsterRemove.Clear();
-
-            // Add new entities to collision system
-            foreach (var entity in _pendingAdd)
-                _collision.Add(entity);
-            _pendingAdd.Clear();
         }
         #endregion
 
@@ -702,7 +684,6 @@ namespace game
                 monster.DeleteHitBox(1f, _collision, _collisionComponent); // 3 parameters
 
             monster.RemoveMonster();
-            _pendingMonsterRemove.Add(monster);
         }
 
         /// <summary>
