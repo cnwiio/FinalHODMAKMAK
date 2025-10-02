@@ -116,7 +116,7 @@ namespace game
             _playerTexture.CreateAnimation("Walk", "up", true, 98, 24, 8);
 
             // Idle animation (4 directions, 6 frames per row)
-            _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 100, 112);
+            _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 128, 128);
 
             _playerTexture.CreateAnimation("Idle", "down", true, 200, 0, 6);   // row 0
             _playerTexture.CreateAnimation("Idle", "right", true, 200, 6, 6);  // row 1
