@@ -26,6 +26,8 @@ namespace game
 
         // Monster
         public List<IMonster> Monsters = new List<IMonster>();
+        private List<IEntity> _pendingAdd = new List<IEntity>();
+        private List<IEntity> _pendingRemove = new List<IEntity>();
 
         // Collision & Layer
         public List<IEntity> Collisions = new List<IEntity>();
@@ -269,7 +271,7 @@ namespace game
 
                 if (monster.IsDead)
                 {
-                    DropManager.DropHeal(_healTexture, _player, _collisionComponent, monster.Position);
+                    DropManager.DropHeal(_healTexture, _player, _collisionComponent, monster.Position, _pendingRemove);
                     monster.DeleteHitBox(1f, Collisions, CollisionComponents);
                     monster.RemoveMonster();
                     Monsters.Remove(monster);
@@ -288,7 +290,7 @@ namespace game
 
                 if (monster.IsDead)
                 {
-                    DropManager.DropHeal(_healTexture, _player, _collisionComponent, monster.Position);
+                    DropManager.DropHeal(_healTexture, _player, _collisionComponent, monster.Position, _pendingRemove);
                     monster.DeleteHitBox(1f);
                     monster.RemoveMonster();
                     Monsters.Remove(monster);

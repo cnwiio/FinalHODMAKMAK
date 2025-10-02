@@ -636,7 +636,8 @@ namespace game
                 _healTexture,
                 _player,
                 _collisionComponent,
-                monster.Position
+                monster.Position,
+                _pendingRemove
             );
             _pendingAdd.Add(healPickup);
 
@@ -655,7 +656,7 @@ namespace game
         /// </summary>
         private void SpawnHeal(Vector2 position)
         {
-            var healPickup = DropManager.DropHeal(_healTexture, _player, _collisionComponent, position);
+            var healPickup = DropManager.DropHeal(_healTexture, _player, _collisionComponent, position, _pendingRemove);
             _pendingAdd.Add(healPickup);
             Debug.WriteLine("Spawned HealPickup at: " + position);
         }

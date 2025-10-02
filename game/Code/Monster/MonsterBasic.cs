@@ -312,20 +312,21 @@ namespace game
             _knockBackDirection = knockbackDirection;
             _knockBackForce = knockbackForce;
         }
-        public void DropHeal(Texture2D texture, Player player, CollisionComponent collisionComponent, Vector2 position, int healAmount = 25)
+        public void DropHeal(Texture2D texture, Player player, CollisionComponent collisionComponent, Vector2 position, List<IEntity> scenePendingRemove, int healAmount = 25)
         {
             Random r = new Random();
-            if (r.Next(1, 101) <= 100) // Percentage, e.g., 100 means 100%
+            if (r.Next(1, 101) <= 100) // 100% chance, tweak if needed
             {
-                // Create heal pickup
-                var healPickup = new HealPickup(position, texture, player, collisionComponent, healAmount);
+                var healPickup = new HealPickup(position, texture, player, collisionComponent, scenePendingRemove, healAmount);
 
-                // Insert into player's world via public references
+                // Add to entity list so it can be drawn/updated
                 player._entities.Add(healPickup);
-                collisionComponent.Insert(healPickup); // Insert into collisions
-                Debug.WriteLine("HealPickup spawned at: " + animation.Position);
+
+                // ❌ Do NOT call collisionComponent.Insert here (already done in HealPickup)
+                Debug.WriteLine("HealPickup spawned at: " + position);
             }
         }
+
 
         public void Return(float deltaTime)
         {

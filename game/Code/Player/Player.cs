@@ -61,7 +61,6 @@ namespace game
             if (!_entities.Contains(Collision)) _entities.Add(Collision);
             _collisionComponent?.Insert(Collision);
         }
-
         public void Update(GameTime gameTime, List<IEntity> attackTargets)
         {
             _input.Update(gameTime);
@@ -98,7 +97,7 @@ namespace game
             foreach (var hitbox in _activeHitboxes.ToList())
                 hitbox.Update(gameTime);
 
-            Hurtbox.Update();
+            Hurtbox.Update(gameTime);
             Collision.Update();
 
             _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
