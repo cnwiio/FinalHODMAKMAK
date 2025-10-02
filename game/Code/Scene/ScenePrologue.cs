@@ -23,12 +23,14 @@ namespace game
         private TileMaper _tileMaper;
         private List<IYsort> _ysort = new List<IYsort>();
 
+        #region Monster
         // Monster
         private List<IMonster> _monster = new List<IMonster>();
         private List<IEntity> _attackTargets = new List<IEntity>();
         private List<IEntity> _pendingAdd = new List<IEntity>();
         private List<IEntity> _pendingRemove = new List<IEntity>();
         private List<IMonster> _pendingMonsterRemove = new List<IMonster>();
+        #endregion
 
         // Collision & Layer
         private List<IEntity> _collision = new List<IEntity>();
@@ -187,6 +189,21 @@ namespace game
             {
                 isDebug = !isDebug;
             }
+            if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
+            {
+                if (_player.Stats.Speed.Value <= 900)
+                {
+                    _player.Stats.Speed.AddModifier(1500);
+                    _player.Stats.AttackDamage.AddModifier(10000000);
+                    _camera.MinimumZoom = 0.1f;
+                }
+                else
+                {
+                    _player.Stats.Speed.RemoveModifier(1500);
+                    _player.Stats.AttackDamage.RemoveModifier(10000000);
+                    _camera.MinimumZoom = 1;
+                }
+            }
             if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
                 ScreenManager.LoadScreen(new SceneMenu(game1));
@@ -263,6 +280,16 @@ namespace game
 
             // Begin main camera sprite batch (world space)
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _camera.GetViewMatrix());
+
+            // วาดสกิลของบอส
+            if (_monster.Exists(x => x is MonsterBoss))
+            {
+                var Boss = (MonsterBoss)_monster.Find(x => x.GetType() == typeof(MonsterBoss));
+                if (!Boss.IsDead)
+                {
+                    Boss.DrawSkill(_spriteBatch);
+                }
+            }
 
             // Draw shadows behind entities
             foreach (var shadow in _shadow)
@@ -396,6 +423,7 @@ namespace game
             base.UnloadContent();
         }
         // {------------------------------ Monster ------------------------------------------- } //
+        #region Load All Monster
         private void LoadMonster()
         {
             var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
@@ -436,17 +464,19 @@ namespace game
                     {
                         _monster.Add(new MonsterSlime(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
                     }
-                    //else
-                    //{
-                    //    _monster.Add(new MonsterSlime(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
-                    //}
+                    else
+                    {
+                        _monster.Add(new MonsterSlime(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
+                    }
                     LoadMonsterSlime((MonsterSlime)_monster.Last());
                 }
             }
             //_monster.Add(new MonsterRange(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
             //_monster.Add(new MonsterMelee(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
         }
+        #endregion
 
+        #region Load Monster Melee
         private void LoadMonsterMelee(MonsterMelee monster)
         {
             if (monster.ElementType == ElementType.Light)
@@ -474,14 +504,16 @@ namespace game
                 hp: 250,
                 damage: 10,
                 attackRange: (int)(monster.Width * 1.5),
-                activeRadius: (int)(monster.Width * 2),
+                activeRadius: (int)(monster.Width * 1.5),
                 dashForce: monster.Width * 7
             );
             _ysort.Add(monster);
             _collision.Add(monster.HurtBox);
             _collision.Add(monster.Collision);
         }
+        #endregion
 
+        #region Load Monster Range
         private void LoadMonsterRange(MonsterRange monster)
         {
             if (monster.ElementType == ElementType.Light)
@@ -518,6 +550,9 @@ namespace game
             _collision.Add(monster.HurtBox);
             _collision.Add(monster.Collision);
         }
+        #endregion
+
+        #region Load Monster Boss
 
         private void LoadMonsterBoss(MonsterBoss monster)
         {
@@ -545,6 +580,9 @@ namespace game
             _collision.Add(monster.HurtBox);
             _collision.Add(monster.Collision);
         }
+        #endregion
+
+        #region Load Monster Slime
         private void LoadMonsterSlime(MonsterSlime monster)
         {
             if (monster.ElementType == ElementType.Light)
@@ -555,14 +593,14 @@ namespace game
                 monster.LoadAnim("Charge", "LightSlimeCharge", monster.Position, 64, 64, Content);
                 monster.LoadAnim("Die", "LightSlimeDie", monster.Position, 64, 64, Content);
             }
-            //else if (monster.ElementType == ElementType.Dark)
-            //{
-            //    monster.LoadAnim("Walk", "DarkGoonWalk", monster.Position, 128, 128, Content);
-            //    monster.LoadAnim("Idle", "DarkGoonIdle", monster.Position, 128, 128, Content);
-            //    monster.LoadAnim("Attack", "DarkGoonAttack", monster.Position, 128, 128, Content);
-            //    monster.LoadAnim("Charge", "DarkGoonCharge", monster.Position, 128, 128, Content);
-            //    monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
-            //}
+            else if (monster.ElementType == ElementType.Dark)
+            {
+                monster.LoadAnim("Idle", "DarkSlimeIdle", monster.Position, 64, 64, Content);
+                monster.LoadAnim("Walk", "DarkSlimeAttack", monster.Position, 64, 192, Content);
+                monster.LoadAnim("Attack", "DarkSlimeAttack", monster.Position, 64, 192, Content);
+                monster.LoadAnim("Charge", "DarkSlimeCharge", monster.Position, 64, 192, Content);
+                monster.LoadAnim("Die", "DarkSlimeDie", monster.Position, 64, 64, Content);
+            }
             monster.LoadUI(Content, "HealthBar5");
             monster.LoadSound(Content, _audioController, "SlimeHit", "SlimeDie");
             monster.CreateAnimation();
@@ -572,14 +610,16 @@ namespace game
                 hp: 250,
                 damage: 10,
                 attackRange: (int)(monster.Width * 1.5),
-                activeRadius: (int)(monster.Width * 2),
+                activeRadius: (int)(monster.Width * 1.5),
                 dashForce: monster.Width * 7
             );
             _ysort.Add(monster);
             _collision.Add(monster.HurtBox);
             _collision.Add(monster.Collision);
         }
+        #endregion
 
+        #region Update Monster
         private void UpdateMonster(GameTime gameTime)
         {
             // Loop through all monsters
@@ -616,6 +656,7 @@ namespace game
                         break;
                 }
             }
+            
 
             // Remove dead monsters
             foreach (var deadMonster in _pendingMonsterRemove)
@@ -627,7 +668,9 @@ namespace game
                 _collision.Add(entity);
             _pendingAdd.Clear();
         }
+        #endregion
 
+        #region Monster Extra
         // Shake camera helper
         private void HandleShakeCamera(dynamic monster, GameTime gameTime)
         {
@@ -671,5 +714,6 @@ namespace game
             _pendingAdd.Add(healPickup);
             Debug.WriteLine("Spawned HealPickup at: " + position);
         }
+        #endregion
     }
 }
