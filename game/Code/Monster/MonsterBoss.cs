@@ -73,6 +73,8 @@ namespace game
                 }
             }
         }
+
+        #region Setting && Update
         public MonsterBoss(Vector2 position, PreventMonster preventMonster, Player player, HitParticle particle, DeadParticle deadParticle, FireParticle fireParticle, ElementType element)
         {
             Position = position;
@@ -208,6 +210,33 @@ namespace game
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
+
+        public void StateChecking(float deltaTime)
+        {
+            var bounds = HurtBox.Bounds.BoundingRectangle;
+            var HurtboxWidth = (int)bounds.Width;
+            var HurtboxHeight = (int)bounds.Height;
+            preventMonsterEdge = Vector2.Distance(Position, PreventMonster.Position) - PreventMonster.Radius;
+            isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
+            isInRange = Vector2.Distance(Position, TargetPos) <= SreachRadius;
+            isInAttack = Vector2.Distance(Position, TargetPos) <= AttackRange;
+            isInWander = Vector2.Distance(Position, TargetPos) > SreachRadius && Vector2.Distance(Position, SpawnPosition) > Width;
+            if (!isInActiveRadius && Vector2.Distance(Position, TargetPos) <= ActiveRadius)
+            {
+                isInActiveRadius = true;
+            } else if (!isInRange) 
+            {
+                isInActiveRadius = false;
+            }
+                //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
+                isInAttackList = isInRange;
+            DirectionToPlayer = TargetPos - Position;
+            if (DirectionToPlayer != Vector2.Zero)
+                DirectionToPlayer.Normalize();
+        }
+        #endregion
+
+        #region Draw
         public void Draw(SpriteBatch spriteBatch)
         {
             var elementColor = ElementType == ElementType.Light ? Color.Gold : Color.Violet;
@@ -309,6 +338,8 @@ namespace game
                 telegraph[i].Draw(spriteBatch); 
             }
         }
+        #endregion
+
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
         {
             const float ttl = 0.7f; // ms
@@ -348,26 +379,7 @@ namespace game
             _collisions.Add(bulletHitbox[i]);
             _collisionComponents.Insert(bulletHitbox[i]);
         }
-        public void StateChecking(float deltaTime)
-        {
-            var bounds = HurtBox.Bounds.BoundingRectangle;
-            var HurtboxWidth = (int)bounds.Width;
-            var HurtboxHeight = (int)bounds.Height;
-            preventMonsterEdge = Vector2.Distance(Position, PreventMonster.Position) - PreventMonster.Radius;
-            isAwayHome = Vector2.Distance(Position, SpawnPosition) > AwaySpawnRadius;
-            isInRange = Vector2.Distance(Position, TargetPos) <= SreachRadius;
-            isInAttack = Vector2.Distance(Position, TargetPos) <= AttackRange;
-            isInWander = Vector2.Distance(Position, TargetPos) > SreachRadius && Vector2.Distance(Position, SpawnPosition) > Width;
-            if(!isInActiveRadius && Vector2.Distance(Position, TargetPos) <= ActiveRadius)
-            {
-                isInActiveRadius = true;
-            }
-            //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
-            isInAttackList = isInRange;
-            DirectionToPlayer = TargetPos - Position;
-            if (DirectionToPlayer != Vector2.Zero)
-                DirectionToPlayer.Normalize();
-        }
+
         public void DeleteHitBox(float deltaTime, List<IEntity> entities, CollisionComponent collisionComponent)
         {
             if (Hitbox != null)
@@ -477,7 +489,7 @@ namespace game
                 isAttack = true;
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
-                //currentBossAttack = 3;
+                currentBossAttack = 2;
                 if (currentBossAttack == 3 || currentBossAttack == 5)
                 {
                     animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
@@ -594,10 +606,10 @@ namespace game
         // ตีตามตัว
         public void CreateTelegraph()
         {
-            var waveAmout = 4;
+            var waveAmout = 10;
             if (wave < waveAmout && waveTimer == 0f && isAttack)
             {
-                waveTimer = 0.35f;
+                waveTimer = 0.3f;
                 telegraph[wave].Create(
                     scale: 10,
                     alpha: 0.2f,

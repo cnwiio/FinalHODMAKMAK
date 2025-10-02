@@ -10,6 +10,7 @@ namespace game
         public IShapeF Bounds { get; private set; }
         public string LayerName { get; set; }
         public Player Player { get; private set; }
+        public bool AlwaysDraw => true;
 
         private Vector2 _offset; // manual offset from player position
         private Vector2 _size;   // manual size of collision box

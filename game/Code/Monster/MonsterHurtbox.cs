@@ -10,6 +10,7 @@ namespace game
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
         public IMonster Monster { get; set; }
+        public bool AlwaysDraw => true;
         public MonsterHurtbox(RectangleF bounds, IMonster monsterMelee)
         {
             Bounds = bounds;

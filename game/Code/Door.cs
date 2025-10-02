@@ -15,6 +15,7 @@ namespace game
         private ScreenManager screenManager;
         private Game1 game;
         private bool db;
+        public bool AlwaysDraw => true;
         public Door(RectangleF bounds, string targetScene, Game game)
         {
             Bounds = bounds;

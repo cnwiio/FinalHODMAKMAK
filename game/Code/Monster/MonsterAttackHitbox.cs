@@ -13,6 +13,7 @@ namespace game
         public string LayerName { get; set; }
         public float TimeToLiveSeconds { get; set; }
         public bool bulletVisible { get; set; }
+        public bool AlwaysDraw => true;
         public MonsterAttackHitbox(RectangleF bounds, float timeToLiveSeconds, IMonster monster)
         {
             Bounds = bounds;
@@ -25,12 +26,12 @@ namespace game
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            if ((collisionInfo.Other is Wall || collisionInfo.Other is PlayerHurtbox || collisionInfo.Other is PlayerAttackHitbox) && Monster is MonsterRange)
+            if ((collisionInfo.Other is PlayerHurtbox || collisionInfo.Other is PlayerAttackHitbox) && Monster is MonsterRange)
             {
                 var mon = Monster as MonsterRange;
                 mon.BulletVisible = false;
             }
-            if ((collisionInfo.Other is Wall || collisionInfo.Other is PlayerHurtbox || collisionInfo.Other is PlayerAttackHitbox) && Monster is MonsterBoss)
+            if ((collisionInfo.Other is PlayerHurtbox || collisionInfo.Other is PlayerAttackHitbox) && Monster is MonsterBoss)
             {
                 bulletVisible = false;
             }

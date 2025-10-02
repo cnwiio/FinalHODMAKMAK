@@ -11,6 +11,7 @@ namespace game
 {
     public interface IEntity : ICollisionActor
     {
+        bool AlwaysDraw { get; }
         //public void Update(GameTime gameTime);
         public void Draw(SpriteBatch spriteBatch);
     }

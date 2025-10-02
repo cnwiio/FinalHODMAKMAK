@@ -18,6 +18,8 @@ namespace game
     {
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks, _oldKs;
+        private MouseState _ms, _oms;
+        private Texture2D BG;
         public SceneMenu(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -25,21 +27,36 @@ namespace game
 
         public override void LoadContent()
         {
-            ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+            //ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+            BG = Content.Load<Texture2D>("Texture/BG_art");
             base.LoadContent();
         }
         public override void Update(GameTime gameTime)
-        {
+        { 
             _oldKs = _ks;
             _ks = Keyboard.GetState();
-            if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
+            _oms = _ms;
+            _ms = Mouse.GetState();
+            var checkKs = _ks.GetPressedKeyCount() > 0 && _oldKs.GetPressedKeyCount() == 0;
+            var checkMS = (_ms.LeftButton == ButtonState.Pressed && _oms.LeftButton != ButtonState.Pressed) ||
+                (_ms.RightButton == ButtonState.Pressed && _oms.RightButton != ButtonState.Pressed);
+            if (checkKs || checkMS)
             {
                 ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
             }
+
         }
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(BG, new Rectangle(0, 0, 1280, 720), Color.White);
+            _spriteBatch.End();
+        }
+        public override void UnloadContent()
+        {
+            BG = null;
+            base.UnloadContent();
         }
     }
 }
