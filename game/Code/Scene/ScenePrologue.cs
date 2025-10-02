@@ -26,6 +26,9 @@ namespace game
         // Monster
         private List<IMonster> _monster = new List<IMonster>();
         private List<IEntity> _attackTargets = new List<IEntity>();
+        private List<IEntity> _pendingAdd = new List<IEntity>();
+        private List<IEntity> _pendingRemove = new List<IEntity>();
+        private List<IMonster> _pendingMonsterRemove = new List<IMonster>();
 
         // Collision & Layer
         private List<IEntity> _collision = new List<IEntity>();
@@ -37,6 +40,9 @@ namespace game
         // Player
         private AnimController _playerTexture;
         private Player _player;
+
+        // Pickup
+        private List<IEntity> _pickups = new List<IEntity>();
 
         // Camera
         private GlobalCamera camera;
@@ -56,7 +62,7 @@ namespace game
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
-        private bool isDebug = false;
+        public bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -208,6 +214,24 @@ namespace game
 
             // Monster
             UpdateMonster(gameTime);
+
+            // Flush queued removals
+            foreach (var monster in _pendingRemove.OfType<IMonster>())
+            {
+                _monster.Remove(monster);
+            }
+
+            // Flush queued additions
+            foreach (var entity in _pendingAdd)
+            {
+                _collision.Add(entity);
+                _collisionComponent.Insert(entity);
+            }
+
+            // Clear queues
+            _pendingAdd.Clear();
+            _pendingRemove.Clear();
+
             // Ysort
             _ysort.Sort((a, b) => 
             {
@@ -234,105 +258,112 @@ namespace game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            // Draw tile map first
             _tileMaper.DrawMap(_camera);
 
-            _spriteBatch.Begin(
-                SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
-                SamplerState.PointClamp,
-                transformMatrix: _camera.GetViewMatrix()
-            );
+            // Begin main camera sprite batch (world space)
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _camera.GetViewMatrix());
 
-            // Player
-            //_player.Draw(_spriteBatch);
+            // Draw shadows behind entities
+            foreach (var shadow in _shadow)
+                shadow.Draw(_spriteBatch);
 
-            // วาดสกิลของบอส
-            if (_monster.Exists(x => x is MonsterBoss)) {
-                var Boss = (MonsterBoss)_monster.Find(x => x.GetType() == typeof(MonsterBoss));
-                if (!Boss.IsDead)
-                {
-                    Boss.DrawSkill(_spriteBatch);
-                }
-            }
-            
-            // Shadow
-            foreach (GameObject item in _shadow)
+            // Draw all sorted entities
+            foreach (var entity in _ysort)
             {
-                item.Draw(_spriteBatch);
+                // Enable debug outline if applicable
+                if (entity is HealPickup heal)
+                    heal.DrawDebugOutline = isDebug;
+
+                entity.Draw(_spriteBatch);
             }
 
-            // Object
-            foreach (var item in _ysort)
+            // Draw pickups (like heals) that might not be in _ysort
+            foreach (var pickup in _pickups)
             {
-                item.Draw(_spriteBatch);    
+                if (pickup is HealPickup heal)
+                    heal.DrawDebugOutline = isDebug;
+
+                pickup.Draw(_spriteBatch);
             }
 
-            // Draw hitboxes
+            // Optional debug overlay (collisions, monster ranges, etc.)
             if (isDebug)
-            {
-                _spriteBatch.DrawRectangle(new RectangleF(camera.Position,
-                    new SizeF(5, 5)), Color.Red, 5, 0);
-                foreach (IEntity item in _collision)
-                {
-                    item.Draw(_spriteBatch);
-                }
-                // Prevent monster zone
-                _preventMonster.Draw(_spriteBatch);
-                // Monster
-                foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
-                {
-                    //monster.Draw(_spriteBatch);
-                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                }
-                foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
-                {
-                    //monster.Draw(_spriteBatch);
-                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                }
-                foreach (MonsterBoss monster in _monster.OfType<MonsterBoss>().ToList())
-                {
-                    if (!monster.IsDead)
-                    {
-                        _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                    }
-                }
-                foreach (MonsterSlime monster in _monster.OfType<MonsterSlime>().ToList())
-                {
-                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                }
-            }
+                DebugDraw();
 
-            // Particle
+            // Draw particles
             hitParticle.Draw(_spriteBatch);
             deadParticle.Draw(_spriteBatch);
             fireParticleLight.Draw(_spriteBatch);
             fireParticleDark.Draw(_spriteBatch);
+
             _spriteBatch.End();
 
-            // UI
+            // Begin UI sprite batch (screen space)
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-            foreach (IYsort item in _ysort)
+
+            // Draw UI elements like boss health bars
+            foreach (var entity in _ysort)
             {
-                if (item is MonsterBoss)
+                if (entity is MonsterBoss boss && !boss.IsDead && boss.isInActiveRadius)
                 {
-                    var boss = (MonsterBoss)item;
-                    var pos = new Vector2(game1.ScreenWidth / 2 , 50); // 320 = ครึ่งนีงของความยาว UI
-                    if (!boss.IsDead && boss.isInActiveRadius) boss.DrawUI(_spriteBatch, pos);
+                    boss.DrawUI(_spriteBatch, new Vector2(game1.ScreenWidth / 2, 50));
                 }
             }
+
             _spriteBatch.End();
         }
+        private void DebugDraw()
+        {
+            // Camera reference point
+            _spriteBatch.DrawRectangle(new RectangleF(_camera.Position, new SizeF(5, 5)), Color.Red, 5, 0);
+
+            foreach (IEntity entity in _collision)
+                entity.Draw(_spriteBatch);
+
+            _preventMonster.Draw(_spriteBatch);
+
+            foreach (var monster in _monster)
+            {
+                if (monster is MonsterMelee mm)
+                    DrawMonsterDebug(mm);
+                else if (monster is MonsterRange mr)
+                    DrawMonsterDebug(mr);
+                else if (monster is MonsterBoss mb && !mb.IsDead)
+                    DrawMonsterDebug(mb);
+                else if (monster is MonsterSlime ms)
+                    DrawMonsterDebug(ms);
+            }
+        }
+
+        private void DrawMonsterDebug(IMonster monster)
+        {
+            _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+            _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+
+            switch (monster)
+            {
+                case MonsterMelee mm:
+                    _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.AttackRange), 16, Color.Aqua, 2);
+                    break;
+                case MonsterRange mr:
+                    _spriteBatch.DrawCircle(new CircleF(mr.Position, mr.AttackRange), 16, Color.Aqua, 2);
+                    break;
+                case MonsterBoss mb:
+                    if (!mb.IsDead)
+                    {
+                        _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                        _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.AttackRange), 16, Color.Aqua, 2);
+                    }
+                    break;
+                case MonsterSlime ms:
+                    _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.AttackRange), 16, Color.Aqua, 2);
+                    break;
+            }
+        }
+
 
 
         public override void UnloadContent()
@@ -551,91 +582,94 @@ namespace game
 
         private void UpdateMonster(GameTime gameTime)
         {
-            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
+            // Loop through all monsters
+            foreach (var monster in _monster.ToList())
             {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
+                switch (monster)
                 {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
+                    case MonsterMelee m:
+                        m.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(m, gameTime);
+                        if (m.IsDead)
+                            HandleMonsterDeath(m);
+                        break;
+
+                    case MonsterRange r:
+                        r.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(r, gameTime);
+                        if (r.IsDead)
+                            HandleMonsterDeath(r);
+                        break;
+
+                    case MonsterBoss b:
+                        b.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(b, gameTime);
+                        if (b.IsDead)
+                            HandleMonsterDeath(b);
+                        break;
+
+                    case MonsterSlime s:
+                        s.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(s, gameTime);
+                        if (s.IsDead)
+                            HandleMonsterDeath(s);
+                        break;
                 }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
             }
-            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
+
+            // Remove dead monsters
+            foreach (var deadMonster in _pendingMonsterRemove)
+                _monster.Remove(deadMonster);
+            _pendingMonsterRemove.Clear();
+
+            // Add new entities to collision system
+            foreach (var entity in _pendingAdd)
+                _collision.Add(entity);
+            _pendingAdd.Clear();
+        }
+
+        // Shake camera helper
+        private void HandleShakeCamera(dynamic monster, GameTime gameTime)
+        {
+            if (monster.ShakeViewport)
             {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
-                {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
-                }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
-            }
-            foreach (MonsterBoss monster in _monster.OfType<MonsterBoss>().ToList())
-            {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
-                {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
-                }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
-            }
-            foreach (MonsterSlime monster in _monster.OfType<MonsterSlime>().ToList())
-            {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
-                {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
-                }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
+                camera.ShakeCamera(gameTime);
+                monster.ShakeViewport = camera.ShakeViewport;
             }
         }
-        // {-------------------------- End of Monster ---------------------------------------- } //
+
+        // Handle monster death and spawn heal pickup
+        private void HandleMonsterDeath(dynamic monster)
+        {
+            // Spawn heal pickup via DropManager
+            var healPickup = DropManager.DropHeal(
+                _healTexture,
+                _player,
+                _collisionComponent,
+                monster.Position,
+                _pendingRemove
+            );
+            _pendingAdd.Add(healPickup);
+            _pickups.Add(healPickup);
+
+            // Clean up monster
+            if (monster is MonsterRange)
+                monster.DeleteHitBox(1f); // Only 1 parameter
+            else
+                monster.DeleteHitBox(1f, _collision, _collisionComponent); // 3 parameters
+
+            monster.RemoveMonster();
+            _pendingMonsterRemove.Add(monster);
+        }
+
+        /// <summary>
+        /// Helper function to spawn a heal pickup
+        /// </summary>
+        private void SpawnHeal(Vector2 position)
+        {
+            var healPickup = DropManager.DropHeal(_healTexture, _player, _collisionComponent, position, _pendingRemove);
+            _pendingAdd.Add(healPickup);
+            Debug.WriteLine("Spawned HealPickup at: " + position);
+        }
     }
 }

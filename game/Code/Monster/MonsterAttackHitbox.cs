@@ -13,6 +13,7 @@ namespace game
         public string LayerName { get; set; }
         public float TimeToLiveSeconds { get; set; }
         public bool bulletVisible { get; set; }
+        public bool AlwaysDraw => true;
         public MonsterAttackHitbox(RectangleF bounds, float timeToLiveSeconds, IMonster monster)
         {
             Bounds = bounds;

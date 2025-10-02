@@ -9,6 +9,7 @@ namespace game
     {
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
+        public bool AlwaysDraw => true;
         public Wall(RectangleF bounds)
         {
             Bounds = bounds;

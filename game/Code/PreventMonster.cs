@@ -15,6 +15,7 @@ namespace game
         public Game1 Game { get; set; }
         public List<IMonster> ActiveAttacker { get; private set; } = new List<IMonster>();
         public const short MAXATTACKER = 2;
+        public bool AlwaysDraw => true;
         public PreventMonster(Vector2 position, float radius)
         {
             Position = position;

@@ -11,6 +11,7 @@ namespace game
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
         public IMonster Monster { get; set; }
+        public bool AlwaysDraw => true;
         public MonsterCollision(RectangleF bounds, IMonster monster)
         {
             Bounds = bounds;
