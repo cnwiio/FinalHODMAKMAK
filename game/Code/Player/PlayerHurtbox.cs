@@ -44,7 +44,7 @@ namespace game
 
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            if (_invincibleTimer > 0) return; // still invincible
+            if (_player._movement.IsDashing || _invincibleTimer > 0) return; // still invincible or dashing
 
             if (collisionInfo.Other is MonsterAttackHitbox monster)
             {
