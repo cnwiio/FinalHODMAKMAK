@@ -26,6 +26,9 @@ namespace game
         // Monster
         private List<IMonster> _monster = new List<IMonster>();
         private List<IEntity> _attackTargets = new List<IEntity>();
+        private List<IEntity> _pendingAdd = new List<IEntity>();
+        private List<IEntity> _pendingRemove = new List<IEntity>();
+        private List<IMonster> _pendingMonsterRemove = new List<IMonster>();
 
         // Collision & Layer
         private List<IEntity> _collision = new List<IEntity>();
@@ -208,6 +211,24 @@ namespace game
 
             // Monster
             UpdateMonster(gameTime);
+
+            // Flush queued removals
+            foreach (var monster in _pendingRemove.OfType<IMonster>())
+            {
+                _monster.Remove(monster);
+            }
+
+            // Flush queued additions
+            foreach (var entity in _pendingAdd)
+            {
+                _collision.Add(entity);
+                _collisionComponent.Insert(entity);
+            }
+
+            // Clear queues
+            _pendingAdd.Clear();
+            _pendingRemove.Clear();
+
             // Ysort
             _ysort.Sort((a, b) => 
             {
@@ -551,91 +572,92 @@ namespace game
 
         private void UpdateMonster(GameTime gameTime)
         {
-            foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
+            // Loop through all monsters
+            foreach (var monster in _monster.ToList())
             {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
+                switch (monster)
                 {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
+                    case MonsterMelee m:
+                        m.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(m, gameTime);
+                        if (m.IsDead)
+                            HandleMonsterDeath(m);
+                        break;
+
+                    case MonsterRange r:
+                        r.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(r, gameTime);
+                        if (r.IsDead)
+                            HandleMonsterDeath(r);
+                        break;
+
+                    case MonsterBoss b:
+                        b.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(b, gameTime);
+                        if (b.IsDead)
+                            HandleMonsterDeath(b);
+                        break;
+
+                    case MonsterSlime s:
+                        s.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+                        HandleShakeCamera(s, gameTime);
+                        if (s.IsDead)
+                            HandleMonsterDeath(s);
+                        break;
                 }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
             }
-            foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
+
+            // Remove dead monsters
+            foreach (var deadMonster in _pendingMonsterRemove)
+                _monster.Remove(deadMonster);
+            _pendingMonsterRemove.Clear();
+
+            // Add new entities to collision system
+            foreach (var entity in _pendingAdd)
+                _collision.Add(entity);
+            _pendingAdd.Clear();
+        }
+
+        // Shake camera helper
+        private void HandleShakeCamera(dynamic monster, GameTime gameTime)
+        {
+            if (monster.ShakeViewport)
             {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
-                {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
-                }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
-            }
-            foreach (MonsterBoss monster in _monster.OfType<MonsterBoss>().ToList())
-            {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
-                {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
-                }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
-            }
-            foreach (MonsterSlime monster in _monster.OfType<MonsterSlime>().ToList())
-            {
-                monster.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                if (monster.ShakeViewport)
-                {
-                    camera.ShakeCamera(gameTime);
-                    monster.ShakeViewport = camera.ShakeViewport;
-                }
-                // Temporary
-                // Will make additional method for monster dead and drop
-                // ps. make a new global class and make a drop heal there, then call it in remove monster(maybe)
-                if (monster.IsDead)
-                {
-                    monster.DropHeal(_collision, _collisionComponent, _healTexture, _player);
-                    monster.DeleteHitBox(1f, _collision, _collisionComponent);
-                    monster.RemoveMonster();
-                    _monster.Remove(monster);
-                    break; // Exit the loop to avoid modifying the collection while iterating; list bug prevented
-                }
-                //--------------
+                camera.ShakeCamera(gameTime);
+                monster.ShakeViewport = camera.ShakeViewport;
             }
         }
-        // {-------------------------- End of Monster ---------------------------------------- } //
+
+        // Handle monster death and spawn heal pickup
+        private void HandleMonsterDeath(dynamic monster)
+        {
+            // Spawn heal pickup via DropManager
+            var healPickup = DropManager.DropHeal(
+                _healTexture,
+                _player,
+                _collisionComponent,
+                monster.Position
+            );
+            _pendingAdd.Add(healPickup);
+
+            // Clean up monster
+            if (monster is MonsterRange)
+                monster.DeleteHitBox(1f); // Only 1 parameter
+            else
+                monster.DeleteHitBox(1f, _collision, _collisionComponent); // 3 parameters
+
+            monster.RemoveMonster();
+            _pendingMonsterRemove.Add(monster);
+        }
+
+        /// <summary>
+        /// Helper function to spawn a heal pickup
+        /// </summary>
+        private void SpawnHeal(Vector2 position)
+        {
+            var healPickup = DropManager.DropHeal(_healTexture, _player, _collisionComponent, position);
+            _pendingAdd.Add(healPickup);
+            Debug.WriteLine("Spawned HealPickup at: " + position);
+        }
     }
 }

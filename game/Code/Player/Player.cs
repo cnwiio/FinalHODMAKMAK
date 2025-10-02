@@ -27,9 +27,9 @@ namespace game
         public PlayerHurtbox Hurtbox { get; private set; }
         public PlayerCollisionBox Collision { get; private set; }
 
-        private List<IEntity> _entities;
+        public List<IEntity> _entities;
         private List<PlayerAttackHitbox> _activeHitboxes = new List<PlayerAttackHitbox>();
-        private CollisionComponent _collisionComponent;
+        public CollisionComponent _collisionComponent;
 
         public PlayerStats Stats => _stats;
         public float SortY => _movement.Position.Y + 48;
@@ -45,8 +45,8 @@ namespace game
             Hurtbox = new PlayerHurtbox(this, 64, 96);
 
             // Manual collision size and offset
-            Vector2 collisionSize = new Vector2(40, 21); // width, height
-            Vector2 collisionOffset = new Vector2(-20, 35); // offset from top-left of sprite
+            Vector2 collisionSize = new Vector2(40, 27); // width, height
+            Vector2 collisionOffset = new Vector2(-20, 26); // offset from top-left of sprite
             Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
         }
 
