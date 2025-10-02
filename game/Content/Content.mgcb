@@ -46,27 +46,15 @@
 
 #begin Audio/WoodDie.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/WoodDie.mp3
 
 #begin Audio/WoodHit.mp3
 /importer:Mp3Importer
-/processor:SongProcessor
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/WoodHit.mp3
-
-#begin C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodDie.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodDie.mp3;Audio/WoodDie.mp3
-
-#begin C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodHit.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:C:/Users/uSeR/Documents/Work/Sound/Final Project year 2 term 1/WoodHit.mp3;Audio/WoodHit.mp3
 
 #begin Texture/Char01.png
 /importer:TextureImporter

@@ -82,7 +82,7 @@ namespace game
             var collisionLayer = TiledMap.GetLayer<TiledMapObjectLayer>(layerName);
             foreach (var obj in collisionLayer.Objects)
             {
-                if (obj.Name == "Door")
+                if (obj.Name == "Warp")
                 {
                     collisionList.Add(new Door(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height), obj.Type, game));
                     continue;
