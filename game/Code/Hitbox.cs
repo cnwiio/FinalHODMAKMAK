@@ -16,6 +16,7 @@ namespace game
     {
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
+        public bool AlwaysDraw => true;
         public PlayerAttack(RectangleF bounds)
         {
             Bounds = bounds;

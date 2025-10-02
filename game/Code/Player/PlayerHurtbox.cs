@@ -15,6 +15,7 @@ namespace game
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
         public Player _player { get; set; }
+        public bool AlwaysDraw => true;
         private float _invincibleTimer = 0f;
         private float _invincibleDuration = 0.3f; // 0.3 seconds i-frame
         public PlayerHurtbox(Player player, float width, float height)

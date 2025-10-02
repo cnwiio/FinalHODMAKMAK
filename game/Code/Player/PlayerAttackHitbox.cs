@@ -13,6 +13,7 @@ namespace game
         private Player _player;
         private float _lifetime;
         private float _elapsed;
+        public bool AlwaysDraw => true;
 
         private CollisionComponent _collisionComponent;
         private bool _addedToWorld = false;

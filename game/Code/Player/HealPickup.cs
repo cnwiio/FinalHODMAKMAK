@@ -10,13 +10,18 @@ namespace game
     public class HealPickup : IEntity
     {
         public IShapeF Bounds { get; private set; }
+        public string LayerName { get; set; }
+        public bool AlwaysDraw => true;
         private Texture2D _texture;
+        private Vector2 _position;
         private int _healAmount;
         private Player _player;
-        public string LayerName { get; set; }
         private CollisionComponent _collisionComponent;
         private bool IsActive = true;
         private List<IEntity> _scenePendingRemove;
+        public bool DrawDebugOutline { get; set; } = false;
+
+
 
         public HealPickup(Vector2 position, Texture2D texture, Player player,
             CollisionComponent collisionComponent, List<IEntity> scenePendingRemove, int healAmount = 25)
@@ -70,7 +75,7 @@ namespace game
 
             spriteBatch.Draw(_texture, ((RectangleF)Bounds).Position, Color.White);
 
-            // Debug outline (optional)
+            if (DrawDebugOutline)
             spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Yellow, 2);
         }
     }

@@ -41,6 +41,9 @@ namespace game
         private AnimController _playerTexture;
         private Player _player;
 
+        // Pickup
+        private List<IEntity> _pickups = new List<IEntity>();
+
         // Camera
         private GlobalCamera camera;
         private OrthographicCamera _camera;
@@ -59,7 +62,7 @@ namespace game
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
-        private bool isDebug = false;
+        public bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -255,105 +258,112 @@ namespace game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            // Draw tile map first
             _tileMaper.DrawMap(_camera);
 
-            _spriteBatch.Begin(
-                SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
-                SamplerState.PointClamp,
-                transformMatrix: _camera.GetViewMatrix()
-            );
+            // Begin main camera sprite batch (world space)
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _camera.GetViewMatrix());
 
-            // Player
-            //_player.Draw(_spriteBatch);
+            // Draw shadows behind entities
+            foreach (var shadow in _shadow)
+                shadow.Draw(_spriteBatch);
 
-            // วาดสกิลของบอส
-            if (_monster.Exists(x => x is MonsterBoss)) {
-                var Boss = (MonsterBoss)_monster.Find(x => x.GetType() == typeof(MonsterBoss));
-                if (!Boss.IsDead)
-                {
-                    Boss.DrawSkill(_spriteBatch);
-                }
-            }
-            
-            // Shadow
-            foreach (GameObject item in _shadow)
+            // Draw all sorted entities
+            foreach (var entity in _ysort)
             {
-                item.Draw(_spriteBatch);
+                // Enable debug outline if applicable
+                if (entity is HealPickup heal)
+                    heal.DrawDebugOutline = isDebug;
+
+                entity.Draw(_spriteBatch);
             }
 
-            // Object
-            foreach (var item in _ysort)
+            // Draw pickups (like heals) that might not be in _ysort
+            foreach (var pickup in _pickups)
             {
-                item.Draw(_spriteBatch);    
+                if (pickup is HealPickup heal)
+                    heal.DrawDebugOutline = isDebug;
+
+                pickup.Draw(_spriteBatch);
             }
 
-            // Draw hitboxes
+            // Optional debug overlay (collisions, monster ranges, etc.)
             if (isDebug)
-            {
-                _spriteBatch.DrawRectangle(new RectangleF(camera.Position,
-                    new SizeF(5, 5)), Color.Red, 5, 0);
-                foreach (IEntity item in _collision)
-                {
-                    item.Draw(_spriteBatch);
-                }
-                // Prevent monster zone
-                _preventMonster.Draw(_spriteBatch);
-                // Monster
-                foreach (MonsterMelee monster in _monster.OfType<MonsterMelee>().ToList())
-                {
-                    //monster.Draw(_spriteBatch);
-                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                }
-                foreach (MonsterRange monster in _monster.OfType<MonsterRange>().ToList())
-                {
-                    //monster.Draw(_spriteBatch);
-                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                }
-                foreach (MonsterBoss monster in _monster.OfType<MonsterBoss>().ToList())
-                {
-                    if (!monster.IsDead)
-                    {
-                        _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                    }
-                }
-                foreach (MonsterSlime monster in _monster.OfType<MonsterSlime>().ToList())
-                {
-                    _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                    _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.AttackRange), 16, Color.Aqua, 2);
-                }
-            }
+                DebugDraw();
 
-            // Particle
+            // Draw particles
             hitParticle.Draw(_spriteBatch);
             deadParticle.Draw(_spriteBatch);
             fireParticleLight.Draw(_spriteBatch);
             fireParticleDark.Draw(_spriteBatch);
+
             _spriteBatch.End();
 
-            // UI
+            // Begin UI sprite batch (screen space)
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-            foreach (IYsort item in _ysort)
+
+            // Draw UI elements like boss health bars
+            foreach (var entity in _ysort)
             {
-                if (item is MonsterBoss)
+                if (entity is MonsterBoss boss && !boss.IsDead && boss.isInActiveRadius)
                 {
-                    var boss = (MonsterBoss)item;
-                    var pos = new Vector2(game1.ScreenWidth / 2 , 50); // 320 = ครึ่งนีงของความยาว UI
-                    if (!boss.IsDead && boss.isInActiveRadius) boss.DrawUI(_spriteBatch, pos);
+                    boss.DrawUI(_spriteBatch, new Vector2(game1.ScreenWidth / 2, 50));
                 }
             }
+
             _spriteBatch.End();
         }
+        private void DebugDraw()
+        {
+            // Camera reference point
+            _spriteBatch.DrawRectangle(new RectangleF(_camera.Position, new SizeF(5, 5)), Color.Red, 5, 0);
+
+            foreach (IEntity entity in _collision)
+                entity.Draw(_spriteBatch);
+
+            _preventMonster.Draw(_spriteBatch);
+
+            foreach (var monster in _monster)
+            {
+                if (monster is MonsterMelee mm)
+                    DrawMonsterDebug(mm);
+                else if (monster is MonsterRange mr)
+                    DrawMonsterDebug(mr);
+                else if (monster is MonsterBoss mb && !mb.IsDead)
+                    DrawMonsterDebug(mb);
+                else if (monster is MonsterSlime ms)
+                    DrawMonsterDebug(ms);
+            }
+        }
+
+        private void DrawMonsterDebug(IMonster monster)
+        {
+            _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+            _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+
+            switch (monster)
+            {
+                case MonsterMelee mm:
+                    _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.AttackRange), 16, Color.Aqua, 2);
+                    break;
+                case MonsterRange mr:
+                    _spriteBatch.DrawCircle(new CircleF(mr.Position, mr.AttackRange), 16, Color.Aqua, 2);
+                    break;
+                case MonsterBoss mb:
+                    if (!mb.IsDead)
+                    {
+                        _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                        _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.AttackRange), 16, Color.Aqua, 2);
+                    }
+                    break;
+                case MonsterSlime ms:
+                    _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.AttackRange), 16, Color.Aqua, 2);
+                    break;
+            }
+        }
+
 
 
         public override void UnloadContent()
@@ -640,6 +650,7 @@ namespace game
                 _pendingRemove
             );
             _pendingAdd.Add(healPickup);
+            _pickups.Add(healPickup);
 
             // Clean up monster
             if (monster is MonsterRange)
