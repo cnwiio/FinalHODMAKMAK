@@ -48,10 +48,13 @@ namespace game
 
             if (collisionInfo.Other is MonsterAttackHitbox monster)
             {
-                _player.Stats.HP.AddModifier(-monster.Monster.Damage);
+                // Reduce CurrentHP, not Stat.Value
+                _player.Stats.TakeDamage(monster.Monster.Damage);
+
+                // Start i-frames
                 _invincibleTimer = _invincibleDuration;
 
-                Debug.WriteLine($"Player took damage! HP: {_player.Stats.HP.Value}");
+                Debug.WriteLine($"Player took damage! HP: {_player.Stats.CurrentHP}");
             }
         }
     }

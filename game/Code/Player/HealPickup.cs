@@ -42,16 +42,10 @@ namespace game
         {
             if (!IsActive) return;
 
-            // Heal the player
-            _player.Stats.HP.AddModifier(_healAmount);
+            // Heal the player using PlayerStats.Heal
+            _player.Stats.Heal(_healAmount);
 
-            if (_player.Stats.HP.Value > _player.Stats.HP.BaseValue)
-            {
-                int excess = _player.Stats.HP.Value - _player.Stats.HP.BaseValue;
-                _player.Stats.HP.RemoveModifier(excess);
-            }
-
-            Debug.WriteLine($"[HealPickup] Collected! Player HP: {_player.Stats.HP.Value}");
+            Debug.WriteLine($"[HealPickup] Collected! Player HP: {_player.Stats.CurrentHP}");
 
             IsActive = false;
 
