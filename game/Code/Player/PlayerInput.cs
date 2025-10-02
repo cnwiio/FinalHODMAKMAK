@@ -13,6 +13,7 @@ namespace game
         public Vector2 Direction { get; private set; }
         public bool DashTriggered { get; private set; }
         public bool AttackTriggered { get; private set; }
+        public bool ElementToggleTriggered { get; private set; }   // NEW
 
         private KeyboardState _keyboardState;
         private KeyboardState _oldkeyboardState;
@@ -59,8 +60,8 @@ namespace game
             AttackTriggered = justClicked;
             _oldMouseState = mouseState;
 
-            // Element Toggle: press LeftShift
-            ElementToggleTriggered = _keyboardState.IsKeyDown(Keys.LeftShift) && !_oldkeyboardState.IsKeyDown(Keys.LeftShift);
+            // Element Toggle: press Q
+            ElementToggleTriggered = _keyboardState.IsKeyDown(Keys.Q) && !_oldkeyboardState.IsKeyDown(Keys.Q);
 
 
             Direction = dir;

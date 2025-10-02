@@ -12,6 +12,10 @@ namespace game
         /// A Y position that at the bottom of charecter
         /// </summary>
         float SortY { get; }
+        /// <summary>
+        /// A X position 
+        /// </summary>
+        float SortX { get; }
         void Draw(SpriteBatch spriteBatch);
     }
 }

@@ -53,12 +53,12 @@ namespace game
 
         public void Update(Vector2 position)
         {
-            if (position.X > 0 && position.X < 4480 - _cameraWidth)
+            if (position.X > 0 && position.X < 64 * 70 - _cameraWidth)
             {
                 Position.X = position.X;
                 Cam.Position = Position;
             }
-            if (position.Y > 0 && position.Y < 3200 - _cameraHeight)
+            if (position.Y > 0 && position.Y < 64 * 70 - _cameraHeight)
             {
                 Position.Y = position.Y;
                 Cam.Position = Position;

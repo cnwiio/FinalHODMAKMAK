@@ -38,7 +38,7 @@ namespace game
         float AwaySpawnRadius { get; set; }
         AnimController animation { get; set; }
         IMonsterState CurrentState { get; set; }
-        Element ElementType { get; set; }
+        ElementType ElementType { get; set; }
         void MoveTo(float deltaTime, Vector2 position);
         void ChangeState(IMonsterState newState);
         void Attack();
@@ -47,6 +47,7 @@ namespace game
         void Reset();
         string GetDirection(Vector2 direction);
         void UnLoad();
+        void ApplyDamage(int value);
     }
 }
 
