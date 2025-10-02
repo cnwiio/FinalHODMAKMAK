@@ -229,16 +229,16 @@ namespace game
         }
         public void DropHeal(List<IEntity> entities, CollisionComponent collisionComponent, Texture2D texture, Player player)
         {
-            //Random r = new Random();
-            //if (r.Next(1, 101) <= 75) // Percentage, Ex: 75 mean 75%
-            //{
-            //    entities.Add(new HealPickup(
-            //                    animation.Position,
-            //                    texture,
-            //                    player
-            //                )); // Add drops
-            //    collisionComponent.Insert(entities.Last());
-            //}
+            Random r = new Random();
+            if (r.Next(1, 101) <= 75) // Percentage, Ex: 75 mean 75%
+            {
+                entities.Add(new HealPickup(
+                                animation.Position,
+                                texture,
+                                player
+                            )); // Add drops
+                collisionComponent.Insert(entities.Last());
+            }
         }
         public void Return(float deltaTime)
         {

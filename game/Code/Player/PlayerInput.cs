@@ -59,6 +59,10 @@ namespace game
             AttackTriggered = justClicked;
             _oldMouseState = mouseState;
 
+            // Element Toggle: press LeftShift
+            ElementToggleTriggered = _keyboardState.IsKeyDown(Keys.LeftShift) && !_oldkeyboardState.IsKeyDown(Keys.LeftShift);
+
+
             Direction = dir;
             _oldkeyboardState = _keyboardState;
         }
