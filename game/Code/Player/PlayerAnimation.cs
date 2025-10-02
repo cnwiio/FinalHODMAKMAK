@@ -41,9 +41,9 @@ namespace game
             TextureHeight = _animController.TextureHeight;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Color tint)
         {
-            _animController.DrawFrame(spriteBatch);
+            _animController.DrawFrame(spriteBatch, false, tint);
         }
 
         public void TriggerAttack()

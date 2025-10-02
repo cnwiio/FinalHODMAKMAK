@@ -14,6 +14,7 @@ using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.ViewportAdapters;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace game
 {
@@ -65,6 +66,8 @@ namespace game
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
         public bool isDebug = false;
+        private Texture2D HealthBar;
+        SpriteFont font;
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -84,6 +87,8 @@ namespace game
         {
             // Load temporary drop texture
             _healTexture = Content.Load<Texture2D>("Texture/Health");
+            HealthBar = Content.Load<Texture2D>("Texture/HealthBar7");
+            font = Content.Load<SpriteFont>("Texture/ArialFont");
 
             // Camera setup
             camera = game1.camera;
@@ -216,7 +221,7 @@ namespace game
             _preventMonster.UpdatePosition(_player._movement.Position);
 
             // Camera
-            camera.Update(_player._movement.Position - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
+            camera.Update(_player._movement.Position - new Vector2(1280/ 2, 720 / 2));
             camera.AdjustZoom();
             //Debug.WriteLine(_camera.Zoom);
 
@@ -280,6 +285,19 @@ namespace game
 
             // Begin main camera sprite batch (world space)
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _camera.GetViewMatrix());
+
+            // Player
+            //_player.Draw(_spriteBatch);
+            var offset = new Vector2(HealthBar.Width / 2, 75);
+            var scale = new Vector2(1, 1);
+            var percent = (float)_player.Stats.CurrentHP / (float)_player.Stats.HP.Value;
+
+            _spriteBatch.Draw(HealthBar, _player._movement.Position - offset, new Rectangle(0, 0, HealthBar.Width, HealthBar.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            _spriteBatch.Draw(HealthBar, _player._movement.Position - offset, new Rectangle(0, HealthBar.Height / 2, (int)(HealthBar.Width * percent), HealthBar.Height / 2), Color.Crimson, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+
+            string str;
+            str = _player.CurrentElement == ElementType.Light ? "CurrentElement : Light" : "CurrentElement : Dark";
+            _spriteBatch.DrawString(font, str, _player._movement.Position - offset * 1.3f, Color.White);
 
             // วาดสกิลของบอส
             if (_monster.Exists(x => x is MonsterBoss))

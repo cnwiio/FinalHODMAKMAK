@@ -20,7 +20,7 @@ namespace game
 
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
-        public short ScreenWidth = 1280, ScreenHeight = 720;
+        public short ScreenWidth = 1920, ScreenHeight = 1080;
 
         // Collision 
         public CollisionComponent CollisionComponent { get; set; }
@@ -47,7 +47,7 @@ namespace game
 
         protected override void Initialize()
         {
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, ScreenWidth, ScreenHeight);
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1280, 720);
             camera = new GlobalCamera(viewportAdapter);
 
             _graphics.PreferredBackBufferWidth = ScreenWidth;

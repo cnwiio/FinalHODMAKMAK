@@ -18,6 +18,8 @@ namespace game
         public bool AlwaysDraw => true;
         private float _invincibleTimer = 0f;
         private float _invincibleDuration = 0.3f; // 0.3 seconds i-frame
+        public bool isIframe => _invincibleTimer > 0f;
+
         public PlayerHurtbox(Player player, float width, float height)
         {
             _player = player;

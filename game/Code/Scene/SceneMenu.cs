@@ -50,7 +50,7 @@ namespace game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-            _spriteBatch.Draw(BG, new Rectangle(0, 0, 1280, 720), Color.White);
+            _spriteBatch.Draw(BG, new Rectangle(0, 0, 1920, 1080), Color.White);
             _spriteBatch.End();
         }
         public override void UnloadContent()

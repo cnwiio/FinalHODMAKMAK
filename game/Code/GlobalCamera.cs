@@ -43,8 +43,10 @@ namespace game
         public GlobalCamera(ViewportAdapter viewportAdapter)
         {
             Cam = new OrthographicCamera(viewportAdapter);
-            _cameraWidth = (short)viewportAdapter.VirtualWidth;
-            _cameraHeight = (short)viewportAdapter.VirtualHeight;
+            //_cameraWidth = (short)viewportAdapter.VirtualWidth;
+            _cameraWidth = 1280;
+            //_cameraHeight = (short)viewportAdapter.VirtualHeight;
+            _cameraHeight = 720;
             Position = Vector2.Zero;
             Cam.MaximumZoom = 2f;
             Cam.MinimumZoom = 1f;
