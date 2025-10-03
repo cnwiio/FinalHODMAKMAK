@@ -26,14 +26,13 @@ namespace game
 
         // Monster
         public List<IMonster> Monsters = new List<IMonster>();
-        private List<IEntity> _pendingAdd = new List<IEntity>();
-        private List<IEntity> _pendingRemove = new List<IEntity>();
-        private List<IMonster> _pendingMonsterRemove = new List<IMonster>();
+        private List<IEntity> PendingAdd = new List<IEntity>();
+        private List<IEntity> PendingRemove = new List<IEntity>();
+        private List<IMonster> PendingMonsterRemove = new List<IMonster>();
 
         // Collision & Layer
         public List<IEntity> Collisions = new List<IEntity>();
         public CollisionComponent CollisionComponents;
-        private CollisionComponent _collisionComponent;
 
         public List<GameObject> GameObjects = new List<GameObject>();
         private List<GameObject> Shadow = new List<GameObject>();
@@ -317,7 +316,7 @@ namespace game
         {
             LoadParticle();
             LoadTiledMap(Content, sceneName);
-            //LoadMonster(Content, preventMonster, player);
+            //LoadMonster(preventMonster, player);
         }
         // ----------------------------------------------------------------------------------------------------- //
         //                                          LOAD END                                                     //
@@ -367,10 +366,32 @@ namespace game
             });
         }
 
+        public void UpdatePendinQueue()
+        {
+            // Flush queued additions
+            foreach (var entity in PendingAdd)
+            {
+                Collisions.Add(entity);
+                CollisionComponents.Insert(entity);
+            }
+
+            // Flush queued additions
+            foreach (var entity in PendingRemove)
+            {
+                Collisions.Remove(entity);
+                CollisionComponents.Remove(entity);
+            }
+
+            // Clear queues
+            PendingAdd.Clear();
+            PendingRemove.Clear();
+        }
+
         public void UpdateTiledMaper(GameTime gameTime)
         {
             TileMaper.UpdateMap(gameTime);
         }
+
 
         //public void UpdateMonster(GameTime gameTime, Player _player, Texture2D _healTexture)
         //{
@@ -431,34 +452,39 @@ namespace game
                 switch (monster)
                 {
                     case MonsterMelee m:
-                        m.UpdateState(gameTime, Collisions, _collisionComponent, playerPos);
+                        m.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
                         HandleShakeCamera(m, gameTime);
                         if (m.IsDead)
                             HandleMonsterDeath(m, healTexture, _player);
                         break;
 
                     case MonsterRange r:
-                        r.UpdateState(gameTime, Collisions, _collisionComponent, playerPos);
+                        r.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
                         HandleShakeCamera(r, gameTime);
                         if (r.IsDead)
                             HandleMonsterDeath(r, healTexture, _player);
                         break;
 
                     case MonsterBoss b:
-                        b.UpdateState(gameTime, Collisions, _collisionComponent, playerPos);
+                        b.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
                         HandleShakeCamera(b, gameTime);
                         if (b.IsDead)
                             HandleMonsterDeath(b, healTexture, _player);
                         break;
 
                     case MonsterSlime s:
-                        s.UpdateState(gameTime, Collisions, _collisionComponent, playerPos);
+                        s.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
                         HandleShakeCamera(s, gameTime);
                         if (s.IsDead)
                             HandleMonsterDeath(s, healTexture, _player);
                         break;
                 }
             }
+
+            // Remove dead monsters
+            foreach (var deadMonster in PendingMonsterRemove)
+                Monsters.Remove(deadMonster);
+            PendingMonsterRemove.Clear();
         }
         #endregion
 
@@ -480,20 +506,21 @@ namespace game
             var healPickup = DropManager.DropHeal(
                 _healTexture,
                 _player,
-                _collisionComponent,
+                CollisionComponents,
                 monster.Position,
-                _pendingRemove
+                PendingRemove
             );
-            _pendingAdd.Add(healPickup);
-            _pickups.Add(healPickup);
+            PendingAdd.Add(healPickup);
+            Ysort.Add(healPickup);
 
             // Clean up monster
             if (monster is MonsterRange)
                 monster.DeleteHitBox(1f); // Only 1 parameter
             else
-                monster.DeleteHitBox(1f, Collisions, _collisionComponent); // 3 parameters
+                monster.DeleteHitBox(1f, Collisions, CollisionComponents); // 3 parameters
 
             monster.RemoveMonster();
+            PendingMonsterRemove.Add(monster);
         }
 
         /// <summary>
@@ -501,8 +528,8 @@ namespace game
         /// </summary>
         private void SpawnHeal(Vector2 position, Texture2D _healTexture, Player _player)
         {
-            var healPickup = DropManager.DropHeal(_healTexture, _player, _collisionComponent, position, _pendingRemove);
-            _pendingAdd.Add(healPickup);
+            var healPickup = DropManager.DropHeal(_healTexture, _player, CollisionComponents, position, PendingRemove);
+            PendingAdd.Add(healPickup);
             Debug.WriteLine("Spawned HealPickup at: " + position);
         }
         #endregion
@@ -578,6 +605,7 @@ namespace game
             DrawParticle(spriteBatch);
             DrawBossSkill(spriteBatch);
         }
+
         // ----------------------------------------------------------------------------------------------------- //
         //                                        DRAW END                                                       //
         // ----------------------------------------------------------------------------------------------------- //
@@ -600,6 +628,7 @@ namespace game
             Collisions.Clear(); // Collision
             Monsters.Clear(); // Monster
             Ysort.Clear(); // Ysort
+            Shadow.Clear(); // Shadow
             GameObjects.Clear(); // Object
 
             // Particle

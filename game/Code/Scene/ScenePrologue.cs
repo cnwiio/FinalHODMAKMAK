@@ -43,9 +43,6 @@ namespace game
         private AnimController _playerTexture;
         private Player _player;
 
-        // Pickup
-        private List<IEntity> _pickups = new List<IEntity>();
-
         // Camera
         private GlobalCamera camera;
         private OrthographicCamera _camera;
@@ -232,11 +229,24 @@ namespace game
             // Monster
             UpdateMonster(gameTime);
 
+            //// Flush queued removals
+            //foreach (var monster in _pendingRemove.OfType<IMonster>())
+            //{
+            //    _monster.Remove(monster);
+            //}
+
             // Flush queued additions
             foreach (var entity in _pendingAdd)
             {
                 _collision.Add(entity);
                 _collisionComponent.Insert(entity);
+            }
+
+            // Flush queued additions
+            foreach (var entity in _pendingRemove)
+            {
+                _collision.Remove(entity);
+                _collisionComponent.Remove(entity);
             }
 
             // Clear queues
@@ -297,15 +307,6 @@ namespace game
                     heal.DrawDebugOutline = isDebug;
 
                 entity.Draw(_spriteBatch);
-            }
-
-            // Draw pickups (like heals) that might not be in _ysort
-            foreach (var pickup in _pickups)
-            {
-                if (pickup is HealPickup heal)
-                    heal.DrawDebugOutline = isDebug;
-
-                pickup.Draw(_spriteBatch);
             }
 
             // Optional debug overlay (collisions, monster ranges, etc.)
@@ -405,6 +406,7 @@ namespace game
             _collision.Clear();
             _monster.Clear();
             _gameObject.Clear();
+            _ysort.Clear();
             _shadow.Clear();
             hitParticle = null;
             deadParticle = null;
@@ -549,10 +551,13 @@ namespace game
 
         private void LoadMonsterBoss(MonsterBoss monster)
         {
-            monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
             monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Walk", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
             monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
             monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+            monster.LoadAnim("ChargeFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Fire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
             monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
             monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
@@ -564,9 +569,9 @@ namespace game
                 sreachRadius: 2000f,
                 hp: 1000,
                 damage: 10,
-                attackRange: (int)(monster.Width * 7),
-                activeRadius: (int)(monster.Width * 3),
-                dashForce: monster.Width * 10,
+                attackRange: (int)(monster.Width * 5),
+                activeRadius: (int)(monster.Width * 2),
+                dashForce: monster.Width * 4,
                 bulletSpeed: 750
             );
             _ysort.Add(monster);
@@ -648,6 +653,11 @@ namespace game
                             HandleMonsterDeath(s);
                         break;
                 }
+
+                // Remove dead monsters
+                foreach (var deadMonster in _pendingMonsterRemove)
+                    _monster.Remove(deadMonster);
+                _pendingMonsterRemove.Clear();
             }
         }
         #endregion
@@ -675,7 +685,7 @@ namespace game
                 _pendingRemove
             );
             _pendingAdd.Add(healPickup);
-            _pickups.Add(healPickup);
+            _ysort.Add(healPickup);
 
             // Clean up monster
             if (monster is MonsterRange)
@@ -684,6 +694,7 @@ namespace game
                 monster.DeleteHitBox(1f, _collision, _collisionComponent); // 3 parameters
 
             monster.RemoveMonster();
+            _pendingMonsterRemove.Add(monster);
         }
 
         /// <summary>
