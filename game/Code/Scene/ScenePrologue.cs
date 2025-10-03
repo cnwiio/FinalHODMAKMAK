@@ -205,6 +205,10 @@ namespace game
             {
                 ScreenManager.LoadScreen(new SceneMenu(game1));
             }
+            if(_player.Stats.CurrentHP == 0)
+            {
+                ScreenManager.LoadScreen(new SceneMenu(game1));
+            }
 
             // Player
             _player.Update(gameTime, _attackTargets);
