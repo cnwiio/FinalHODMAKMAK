@@ -112,5 +112,11 @@ namespace game
         {
             base.Draw(gameTime);
         }
+
+        protected override void UnloadContent()
+        {
+            _playerTexture = null;
+            base.UnloadContent();
+        }
     }
 }

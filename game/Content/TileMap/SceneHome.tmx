@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="841">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="842">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Tree_1.tsx"/>
  <tileset firstgid="21" source="Path_1.tsx"/>
@@ -794,7 +794,7 @@
   <object id="423" x="1753.67" y="196.333" width="68" height="33.6667"/>
   <object id="426" x="0" y="0" width="1664" height="448"/>
   <object id="427" x="1751.67" y="632" width="63.6667" height="30.6667"/>
-  <object id="436" name="Warp" type="ScenePrologue" x="-0.666667" y="2111.33" width="12" height="256">
+  <object id="436" name="Warp" type="ScenePrologue" x="28.3333" y="2112.33" width="12" height="256">
    <properties>
     <property name="X" type="float" value="4300"/>
     <property name="Y" type="float" value="600"/>
@@ -866,6 +866,7 @@
   <object id="780" x="2880" y="1856" width="64" height="128"/>
   <object id="781" x="2368" y="2944" width="448" height="128"/>
   <object id="782" x="2560" y="2880" width="128" height="64"/>
+  <object id="841" x="0" y="2112" width="22" height="256"/>
  </objectgroup>
  <objectgroup id="4" name="SpawnPoint">
   <object id="455" name="Melee" type="Light" x="1157.63" y="2594.06">
