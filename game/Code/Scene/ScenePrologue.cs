@@ -34,6 +34,7 @@ namespace game
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
+        private SpriteFont spriteFont;
         private bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
@@ -56,6 +57,7 @@ namespace game
         {
             // Load temporary drop texture
             _healTexture = Content.Load<Texture2D>("Texture/Health");
+            spriteFont = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
@@ -140,6 +142,13 @@ namespace game
                 SamplerState.PointClamp,
                 transformMatrix: globalContext._Camera.GetViewMatrix()
             );
+
+            string str1 = "W A S D to walk\nZ X to zoom";
+            _spriteBatch.DrawString(spriteFont, str1, new Vector2(979, 3717), Color.White);
+            string str2 = "SPACE to dash";
+            _spriteBatch.DrawString(spriteFont, str2, new Vector2(1422, 3543), Color.White);
+            string str3 = "Left Click to attack\nQ to change element";
+            _spriteBatch.DrawString(spriteFont, str3, new Vector2(2186, 3520), Color.White);
 
             globalContext.DrawAll(_spriteBatch);
 
