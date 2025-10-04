@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
@@ -12,15 +13,21 @@ namespace game
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
         public string TargetScene { get; set; }
+        public Vector2 TargetPos { get; set; }
+        public string CurrentScene { get; set; }
         private ScreenManager screenManager;
         private Game1 game;
+        private Player player;
         private bool db;
         public bool AlwaysDraw => true;
-        public Door(RectangleF bounds, string targetScene, Game game)
+        public Door(RectangleF bounds, string currenttScene, string targetScene, Vector2 targetPos, Game game)
         {
             Bounds = bounds;
+            CurrentScene = currenttScene;
             TargetScene = targetScene;
+            TargetPos = targetPos;
             this.game = (Game1)game;
+            player = this.game.Player;
             screenManager = this.game.screenManager;
             db = false;
         }
@@ -32,10 +39,14 @@ namespace game
         {
             if (collisionInfo.Other is PlayerCollisionBox)
             {
-                if (TargetScene == "SceneHome" && !db)
+                player.DestinationPos = TargetPos;
+                if (TargetScene == "SceneHome")
                 {
-                    screenManager.LoadScreen(new SceneHome(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f)); 
-                    db = true;
+                    screenManager.LoadScreen(new SceneHome(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                if (TargetScene == "ScenePrologue")
+                {
+                    screenManager.LoadScreen(new ScenePrologue(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
                 }
             }
         }

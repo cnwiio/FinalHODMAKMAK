@@ -136,6 +136,21 @@ namespace game
 
             animation.CreateAnimation("Die", "right", false, 100, 0, 12);
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
+
+            animation.CreateAnimation("ChargeFire", "left", false, 200, 0, 2);
+            animation.CreateAnimation("ChargeFire", "right", false, 200, 0, 2);
+
+            animation.CreateAnimation("EndFire", "left", false, 200, 10, 8);
+            animation.CreateAnimation("EndFire", "right", false, 200, 10, 8);
+
+            animation.CreateAnimation("Fire", "left", true, 200, 2, 8);    
+            animation.CreateAnimation("Fire", "right", true, 200, 2, 8);
+
+            animation.CreateAnimation("ChargeFire3Ball", "left", false, 200, 0, 6);
+            animation.CreateAnimation("ChargeFire3Ball", "right", false, 200, 0, 6);
+
+            animation.CreateAnimation("Fire3Ball", "right", false, 200, 6, 4);
+            animation.CreateAnimation("Fire3Ball", "left", false, 200, 6, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, int activeRadius, float dashForce, int bulletSpeed)
@@ -226,10 +241,11 @@ namespace game
                 isInActiveRadius = true;
             } else if (!isInRange) 
             {
+                Reset();
                 isInActiveRadius = false;
             }
-                //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
-                isInAttackList = isInRange;
+            //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
+            isInAttackList = isInRange;
             DirectionToPlayer = TargetPos - Position;
             if (DirectionToPlayer != Vector2.Zero)
                 DirectionToPlayer.Normalize();
@@ -365,17 +381,38 @@ namespace game
             var bullet = ElementType == ElementType.Light ? bulletLight : bulletDark;
             var bounds = bullet.Bounds;
             SizeF size = new SizeF(bounds.Width, bounds.Height) * 0.7f; // Hitbox size; 
+            var offset = Vector2.Zero;
+            var pos = Vector2.Zero;
+
+            if (GetDirection(DirectionToPlayer) == "left")
+            {
+                offset = new Vector2(-Width / 2 + 32, 32);
+            }
+            else
+            {
+                offset = new Vector2(Width / 2 - 32, 32);
+            }
+
+            if (currentBossAttack == 6)
+            {
+                pos = Position - (size / 2f) + offset;
+            }
+            else if (currentBossAttack == 5)
+            {
+                pos = Position - (size / 2f);
+            }
+
+            
             if (bulletHitbox[i] == null)
             {
                 bulletHitbox[i] = new MonsterAttackHitbox(
-                                new RectangleF(Position - (size / 2f),
+                                new RectangleF(pos,
                                 size), ttl, this);
             }
             bulletHitbox[i].TimeToLiveSeconds = ttl;
-            bulletHitbox[i].Bounds.Position = Position - (size / 2f);
+            bulletHitbox[i].Bounds.Position = pos;
             BulletVisible[i] = true;
             bulletHitbox[i].bulletVisible = true;
-            //ShakeViewport = true;
             _collisions.Add(bulletHitbox[i]);
             _collisionComponents.Insert(bulletHitbox[i]);
         }
@@ -455,28 +492,45 @@ namespace game
                     CreateHitbox(_collisions, _collisionComponents);
                     animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                 }
-                else if (currentBossAttack == 5)
-                {
-                    // กูเจนมา จะอ่านต้องดำเอา
+            }
+            if (animation.CurrentSpriteSheet == "ChargeFire" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                animation.SetAnimation("Fire", GetDirection(_placeHolderDirection));
+            }
 
-                    // Calculate three different directions with 45-degree angles
-                    float angle45 = MathHelper.ToRadians(45);
-                    float angleMinus45 = MathHelper.ToRadians(-45);
-                    
-                    // First bullet: DirectionToPlayer - 45 degrees
-                    bulletDirection[0] = RotateVector(DirectionToPlayer, angleMinus45);
-                    CreateBulletHitbox(0);
-                    
-                    // Second bullet: DirectionToPlayer (original direction)
-                    bulletDirection[1] = DirectionToPlayer;
-                    CreateBulletHitbox(1);
-                    
-                    // Third bullet: DirectionToPlayer + 45 degrees
-                    bulletDirection[2] = RotateVector(DirectionToPlayer, angle45);
-                    CreateBulletHitbox(2);
-                    
-                    animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
-                }
+            if (animation.CurrentSpriteSheet == "EndFire" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                _attackCD = 0.5f;
+                ChangeState(new IdleState());
+            }
+
+            if (animation.CurrentSpriteSheet == "Fire3Ball" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                _attackCD = 0.5f;
+                ChangeState(new IdleState());
+            }
+
+            if (animation.CurrentSpriteSheet == "ChargeFire3Ball" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                // กูเจนมา จะอ่านต้องดำเอา
+
+                // Calculate three different directions with 45-degree angles
+                float angle45 = MathHelper.ToRadians(45);
+                float angleMinus45 = MathHelper.ToRadians(-45);
+
+                // First bullet: DirectionToPlayer - 45 degrees
+                bulletDirection[0] = RotateVector(DirectionToPlayer, angleMinus45);
+                CreateBulletHitbox(0);
+
+                // Second bullet: DirectionToPlayer (original direction)
+                bulletDirection[1] = DirectionToPlayer;
+                CreateBulletHitbox(1);
+
+                // Third bullet: DirectionToPlayer + 45 degrees
+                bulletDirection[2] = RotateVector(DirectionToPlayer, angle45);
+                CreateBulletHitbox(2);
+
+                animation.SetAnimation("Fire3Ball", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
         }
 
@@ -489,10 +543,14 @@ namespace game
                 isAttack = true;
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
-                currentBossAttack = 2;
-                if (currentBossAttack == 3 || currentBossAttack == 5)
+                //currentBossAttack = 5;
+                if (currentBossAttack == 3 )
                 {
                     animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                }
+                else if (currentBossAttack == 5)
+                { 
+                    animation.SetAnimation("ChargeFire3Ball", GetDirection(_placeHolderDirection), OnAnimationEvent);
                 }
                 else if (currentBossAttack == 4)
                 {
@@ -500,6 +558,10 @@ namespace game
                     else ElementType = ElementType.Light;
                     _attackCD = 1f;
                     ChangeState(new IdleState());
+                }
+                else if (currentBossAttack == 6)
+                {
+                    animation.SetAnimation("ChargeFire", GetDirection(DirectionToPlayer), OnAnimationEvent);
                 }
             }
             switch (currentBossAttack) 
@@ -513,8 +575,11 @@ namespace game
                     animation.SetAnimation("Casting", GetDirection(DirectionToPlayer));
                     break;
                 case 6:
-                    FireBullet();
-                    animation.SetAnimation("Casting", GetDirection(DirectionToPlayer));
+                    if (animation.CurrentSpriteSheet != "ChargeFire" && animation.CurrentSpriteSheet != "EndFire")
+                    {
+                        animation.SetAnimation("Fire", GetDirection(DirectionToPlayer));
+                        FireBullet();
+                    }
                     break;
                 default:
                     break;
@@ -526,10 +591,13 @@ namespace game
         }
         public void RemoveMonster()
         {
-            _collisions.Remove(HurtBox);
-            _collisionComponents.Remove(HurtBox);
-            _collisions.Remove(Collision);
-            _collisionComponents.Remove(Collision);
+            if (_collisions != null || _collisionComponents != null)
+            {
+                _collisions.Remove(HurtBox);
+                _collisionComponents.Remove(HurtBox);
+                _collisions.Remove(Collision);
+                _collisionComponents.Remove(Collision); 
+            }
             animation.Unload(OnAnimationEvent);
             HurtBox = null;
             Collision = null;
@@ -711,17 +779,17 @@ namespace game
             if (wave < waveAmout && waveTimer == 0f && isAttack)
             {
                 waveTimer = 0.35f;
-                bulletDirection[wave] = DirectionToPlayer;
                 CreateBulletHitbox(wave);
+                var dir = bulletHitbox[wave].Bounds.Position - TargetPos;
+                dir.Normalize();
+                bulletDirection[wave] = -dir;
                 wave++;
             }
             else if (wave >= waveAmout && waveTimer == 0)
             {
                 wave = 0;
                 waveTimer = 2;
-                _attackCD = 1f;
-                ChangeState(new IdleState());
-                isAttack = false;
+                animation.SetAnimation("EndFire", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
         }
 

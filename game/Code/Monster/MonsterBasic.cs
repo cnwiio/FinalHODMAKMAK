@@ -356,7 +356,7 @@ namespace game
                 //Debug.WriteLine("dif element");
             }
             HP -= Value;
-            Debug.WriteLine("Damge : " + Value);
+            //Debug.WriteLine("Damge : " + Value);
         }
         public virtual void ChangeState(IMonsterState newState) { }
         public virtual void Attack() { }

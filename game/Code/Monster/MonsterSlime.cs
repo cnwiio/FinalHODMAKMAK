@@ -281,10 +281,13 @@ namespace game
         public void RemoveMonster()
         {
             PreventMonster.RemoveMonster(this);
-            _collisions.Remove(HurtBox);
-            _collisionComponents.Remove(HurtBox);
-            _collisions.Remove(Collision);
-            _collisionComponents.Remove(Collision);
+            if (_collisions != null || _collisionComponents != null)
+            {
+                _collisions.Remove(HurtBox);
+                _collisionComponents.Remove(HurtBox);
+                _collisions.Remove(Collision);
+                _collisionComponents.Remove(Collision); 
+            }
             animation.Unload(OnAnimationEvent);
             HurtBox = null;
             Collision = null;

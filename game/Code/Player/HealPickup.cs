@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace game
 {
-    public class HealPickup : IEntity
+    public class HealPickup : IEntity, IYsort
     {
         public IShapeF Bounds { get; private set; }
         public string LayerName { get; set; }
@@ -20,6 +20,8 @@ namespace game
         private bool IsActive = true;
         private List<IEntity> _scenePendingRemove;
         public bool DrawDebugOutline { get; set; } = false;
+        public float SortY { get => Bounds.Position.Y; }
+        public float SortX { get => Bounds.Position.X; }
 
 
 

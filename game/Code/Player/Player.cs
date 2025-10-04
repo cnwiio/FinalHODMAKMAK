@@ -34,6 +34,7 @@ namespace game
         public PlayerStats Stats => _stats;
         public float SortY => _movement.Position.Y + 48;
         public float SortX => _movement.Position.X;
+        public Vector2 DestinationPos { get; set; }
 
         public Player(AnimController texture, Vector2 startPosition)
         {
@@ -61,7 +62,7 @@ namespace game
             if (!_entities.Contains(Collision)) _entities.Add(Collision);
             _collisionComponent?.Insert(Collision);
         }
-        public void Update(GameTime gameTime, List<IEntity> attackTargets)
+        public void Update(GameTime gameTime)
         {
             _input.Update(gameTime);
 
