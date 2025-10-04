@@ -26,16 +26,16 @@ namespace game
 
         // Monster
         public List<IMonster> Monsters = new List<IMonster>();
-        private List<IEntity> PendingAdd = new List<IEntity>();
-        private List<IEntity> PendingRemove = new List<IEntity>();
-        private List<IMonster> PendingMonsterRemove = new List<IMonster>();
+        public List<IEntity> PendingAdd = new List<IEntity>();
+        public List<IEntity> PendingRemove = new List<IEntity>();
+        public List<IMonster> PendingMonsterRemove = new List<IMonster>();
 
         // Collision & Layer
         public List<IEntity> Collisions = new List<IEntity>();
         public CollisionComponent CollisionComponents;
 
         public List<GameObject> GameObjects = new List<GameObject>();
-        private List<GameObject> Shadow = new List<GameObject>();
+        public List<GameObject> Shadow = new List<GameObject>();
 
         // Camera
         public GlobalCamera Camera;
@@ -49,9 +49,6 @@ namespace game
 
         // Audio
         public AudioController audioController;
-
-        // Pickup
-        private List<IEntity> _pickups = new List<IEntity>();
 
         // Other Setting
         public Game1 _Game1;
@@ -110,6 +107,33 @@ namespace game
                 Shadow.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
             }
         }
+
+        #region Load Player
+        public void LoadPlayer(PreventMonster preventMonster, Player player)
+        {
+            if (player.DestinationPos == Vector2.Zero)
+            {
+                var spawnPoint = TileMaper.GetObjectLayer("SpawnPoint");
+                foreach (var obj in spawnPoint.Objects)
+                {
+                    if (obj.Name == "Player")
+                    {
+                        player._movement.SetPosition(obj.Position);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                player._movement.SetPosition(player.DestinationPos);
+            }
+
+            player.SetWorldReferences(Collisions, CollisionComponents);
+            Ysort.Add(player);
+            Collisions.Add(preventMonster);
+            CollisionComponents.Insert(preventMonster);
+        }
+        #endregion
 
         #region Load All Monster
         public void LoadMonster(PreventMonster _preventMonster, Player _player)
@@ -247,10 +271,15 @@ namespace game
         private void LoadMonsterBoss(MonsterBoss monster)
         {
             var Content = _Game1.Content;
-            monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
             monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Walk", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
             monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
             monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+            monster.LoadAnim("ChargeFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Fire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("ChargeFire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Fire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
             monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
             monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
@@ -262,9 +291,9 @@ namespace game
                 sreachRadius: 2000f,
                 hp: 1000,
                 damage: 10,
-                attackRange: (int)(monster.Width * 7),
-                activeRadius: (int)(monster.Width * 3),
-                dashForce: monster.Width * 10,
+                attackRange: (int)(monster.Width * 5),
+                activeRadius: (int)(monster.Width * 2),
+                dashForce: monster.Width * 4,
                 bulletSpeed: 750
             );
             Ysort.Add(monster);
@@ -312,11 +341,12 @@ namespace game
         #endregion
 
         // IMPORTANT NOTE : อาจจะไม่ค่อยเสถียรและแก้ไขยาก
-        public void LoadAll(ContentManager Content, string sceneName/*, PreventMonster preventMonster, Player player*/)
+        public void LoadAll(ContentManager Content, string sceneName, PreventMonster preventMonster, Player player)
         {
             LoadParticle();
             LoadTiledMap(Content, sceneName);
-            //LoadMonster(preventMonster, player);
+            LoadMonster(preventMonster, player);
+            LoadPlayer(preventMonster, player);
         }
         // ----------------------------------------------------------------------------------------------------- //
         //                                          LOAD END                                                     //
@@ -391,7 +421,6 @@ namespace game
         {
             TileMaper.UpdateMap(gameTime);
         }
-
 
         //public void UpdateMonster(GameTime gameTime, Player _player, Texture2D _healTexture)
         //{

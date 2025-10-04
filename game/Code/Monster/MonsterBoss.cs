@@ -145,6 +145,12 @@ namespace game
 
             animation.CreateAnimation("Fire", "left", true, 200, 2, 8);    
             animation.CreateAnimation("Fire", "right", true, 200, 2, 8);
+
+            animation.CreateAnimation("ChargeFire3Ball", "left", false, 200, 0, 6);
+            animation.CreateAnimation("ChargeFire3Ball", "right", false, 200, 0, 6);
+
+            animation.CreateAnimation("Fire3Ball", "right", false, 200, 6, 4);
+            animation.CreateAnimation("Fire3Ball", "left", false, 200, 6, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, int activeRadius, float dashForce, int bulletSpeed)
@@ -376,26 +382,37 @@ namespace game
             var bounds = bullet.Bounds;
             SizeF size = new SizeF(bounds.Width, bounds.Height) * 0.7f; // Hitbox size; 
             var offset = Vector2.Zero;
+            var pos = Vector2.Zero;
+
             if (GetDirection(DirectionToPlayer) == "left")
             {
                 offset = new Vector2(-Width / 2 + 32, 32);
-            } else
+            }
+            else
             {
                 offset = new Vector2(Width / 2 - 32, 32);
             }
+
+            if (currentBossAttack == 6)
+            {
+                pos = Position - (size / 2f) + offset;
+            }
+            else if (currentBossAttack == 5)
+            {
+                pos = Position - (size / 2f);
+            }
+
+            
             if (bulletHitbox[i] == null)
             {
                 bulletHitbox[i] = new MonsterAttackHitbox(
-                                new RectangleF(Position - (size / 2f) + offset,
+                                new RectangleF(pos,
                                 size), ttl, this);
             }
             bulletHitbox[i].TimeToLiveSeconds = ttl;
-            bulletHitbox[i].Bounds.Position = Position - (size / 2f) + offset;
+            bulletHitbox[i].Bounds.Position = pos;
             BulletVisible[i] = true;
             bulletHitbox[i].bulletVisible = true;
-            var dir = bulletHitbox[i].Bounds.Position - TargetPos;
-            dir.Normalize();
-            bulletDirection[i] = -dir;
             _collisions.Add(bulletHitbox[i]);
             _collisionComponents.Insert(bulletHitbox[i]);
         }
@@ -475,28 +492,6 @@ namespace game
                     CreateHitbox(_collisions, _collisionComponents);
                     animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent); 
                 }
-                else if (currentBossAttack == 5)
-                {
-                    // กูเจนมา จะอ่านต้องดำเอา
-
-                    // Calculate three different directions with 45-degree angles
-                    float angle45 = MathHelper.ToRadians(45);
-                    float angleMinus45 = MathHelper.ToRadians(-45);
-                    
-                    // First bullet: DirectionToPlayer - 45 degrees
-                    bulletDirection[0] = RotateVector(DirectionToPlayer, angleMinus45);
-                    CreateBulletHitbox(0);
-                    
-                    // Second bullet: DirectionToPlayer (original direction)
-                    bulletDirection[1] = DirectionToPlayer;
-                    CreateBulletHitbox(1);
-                    
-                    // Third bullet: DirectionToPlayer + 45 degrees
-                    bulletDirection[2] = RotateVector(DirectionToPlayer, angle45);
-                    CreateBulletHitbox(2);
-                    
-                    animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
-                }
             }
             if (animation.CurrentSpriteSheet == "ChargeFire" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
@@ -507,6 +502,35 @@ namespace game
             {
                 _attackCD = 0.5f;
                 ChangeState(new IdleState());
+            }
+
+            if (animation.CurrentSpriteSheet == "Fire3Ball" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                _attackCD = 0.5f;
+                ChangeState(new IdleState());
+            }
+
+            if (animation.CurrentSpriteSheet == "ChargeFire3Ball" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                // กูเจนมา จะอ่านต้องดำเอา
+
+                // Calculate three different directions with 45-degree angles
+                float angle45 = MathHelper.ToRadians(45);
+                float angleMinus45 = MathHelper.ToRadians(-45);
+
+                // First bullet: DirectionToPlayer - 45 degrees
+                bulletDirection[0] = RotateVector(DirectionToPlayer, angleMinus45);
+                CreateBulletHitbox(0);
+
+                // Second bullet: DirectionToPlayer (original direction)
+                bulletDirection[1] = DirectionToPlayer;
+                CreateBulletHitbox(1);
+
+                // Third bullet: DirectionToPlayer + 45 degrees
+                bulletDirection[2] = RotateVector(DirectionToPlayer, angle45);
+                CreateBulletHitbox(2);
+
+                animation.SetAnimation("Fire3Ball", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
         }
 
@@ -519,10 +543,14 @@ namespace game
                 isAttack = true;
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
-                //currentBossAttack = 6;
-                if (currentBossAttack == 3 || currentBossAttack == 5)
+                //currentBossAttack = 5;
+                if (currentBossAttack == 3 )
                 {
                     animation.SetAnimation("Charge", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                }
+                else if (currentBossAttack == 5)
+                { 
+                    animation.SetAnimation("ChargeFire3Ball", GetDirection(_placeHolderDirection), OnAnimationEvent);
                 }
                 else if (currentBossAttack == 4)
                 {
@@ -563,10 +591,13 @@ namespace game
         }
         public void RemoveMonster()
         {
-            _collisions.Remove(HurtBox);
-            _collisionComponents.Remove(HurtBox);
-            _collisions.Remove(Collision);
-            _collisionComponents.Remove(Collision);
+            if (_collisions != null || _collisionComponents != null)
+            {
+                _collisions.Remove(HurtBox);
+                _collisionComponents.Remove(HurtBox);
+                _collisions.Remove(Collision);
+                _collisionComponents.Remove(Collision); 
+            }
             animation.Unload(OnAnimationEvent);
             HurtBox = null;
             Collision = null;
@@ -749,6 +780,9 @@ namespace game
             {
                 waveTimer = 0.35f;
                 CreateBulletHitbox(wave);
+                var dir = bulletHitbox[wave].Bounds.Position - TargetPos;
+                dir.Normalize();
+                bulletDirection[wave] = -dir;
                 wave++;
             }
             else if (wave >= waveAmout && waveTimer == 0)

@@ -40,6 +40,8 @@ namespace game
         public Vector2 Position;
         private short _cameraWidth;
         private short _cameraHeight;
+        private short _mapHeight = 64 * 70;
+        private short _mapWidth = 64 * 70;
         public GlobalCamera(ViewportAdapter viewportAdapter)
         {
             Cam = new OrthographicCamera(viewportAdapter);
@@ -48,21 +50,37 @@ namespace game
             Position = Vector2.Zero;
             Cam.MaximumZoom = 2f;
             Cam.MinimumZoom = 1f;
-            Cam.Zoom = 1.5f;
+            //Cam.Zoom = 1.5f;
         }
 
         public void Update(Vector2 position)
         {
-            if (position.X > 0 && position.X < 64 * 70 - _cameraWidth)
+            if (position.X > 0 && position.X < _mapHeight - _cameraWidth)
             {
                 Position.X = position.X;
-                Cam.Position = Position;
             }
-            if (position.Y > 0 && position.Y < 64 * 70 - _cameraHeight)
+            if (position.Y > 0 && position.Y < _mapWidth - _cameraHeight)
             {
                 Position.Y = position.Y;
-                Cam.Position = Position;
             }
+            if (position.X < 0)
+            {
+                Position.X = 0;
+            }
+            else if (position.X > _mapWidth - _cameraWidth)
+            {
+                Position.X = _mapWidth - _cameraWidth;
+            }
+            if (position.Y < 0)
+            {
+                Position.Y = 0;
+            } 
+            else if (position.Y > _mapHeight - _cameraHeight) 
+            {
+                Position.Y = _mapHeight - _cameraHeight;
+            }
+
+            Cam.Position = Position;
         }
 
         public void AdjustZoom()

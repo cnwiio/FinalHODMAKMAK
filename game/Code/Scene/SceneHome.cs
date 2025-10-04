@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assimp;
+using Assimp.Unmanaged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -19,8 +21,12 @@ namespace game
     {
         private GlobalContext globalContext;
 
+        // Player
+        private Player player;
+        private PreventMonster preventMonster;
+
         // Collision & Layer
-        private List<IEntity> _collision = new List<IEntity>();
+        private List<IEntity> _collision;
         private CollisionComponent _collisionComponent;
 
         // Other Setting
@@ -39,16 +45,35 @@ namespace game
             _collision = game1.Collision;
             _collisionComponent = game1.CollisionComponent;
 
+            player = game1.Player;
+            preventMonster = game1.PreventMonster;
+
             globalContext = new GlobalContext(Game);
         }
 
         public override void LoadContent()
         {
+            _healTexture = Content.Load<Texture2D>("Texture/Health");
+
             //globalContext.LoadCamera();
             //globalContext.LoadParticle();
             //globalContext.LoadTiledMap(Content, "SceneHome");
-            //globalContext.LoadMonster(); // รอ Player
-            globalContext.LoadAll(Content, "SceneHome");
+            //globalContext.LoadMonster(); 
+
+            
+
+            globalContext.LoadAll(Content, "SceneHome", preventMonster, player);
+
+            //if (player.DestinationPos == Vector2.Zero)
+            //{
+            //    player._movement.SetPosition(new Vector2(250, 2200));
+            //}
+            //else
+            //{
+            //    player._movement.SetPosition(player.DestinationPos);
+            //}
+            //player.SetWorldReferences(_collision, _collisionComponent);
+            //globalContext.Ysort.Add(player);
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -62,6 +87,7 @@ namespace game
             // Keyboard input
             _oldKs = _ks;
             _ks = Keyboard.GetState();
+            #region Debug
             if (_ks.IsKeyDown(Keys.O) && !_oldKs.IsKeyDown(Keys.O))
             {
                 isDebug = !isDebug;
@@ -70,10 +96,37 @@ namespace game
             {
                 ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
             }
+            if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
+            {
+                if (player.Stats.Speed.Value <= 900)
+                {
+                    player.Stats.Speed.AddModifier(1500);
+                    player.Stats.AttackDamage.AddModifier(10000000);
+                    globalContext._Camera.MinimumZoom = 0.1f;
+                }
+                else
+                {
+                    player.Stats.Speed.RemoveModifier(1500);
+                    player.Stats.AttackDamage.RemoveModifier(10000000);
+                    globalContext._Camera.MinimumZoom = 1;
+                    globalContext._Camera.Zoom = 1;
+                }
+            }
+            if (player.Stats.CurrentHP == 0)
+            {
+                ScreenManager.LoadScreen(new SceneMenu(game1));
+                player.Stats.Heal(100000);
+            }
+            #endregion
 
-            globalContext.UpdateCamera(Vector2.Zero);
+            player.Update(gameTime);
+            var playerpos = player._movement.Position;
+            preventMonster.UpdatePosition(playerpos);
+
+            globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             globalContext.UpdateParticle(gameTime);
-            //globalContext.UpdateMonster(); // รอ player
+            globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
+            globalContext.UpdatePendinQueue();
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
 
@@ -98,23 +151,70 @@ namespace game
             //globalContext.DrawParticle(_spriteBatch);
             globalContext.DrawAll(_spriteBatch);
 
-            // Draw hitboxes
             if (isDebug)
-            {
-                _spriteBatch.DrawRectangle(new RectangleF(globalContext.Camera.Position,
-                    new SizeF(5, 5)), Color.Red, 5, 0);
-                foreach (IEntity item in _collision)
-                {
-                    item.Draw(_spriteBatch);
-                }
-            }
+                DebugDraw();
+
             _spriteBatch.End();
+
+            globalContext.DrawBossUI(_spriteBatch);
         }
         public override void UnloadContent()
         {
+            _healTexture = null;
             globalContext.UnloadAll();
-            globalContext = null;
+            //globalContext = null;
             base.UnloadContent();
+        }
+
+        private void DebugDraw()
+        {
+            // Camera reference point
+            _spriteBatch.DrawRectangle(new RectangleF(globalContext._Camera.Position, new SizeF(5, 5)), Color.Red, 5, 0);
+
+            foreach (IEntity entity in _collision)
+                entity.Draw(_spriteBatch);
+
+            preventMonster.Draw(_spriteBatch);
+
+            foreach (var monster in globalContext.Monsters)
+            {
+                if (monster is MonsterMelee mm)
+                    DrawMonsterDebug(mm);
+                else if (monster is MonsterRange mr)
+                    DrawMonsterDebug(mr);
+                else if (monster is MonsterBoss mb && !mb.IsDead)
+                    DrawMonsterDebug(mb);
+                else if (monster is MonsterSlime ms)
+                    DrawMonsterDebug(ms);
+            }
+        }
+
+        private void DrawMonsterDebug(IMonster monster)
+        {
+            _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+            _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+
+            switch (monster)
+            {
+                case MonsterMelee mm:
+                    _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.AttackRange), 16, Color.Aqua, 2);
+                    break;
+                case MonsterRange mr:
+                    _spriteBatch.DrawCircle(new CircleF(mr.Position, mr.AttackRange), 16, Color.Aqua, 2);
+                    break;
+                case MonsterBoss mb:
+                    if (!mb.IsDead)
+                    {
+                        _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                        _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.AttackRange), 16, Color.Aqua, 2);
+                    }
+                    break;
+                case MonsterSlime ms:
+                    _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.AttackRange), 16, Color.Aqua, 2);
+                    break;
+            }
         }
     }
 }
