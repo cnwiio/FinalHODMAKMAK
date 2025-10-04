@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Linq;
 using System.Reflection.Metadata;
 using Microsoft.Toolkit.HighPerformance;
 using Microsoft.Xna.Framework;
@@ -84,7 +86,8 @@ namespace game
             {
                 if (obj.Name == "Warp")
                 {
-                    collisionList.Add(new Door(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height), obj.Type, game));
+                    var pos = new Vector2(float.Parse(obj.Properties["X"].Value), float.Parse(obj.Properties["Y"].Value));
+                    collisionList.Add(new Door(new RectangleF(obj.Position.X + 1, obj.Position.Y + 1, obj.Size.Width +2, obj.Size.Height +2), TiledMap.Name, obj.Type, pos, game));
                     continue;
                 }
                 collisionList.Add(new Wall(new RectangleF(obj.Position.X, obj.Position.Y, obj.Size.Width, obj.Size.Height)));

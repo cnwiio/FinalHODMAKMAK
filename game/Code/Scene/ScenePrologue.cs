@@ -19,52 +19,22 @@ namespace game
 {
     public class ScenePrologue : GameScreen
     {
-        // Tile Map
-        private TileMaper _tileMaper;
-        private List<IYsort> _ysort = new List<IYsort>();
-
-        #region Monster
-        // Monster
-        private List<IMonster> _monster = new List<IMonster>();
-        private List<IEntity> _attackTargets = new List<IEntity>();
-        private List<IEntity> _pendingAdd = new List<IEntity>();
-        private List<IEntity> _pendingRemove = new List<IEntity>();
-        private List<IMonster> _pendingMonsterRemove = new List<IMonster>();
-        #endregion
-
-        // Collision & Layer
-        private List<IEntity> _collision = new List<IEntity>();
-        private CollisionComponent _collisionComponent;
-        private PreventMonster _preventMonster;
-        private List<GameObject> _gameObject = new List<GameObject>();
-        private List<GameObject> _shadow = new List<GameObject>();
+        private GlobalContext globalContext;
 
         // Player
-        private AnimController _playerTexture;
-        private Player _player;
+        private Player player;
+        private PreventMonster preventMonster;
 
-        // Pickup
-        private List<IEntity> _pickups = new List<IEntity>();
-
-        // Camera
-        private GlobalCamera camera;
-        private OrthographicCamera _camera;
-
-        // Particle
-        private HitParticle hitParticle;
-        private DeadParticle deadParticle;
-        private FireParticle fireParticleLight;
-        private FireParticle fireParticleDark;
-
-        // Audio
-        private AudioController _audioController;
+        // Collision & Layer
+        private List<IEntity> _collision;
+        private CollisionComponent _collisionComponent;
 
         // Other Setting
         private Game1 game1;
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
-        public bool isDebug = false;
+        private bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -75,8 +45,10 @@ namespace game
             _collision = game1.Collision;
             _collisionComponent = game1.CollisionComponent;
 
-            // Tile Map
-            _tileMaper = new TileMaper(Game);
+            player = game1.Player;
+            preventMonster = game1.PreventMonster;
+
+            globalContext = new GlobalContext(Game);
         }
 
 
@@ -85,90 +57,7 @@ namespace game
             // Load temporary drop texture
             _healTexture = Content.Load<Texture2D>("Texture/Health");
 
-            // Camera setup
-            camera = game1.camera;
-            _camera = camera.Cam;
-
-            // Audio
-            _audioController = game1.audioController;
-
-            // Particle
-            hitParticle = new HitParticle(game1);
-            deadParticle = new DeadParticle(game1);
-            fireParticleLight = new FireParticle(game1);
-            fireParticleDark = new FireParticle(game1);
-
-            //Tile Map
-            _tileMaper.LoadMap(Content, "ScenePrologue");
-            _tileMaper.LoadCollision(_collisionComponent, _collision, "Collision");
-            // Game Object
-            var objectLayer = _tileMaper.GetObjectLayer("Object");
-            foreach (var item in objectLayer.Objects)
-            {
-                _gameObject.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
-                _ysort.Add(_gameObject.Last());
-            }
-            var shadowLayer = _tileMaper.GetObjectLayer("Shadow");
-            foreach (var item in shadowLayer.Objects)
-            {
-                _shadow.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
-            }
-            // Player
-            _playerTexture = new AnimController(new Vector2(400, 400));
-            _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 128, 128);
-
-            // Walk Animations
-            _playerTexture.CreateAnimation("Walk", "down", true, 98, 0, 8);
-            _playerTexture.CreateAnimation("Walk", "right", true, 98, 8, 8);
-            _playerTexture.CreateAnimation("Walk", "left", true, 98, 16, 8);
-            _playerTexture.CreateAnimation("Walk", "up", true, 98, 24, 8);
-
-            // Idle animation (4 directions, 6 frames per row)
-            _playerTexture.LoadFrame(Content, "Idle", "Player_Idle", 128, 128);
-
-            _playerTexture.CreateAnimation("Idle", "down", true, 200, 0, 6);   // row 0
-            _playerTexture.CreateAnimation("Idle", "right", true, 200, 6, 6);  // row 1
-            _playerTexture.CreateAnimation("Idle", "left", true, 200, 12, 6);  // row 2
-            _playerTexture.CreateAnimation("Idle", "up", true, 200, 18, 6);    // row 3
-
-            // Attack animation (4 directions, 6 frames per row)
-            _playerTexture.LoadFrame(Content, "Attack", "Player_Attack", 288, 240);
-
-            _playerTexture.CreateAnimation("Attack", "down", false, 25, 0, 8);   // row 0
-            _playerTexture.CreateAnimation("Attack", "left", false, 25, 8, 8);  // row 1
-            _playerTexture.CreateAnimation("Attack", "right", false, 25, 16, 8);  // row 2
-            _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
-
-
-            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
-            foreach (var obj in spawnPoint.Objects)
-            {
-                if (obj.Name == "Player")
-                {
-                    _player = new Player(_playerTexture, new Vector2(obj.Position.X, obj.Position.Y));
-                    break;
-                }
-            }
-            //_player = new Player(_playerTexture, new Vector2(802, 2603));
-            //_player = new Player(_playerTexture, new Vector2(2600, 1603));
-
-            // **Set world references for collision / pickups**
-            _player.SetWorldReferences(_collision, _collisionComponent);
-            _ysort.Add(_player);
-
-            // Prevent monster zone
-            _preventMonster = new PreventMonster(new Vector2(400, 400), 350f);
-            _collision.Add(_preventMonster);
-
-            // Monster
-            LoadMonster();
-
-            // Fill attack targets list ไม่ต้องใช้ละ ลบได้
-            //_attackTargets.Clear();
-            //foreach (var monster in _monster)
-            //{
-            //    _attackTargets.Add(monster.HurtBox);
-            //}
+            globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -185,89 +74,52 @@ namespace game
             // Keyboard input
             _oldKs = _ks;
             _ks = Keyboard.GetState();
+            #region Debug
             if (_ks.IsKeyDown(Keys.O) && !_oldKs.IsKeyDown(Keys.O))
             {
                 isDebug = !isDebug;
             }
             if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
             {
-                if (_player.Stats.Speed.Value <= 900)
+                if (player.Stats.Speed.Value <= 900)
                 {
-                    _player.Stats.Speed.AddModifier(1500);
-                    _player.Stats.AttackDamage.AddModifier(10000000);
-                    _camera.MinimumZoom = 0.1f;
+                    player.Stats.Speed.AddModifier(1500);
+                    player.Stats.AttackDamage.AddModifier(10000000);
+                    globalContext._Camera.MinimumZoom = 0.1f;
                 }
                 else
                 {
-                    _player.Stats.Speed.RemoveModifier(1500);
-                    _player.Stats.AttackDamage.RemoveModifier(10000000);
-                    _camera.MinimumZoom = 1;
+                    player.Stats.Speed.RemoveModifier(1500);
+                    player.Stats.AttackDamage.RemoveModifier(10000000);
+                    globalContext._Camera.MinimumZoom = 1;
+                    globalContext._Camera.Zoom = 1;
                 }
             }
             if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
                 ScreenManager.LoadScreen(new SceneMenu(game1));
             }
-            if(_player.Stats.CurrentHP == 0)
+            if(player.Stats.CurrentHP == 0)
             {
                 ScreenManager.LoadScreen(new SceneMenu(game1));
+                player.Stats.Heal(100000);
             }
+            #endregion
 
             // Player
-            _player.Update(gameTime, _attackTargets);
+            player.Update(gameTime);
+            var playerpos = player._movement.Position;
+            preventMonster.UpdatePosition(playerpos);
 
-            // Prevent monster follows player
-            _preventMonster.UpdatePosition(_player._movement.Position);
-
-            // Camera
-            camera.Update(_player._movement.Position - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
-            camera.AdjustZoom();
-            //Debug.WriteLine(_camera.Zoom);
-
-            // Particle
-            if (hitParticle != null && deadParticle != null && fireParticleLight != null && fireParticleDark != null)
-            {
-                hitParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-                deadParticle.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-                fireParticleLight.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-                fireParticleDark.Update((float)gameTime.ElapsedGameTime.TotalSeconds); 
-            }
-
-            // Monster
-            UpdateMonster(gameTime);
-
-            // Flush queued removals
-            foreach (var monster in _pendingRemove.OfType<IMonster>())
-            {
-                _monster.Remove(monster);
-            }
-
-            // Flush queued additions
-            foreach (var entity in _pendingAdd)
-            {
-                _collision.Add(entity);
-                _collisionComponent.Insert(entity);
-            }
-
-            // Clear queues
-            _pendingAdd.Clear();
-            _pendingRemove.Clear();
-
-            // Ysort
-            _ysort.Sort((a, b) => 
-            {
-                // เปรียบเทียบ SortY ก่อน
-                int yComparison = a.SortY.CompareTo(b.SortY);
-                if (yComparison != 0)
-                    return yComparison;
-
-                // ถ้า SortY เท่ากัน ใช้ SortX เป็นเงื่อนไขรอง
-                return b.SortX.CompareTo(a.SortX);
-            });
+            globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
+            globalContext.UpdateParticle(gameTime);
+            globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
+            globalContext.UpdatePendinQueue();
+            globalContext.UpdateTiledMaper(gameTime);
+            globalContext.UpdateYsort();
 
             // Collision
             _collisionComponent.Update(gameTime);
-            _tileMaper.UpdateMap(gameTime);
 
             // Debug FPS
             int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds);
@@ -279,82 +131,37 @@ namespace game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // Draw tile map first
-            _tileMaper.DrawMap(_camera);
+
 
             // Begin main camera sprite batch (world space)
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, transformMatrix: _camera.GetViewMatrix());
+            _spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                transformMatrix: globalContext._Camera.GetViewMatrix()
+            );
 
-            // วาดสกิลของบอส
-            if (_monster.Exists(x => x is MonsterBoss))
-            {
-                var Boss = (MonsterBoss)_monster.Find(x => x.GetType() == typeof(MonsterBoss));
-                if (!Boss.IsDead)
-                {
-                    Boss.DrawSkill(_spriteBatch);
-                }
-            }
-
-            // Draw shadows behind entities
-            foreach (var shadow in _shadow)
-                shadow.Draw(_spriteBatch);
-
-            // Draw all sorted entities
-            foreach (var entity in _ysort)
-            {
-                // Enable debug outline if applicable
-                if (entity is HealPickup heal)
-                    heal.DrawDebugOutline = isDebug;
-
-                entity.Draw(_spriteBatch);
-            }
-
-            // Draw pickups (like heals) that might not be in _ysort
-            foreach (var pickup in _pickups)
-            {
-                if (pickup is HealPickup heal)
-                    heal.DrawDebugOutline = isDebug;
-
-                pickup.Draw(_spriteBatch);
-            }
+            globalContext.DrawAll(_spriteBatch);
 
             // Optional debug overlay (collisions, monster ranges, etc.)
             if (isDebug)
                 DebugDraw();
 
-            // Draw particles
-            hitParticle.Draw(_spriteBatch);
-            deadParticle.Draw(_spriteBatch);
-            fireParticleLight.Draw(_spriteBatch);
-            fireParticleDark.Draw(_spriteBatch);
-
             _spriteBatch.End();
 
-            // Begin UI sprite batch (screen space)
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-
-            // Draw UI elements like boss health bars
-            foreach (var entity in _ysort)
-            {
-                if (entity is MonsterBoss boss && !boss.IsDead && boss.isInActiveRadius)
-                {
-                    boss.DrawUI(_spriteBatch, new Vector2(game1.ScreenWidth / 2, 50));
-                }
-            }
-
-            _spriteBatch.End();
+            globalContext.DrawBossUI(_spriteBatch);
         }
         private void DebugDraw()
         {
             // Camera reference point
-            _spriteBatch.DrawRectangle(new RectangleF(_camera.Position, new SizeF(5, 5)), Color.Red, 5, 0);
+            _spriteBatch.DrawRectangle(new RectangleF(globalContext._Camera.Position, new SizeF(5, 5)), Color.Red, 5, 0);
 
             foreach (IEntity entity in _collision)
                 entity.Draw(_spriteBatch);
 
-            _preventMonster.Draw(_spriteBatch);
+            preventMonster.Draw(_spriteBatch);
 
-            foreach (var monster in _monster)
+            foreach (var monster in globalContext.Monsters)
             {
                 if (monster is MonsterMelee mm)
                     DrawMonsterDebug(mm);
@@ -399,326 +206,322 @@ namespace game
 
         public override void UnloadContent()
         {
-            //_tileMaper.UnloadMap();
-            //_collisionComponent.Clear();
-            //_playerTexture.UnloadContent();
+            //foreach (IMonster monster in _monster)
+            //{
+            //    monster.UnLoad(); // actually calls UnLoad on each monster
+            //}
 
-            foreach (IMonster monster in _monster)
-            {
-                monster.UnLoad(); // actually calls UnLoad on each monster
-            }
+            //foreach (var item in _collision)
+            //{
+            //    _collisionComponent.Remove(item);
+            //}
+            //_collision.Clear();
+            //_monster.Clear();
+            //_gameObject.Clear();
+            //_ysort.Clear();
+            //_shadow.Clear();
+            //hitParticle = null;
+            //deadParticle = null;
+            //fireParticleDark = null;
+            //fireParticleLight = null;
 
-            foreach (var item in _collision)
-            {
-                _collisionComponent.Remove(item);
-            }
-            _collision.Clear();
-            _monster.Clear();
-            _ysort.Clear();
-            _gameObject.Clear();
-            _shadow.Clear();
-            hitParticle = null;
-            deadParticle = null;
-            fireParticleDark = null;
-            fireParticleLight = null;
-            //particle.Dispose();
-            //Content.Unload();
+            _healTexture = null;
+            globalContext.UnloadAll();
+            //globalContext = null;
 
             base.UnloadContent();
         }
         // {------------------------------ Monster ------------------------------------------- } //
-        #region Load All Monster
-        private void LoadMonster()
-        {
-            var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
-            foreach (var obj in spawnPoint.Objects)
-            {
-                if (obj.Name == "Melee")
-                {
-                    if (obj.Type == "Light")
-                    {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
-                    } 
-                    else
-                    {
-                        _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
-                    }
-                    LoadMonsterMelee((MonsterMelee)_monster.Last());
-                }
-                else if (obj.Name == "Range")
-                {
-                    if (obj.Type == "Light")
-                    {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleLight, ElementType.Light)); 
-                    }
-                    else
-                    {
-                        _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleDark, ElementType.Dark));
-                    }
-                    LoadMonsterRange((MonsterRange)_monster.Last());
-                }
-                else if (obj.Name == "Boss")
-                {
-                    _monster.Add(new MonsterBoss(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleLight, ElementType.Light));
-                    LoadMonsterBoss((MonsterBoss)_monster.Last());
-                }
-                else if (obj.Name == "Slime")
-                {
-                    if (obj.Type == "Light")
-                    {
-                        _monster.Add(new MonsterSlime(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
-                    }
-                    else
-                    {
-                        _monster.Add(new MonsterSlime(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
-                    }
-                    LoadMonsterSlime((MonsterSlime)_monster.Last());
-                }
-            }
-            //_monster.Add(new MonsterRange(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
-            //_monster.Add(new MonsterMelee(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
-        }
-        #endregion
+        //#region Load All Monster
+        //private void LoadMonster()
+        //{
+        //    var spawnPoint = _tileMaper.GetObjectLayer("SpawnPoint");
+        //    foreach (var obj in spawnPoint.Objects)
+        //    {
+        //        if (obj.Name == "Melee")
+        //        {
+        //            if (obj.Type == "Light")
+        //            {
+        //                _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
+        //            } 
+        //            else
+        //            {
+        //                _monster.Add(new MonsterMelee(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
+        //            }
+        //            LoadMonsterMelee((MonsterMelee)_monster.Last());
+        //        }
+        //        else if (obj.Name == "Range")
+        //        {
+        //            if (obj.Type == "Light")
+        //            {
+        //                _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleLight, ElementType.Light)); 
+        //            }
+        //            else
+        //            {
+        //                _monster.Add(new MonsterRange(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleDark, ElementType.Dark));
+        //            }
+        //            LoadMonsterRange((MonsterRange)_monster.Last());
+        //        }
+        //        else if (obj.Name == "Boss")
+        //        {
+        //            _monster.Add(new MonsterBoss(obj.Position, _preventMonster, _player, hitParticle, deadParticle, fireParticleLight, ElementType.Light));
+        //            LoadMonsterBoss((MonsterBoss)_monster.Last());
+        //        }
+        //        else if (obj.Name == "Slime")
+        //        {
+        //            if (obj.Type == "Light")
+        //            {
+        //                _monster.Add(new MonsterSlime(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Light));
+        //            }
+        //            else
+        //            {
+        //                _monster.Add(new MonsterSlime(obj.Position, _preventMonster, _player, hitParticle, deadParticle, ElementType.Dark));
+        //            }
+        //            LoadMonsterSlime((MonsterSlime)_monster.Last());
+        //        }
+        //    }
+        //    //_monster.Add(new MonsterRange(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
+        //    //_monster.Add(new MonsterMelee(new Vector2(2500, 2603), _preventMonster, _player, particle, Element.light));
+        //}
+        //#endregion
 
-        #region Load Monster Melee
-        private void LoadMonsterMelee(MonsterMelee monster)
-        {
-            if (monster.ElementType == ElementType.Light)
-            {
-                monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
-            }
-            else if (monster.ElementType == ElementType.Dark)
-            {
-                monster.LoadAnim("Walk", "DarkGoonWalk", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Idle", "DarkGoonIdle", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Attack", "DarkGoonAttack", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Charge", "DarkGoonCharge", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
-            }
-            monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, _audioController, "WoodHit", "WoodDie");
-            monster.CreateAnimation();
-            monster.SetProperty(
-                speed: 100f,
-                sreachRadius: 500f,
-                hp: 250,
-                damage: 10,
-                attackRange: (int)(monster.Width * 1.5),
-                activeRadius: (int)(monster.Width * 1.5),
-                dashForce: monster.Width * 7
-            );
-            _ysort.Add(monster);
-            _collision.Add(monster.HurtBox);
-            _collision.Add(monster.Collision);
-        }
-        #endregion
+        //#region Load Monster Melee
+        //private void LoadMonsterMelee(MonsterMelee monster)
+        //{
+        //    if (monster.ElementType == ElementType.Light)
+        //    {
+        //        monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Idle", "LightGoonIdle", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+        //    }
+        //    else if (monster.ElementType == ElementType.Dark)
+        //    {
+        //        monster.LoadAnim("Walk", "DarkGoonWalk", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Idle", "DarkGoonIdle", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Attack", "DarkGoonAttack", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Charge", "DarkGoonCharge", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
+        //    }
+        //    monster.LoadUI(Content, "HealthBar5");
+        //    monster.LoadSound(Content, _audioController, "WoodHit", "WoodDie");
+        //    monster.CreateAnimation();
+        //    monster.SetProperty(
+        //        speed: 100f,
+        //        sreachRadius: 500f,
+        //        hp: 250,
+        //        damage: 10,
+        //        attackRange: (int)(monster.Width * 1.5),
+        //        activeRadius: (int)(monster.Width * 1.5),
+        //        dashForce: monster.Width * 7
+        //    );
+        //    _ysort.Add(monster);
+        //    _collision.Add(monster.HurtBox);
+        //    _collision.Add(monster.Collision);
+        //}
+        //#endregion
 
-        #region Load Monster Range
-        private void LoadMonsterRange(MonsterRange monster)
-        {
-            if (monster.ElementType == ElementType.Light)
-            {
-                monster.loadBullet(Content, "LightBullet");
-                monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Attack", "LightRegimogusAttack", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Charge", "LightRegimogusCharge", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Idle", "LightRegimogusIdle", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Die", "LightRegimogusFuckingDie", monster.Position, 128, 128, Content);
-            }
-            else if (monster.ElementType == ElementType.Dark)
-            {
-                monster.loadBullet(Content, "DarkBullet");
-                monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Attack", "DarkRegimogusAttack", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Charge", "DarkRegimogusCharge", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Idle", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
-                monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
-            }
-            monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, _audioController, "StoneHit", "StoneDie");
-            monster.CreateAnimation();
-            monster.SetProperty(
-                speed: 100f,
-                sreachRadius: 500f,
-                hp: 150,
-                damage: 10,
-                attackRange: (int)(monster.Width * 2.5f),
-                dashForce: 300,
-                bulletSpeed: 750
-            );
-            _ysort.Add(monster);
-            _collision.Add(monster.HurtBox);
-            _collision.Add(monster.Collision);
-        }
-        #endregion
+        //#region Load Monster Range
+        //private void LoadMonsterRange(MonsterRange monster)
+        //{
+        //    if (monster.ElementType == ElementType.Light)
+        //    {
+        //        monster.loadBullet(Content, "LightBullet");
+        //        monster.LoadAnim("Walk", "LightRegimogusIdle", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Attack", "LightRegimogusAttack", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Charge", "LightRegimogusCharge", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Idle", "LightRegimogusIdle", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Die", "LightRegimogusFuckingDie", monster.Position, 128, 128, Content);
+        //    }
+        //    else if (monster.ElementType == ElementType.Dark)
+        //    {
+        //        monster.loadBullet(Content, "DarkBullet");
+        //        monster.LoadAnim("Walk", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Attack", "DarkRegimogusAttack", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Charge", "DarkRegimogusCharge", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Idle", "DarkRegimogusIdle", monster.Position, 128, 128, Content);
+        //        monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
+        //    }
+        //    monster.LoadUI(Content, "HealthBar5");
+        //    monster.LoadSound(Content, _audioController, "StoneHit", "StoneDie");
+        //    monster.CreateAnimation();
+        //    monster.SetProperty(
+        //        speed: 100f,
+        //        sreachRadius: 500f,
+        //        hp: 150,
+        //        damage: 10,
+        //        attackRange: (int)(monster.Width * 2.5f),
+        //        dashForce: 300,
+        //        bulletSpeed: 750
+        //    );
+        //    _ysort.Add(monster);
+        //    _collision.Add(monster.HurtBox);
+        //    _collision.Add(monster.Collision);
+        //}
+        //#endregion
 
-        #region Load Monster Boss
+        //#region Load Monster Boss
 
-        private void LoadMonsterBoss(MonsterBoss monster)
-        {
-            monster.LoadAnim("Walk", "LightGoonWalk", monster.Position, 128, 128, Content);
-            monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
-            monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
-            monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
-            monster.loadBullet(Content, "LightBullet", "DarkBullet");
-            monster.LoadAssets(Content);
-            monster.LoadUI(Content, "HealthBar7");
-            monster.CreateAnimation();
-            monster.SetProperty(
-                speed: 100f,
-                sreachRadius: 2000f,
-                hp: 1000,
-                damage: 10,
-                attackRange: (int)(monster.Width * 7),
-                activeRadius: (int)(monster.Width * 3),
-                dashForce: monster.Width * 10,
-                bulletSpeed: 750
-            );
-            _ysort.Add(monster);
-            _collision.Add(monster.HurtBox);
-            _collision.Add(monster.Collision);
-        }
-        #endregion
+        //private void LoadMonsterBoss(MonsterBoss monster)
+        //{
+        //    monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("Walk", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
+        //    monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+        //    monster.LoadAnim("ChargeFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("Fire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("EndFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("ChargeFire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("Fire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
+        //    monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+        //    monster.loadBullet(Content, "LightBullet", "DarkBullet");
+        //    monster.LoadAssets(Content);
+        //    monster.LoadUI(Content, "HealthBar7");
+        //    monster.CreateAnimation();
+        //    monster.SetProperty(
+        //        speed: 100f,
+        //        sreachRadius: 2000f,
+        //        hp: 1000,
+        //        damage: 10,
+        //        attackRange: (int)(monster.Width * 5),
+        //        activeRadius: (int)(monster.Width * 2),
+        //        dashForce: monster.Width * 4,
+        //        bulletSpeed: 750
+        //    );
+        //    _ysort.Add(monster);
+        //    _collision.Add(monster.HurtBox);
+        //    _collision.Add(monster.Collision);
+        //}
+        //#endregion
 
-        #region Load Monster Slime
-        private void LoadMonsterSlime(MonsterSlime monster)
-        {
-            if (monster.ElementType == ElementType.Light)
-            {
-                monster.LoadAnim("Idle", "LightSlimeIdle", monster.Position, 64, 64, Content);
-                monster.LoadAnim("Walk", "LightSlimeAttack", monster.Position, 64, 192, Content);
-                monster.LoadAnim("Attack", "LightSlimeAttack", monster.Position, 64, 192, Content);
-                monster.LoadAnim("Charge", "LightSlimeCharge", monster.Position, 64, 64, Content);
-                monster.LoadAnim("Die", "LightSlimeDie", monster.Position, 64, 64, Content);
-            }
-            else if (monster.ElementType == ElementType.Dark)
-            {
-                monster.LoadAnim("Idle", "DarkSlimeIdle", monster.Position, 64, 64, Content);
-                monster.LoadAnim("Walk", "DarkSlimeAttack", monster.Position, 64, 192, Content);
-                monster.LoadAnim("Attack", "DarkSlimeAttack", monster.Position, 64, 192, Content);
-                monster.LoadAnim("Charge", "DarkSlimeCharge", monster.Position, 64, 192, Content);
-                monster.LoadAnim("Die", "DarkSlimeDie", monster.Position, 64, 64, Content);
-            }
-            monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, _audioController, "SlimeHit", "SlimeDie");
-            monster.CreateAnimation();
-            monster.SetProperty(
-                speed: 100f,
-                sreachRadius: 500f,
-                hp: 250,
-                damage: 10,
-                attackRange: (int)(monster.Width * 1.5),
-                activeRadius: (int)(monster.Width * 1.5),
-                dashForce: monster.Width * 7
-            );
-            _ysort.Add(monster);
-            _collision.Add(monster.HurtBox);
-            _collision.Add(monster.Collision);
-        }
-        #endregion
+        //#region Load Monster Slime
+        //private void LoadMonsterSlime(MonsterSlime monster)
+        //{
+        //    if (monster.ElementType == ElementType.Light)
+        //    {
+        //        monster.LoadAnim("Idle", "LightSlimeIdle", monster.Position, 64, 64, Content);
+        //        monster.LoadAnim("Walk", "LightSlimeAttack", monster.Position, 64, 192, Content);
+        //        monster.LoadAnim("Attack", "LightSlimeAttack", monster.Position, 64, 192, Content);
+        //        monster.LoadAnim("Charge", "LightSlimeCharge", monster.Position, 64, 64, Content);
+        //        monster.LoadAnim("Die", "LightSlimeDie", monster.Position, 64, 64, Content);
+        //    }
+        //    else if (monster.ElementType == ElementType.Dark)
+        //    {
+        //        monster.LoadAnim("Idle", "DarkSlimeIdle", monster.Position, 64, 64, Content);
+        //        monster.LoadAnim("Walk", "DarkSlimeAttack", monster.Position, 64, 192, Content);
+        //        monster.LoadAnim("Attack", "DarkSlimeAttack", monster.Position, 64, 192, Content);
+        //        monster.LoadAnim("Charge", "DarkSlimeCharge", monster.Position, 64, 192, Content);
+        //        monster.LoadAnim("Die", "DarkSlimeDie", monster.Position, 64, 64, Content);
+        //    }
+        //    monster.LoadUI(Content, "HealthBar5");
+        //    monster.LoadSound(Content, _audioController, "SlimeHit", "SlimeDie");
+        //    monster.CreateAnimation();
+        //    monster.SetProperty(
+        //        speed: 100f,
+        //        sreachRadius: 500f,
+        //        hp: 250,
+        //        damage: 10,
+        //        attackRange: (int)(monster.Width * 1.5),
+        //        activeRadius: (int)(monster.Width * 1.5),
+        //        dashForce: monster.Width * 7
+        //    );
+        //    _ysort.Add(monster);
+        //    _collision.Add(monster.HurtBox);
+        //    _collision.Add(monster.Collision);
+        //}
+        //#endregion
 
-        #region Update Monster
-        private void UpdateMonster(GameTime gameTime)
-        {
-            // Loop through all monsters
-            foreach (var monster in _monster.ToList())
-            {
-                switch (monster)
-                {
-                    case MonsterMelee m:
-                        m.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                        HandleShakeCamera(m, gameTime);
-                        if (m.IsDead)
-                            HandleMonsterDeath(m);
-                        break;
+        //#region Update Monster
+        //private void UpdateMonster(GameTime gameTime)
+        //{
+        //    // Loop through all monsters
+        //    foreach (var monster in _monster.ToList())
+        //    {
+        //        switch (monster)
+        //        {
+        //            case MonsterMelee m:
+        //                m.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+        //                HandleShakeCamera(m, gameTime);
+        //                if (m.IsDead)
+        //                    HandleMonsterDeath(m);
+        //                break;
 
-                    case MonsterRange r:
-                        r.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                        HandleShakeCamera(r, gameTime);
-                        if (r.IsDead)
-                            HandleMonsterDeath(r);
-                        break;
+        //            case MonsterRange r:
+        //                r.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+        //                HandleShakeCamera(r, gameTime);
+        //                if (r.IsDead)
+        //                    HandleMonsterDeath(r);
+        //                break;
 
-                    case MonsterBoss b:
-                        b.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                        HandleShakeCamera(b, gameTime);
-                        if (b.IsDead)
-                            HandleMonsterDeath(b);
-                        break;
+        //            case MonsterBoss b:
+        //                b.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+        //                HandleShakeCamera(b, gameTime);
+        //                if (b.IsDead)
+        //                    HandleMonsterDeath(b);
+        //                break;
 
-                    case MonsterSlime s:
-                        s.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
-                        HandleShakeCamera(s, gameTime);
-                        if (s.IsDead)
-                            HandleMonsterDeath(s);
-                        break;
-                }
+        //            case MonsterSlime s:
+        //                s.UpdateState(gameTime, _collision, _collisionComponent, _player._movement.Position);
+        //                HandleShakeCamera(s, gameTime);
+        //                if (s.IsDead)
+        //                    HandleMonsterDeath(s);
+        //                break;
+        //        }
 
-            }
+        //        // Remove dead monsters
+        //        foreach (var deadMonster in _pendingMonsterRemove)
+        //            _monster.Remove(deadMonster);
+        //        _pendingMonsterRemove.Clear();
+        //    }
+        //}
+        //#endregion
 
+        //#region Monster Extra
+        //// Shake camera helper
+        //private void HandleShakeCamera(dynamic monster, GameTime gameTime)
+        //{
+        //    if (monster.ShakeViewport)
+        //    {
+        //        camera.ShakeCamera(gameTime);
+        //        monster.ShakeViewport = camera.ShakeViewport;
+        //    }
+        //}
 
-            // Remove dead monsters
-            foreach (var deadMonster in _pendingMonsterRemove)
-                _monster.Remove(deadMonster);
-            _pendingMonsterRemove.Clear();
+        //// Handle monster death and spawn heal pickup
+        //private void HandleMonsterDeath(dynamic monster)
+        //{
+        //    // Spawn heal pickup via DropManager
+        //    var healPickup = DropManager.DropHeal(
+        //        _healTexture,
+        //        _player,
+        //        _collisionComponent,
+        //        monster.Position,
+        //        _pendingRemove
+        //    );
+        //    _pendingAdd.Add(healPickup);
+        //    _ysort.Add(healPickup);
 
-            // Add new entities to collision system
-            foreach (var entity in _pendingAdd)
-                _collision.Add(entity);
-            _pendingAdd.Clear(); 
-        }
-        #endregion
+        //    // Clean up monster
+        //    if (monster is MonsterRange)
+        //        monster.DeleteHitBox(1f); // Only 1 parameter
+        //    else
+        //        monster.DeleteHitBox(1f, _collision, _collisionComponent); // 3 parameters
 
-        #region Monster Extra
-        // Shake camera helper
-        private void HandleShakeCamera(dynamic monster, GameTime gameTime)
-        {
-            if (monster.ShakeViewport)
-            {
-                camera.ShakeCamera(gameTime);
-                monster.ShakeViewport = camera.ShakeViewport;
-            }
-        }
+        //    monster.RemoveMonster();
+        //    _pendingMonsterRemove.Add(monster);
+        //}
 
-        // Handle monster death and spawn heal pickup
-        private void HandleMonsterDeath(dynamic monster)
-        {
-            // Spawn heal pickup via DropManager
-            var healPickup = DropManager.DropHeal(
-                _healTexture,
-                _player,
-                _collisionComponent,
-                monster.Position,
-                _pendingRemove
-            );
-            _pendingAdd.Add(healPickup);
-            _pickups.Add(healPickup);
-
-            // Clean up monster
-            if (monster is MonsterRange)
-                monster.DeleteHitBox(1f); // Only 1 parameter
-            else
-                monster.DeleteHitBox(1f, _collision, _collisionComponent); // 3 parameters
-
-            monster.RemoveMonster();
-            _pendingMonsterRemove.Add(monster);
-        }
-
-        /// <summary>
-        /// Helper function to spawn a heal pickup
-        /// </summary>
-        private void SpawnHeal(Vector2 position)
-        {
-            var healPickup = DropManager.DropHeal(_healTexture, _player, _collisionComponent, position, _pendingRemove);
-            _pendingAdd.Add(healPickup);
-            Debug.WriteLine("Spawned HealPickup at: " + position);
-        }
-        #endregion
+        ///// <summary>
+        ///// Helper function to spawn a heal pickup
+        ///// </summary>
+        //private void SpawnHeal(Vector2 position)
+        //{
+        //    var healPickup = DropManager.DropHeal(_healTexture, _player, _collisionComponent, position, _pendingRemove);
+        //    _pendingAdd.Add(healPickup);
+        //    Debug.WriteLine("Spawned HealPickup at: " + position);
+        //}
+        //#endregion
     }
 }
