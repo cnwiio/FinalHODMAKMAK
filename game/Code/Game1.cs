@@ -60,7 +60,7 @@ namespace game
 
         protected override void LoadContent()
         {
-            screenManager.LoadScreen(new ScenePrologue(this)); // temporary
+            screenManager.LoadScreen(new SceneMenu(this)); // temporary
             base.LoadContent();
         }
 
