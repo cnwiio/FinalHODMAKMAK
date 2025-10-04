@@ -51,6 +51,7 @@ namespace game
 
             // Heal the player using PlayerStats.Heal
             _player.Stats.Heal(_healAmount);
+            //_player.potion.Add();
 
             Debug.WriteLine($"[HealPickup] Collected! Player HP: {_player.Stats.CurrentHP}");
 

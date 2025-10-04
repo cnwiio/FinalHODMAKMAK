@@ -14,6 +14,7 @@ namespace game
         public bool DashTriggered { get; private set; }
         public bool AttackTriggered { get; private set; }
         public bool ElementToggleTriggered { get; private set; }   // NEW
+        public bool PotionTriggered { get; private set; }   // NEW
 
         private KeyboardState _keyboardState;
         private KeyboardState _oldkeyboardState;
@@ -62,6 +63,8 @@ namespace game
 
             // Element Toggle: press Q
             ElementToggleTriggered = _keyboardState.IsKeyDown(Keys.Q) && !_oldkeyboardState.IsKeyDown(Keys.Q);
+
+            PotionTriggered = _keyboardState.IsKeyDown(Keys.LeftShift) && !_oldkeyboardState.IsKeyDown(Keys.LeftShift);
 
 
             Direction = dir;

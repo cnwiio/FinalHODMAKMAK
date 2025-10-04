@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="33" nextobjectid="1895">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="33" nextobjectid="1897">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Water_tileset.tsx"/>
  <tileset firstgid="137" source="Cliff_Tileset.tsx"/>
@@ -1605,6 +1605,12 @@
    <point/>
   </object>
   <object id="1881" name="Slime" type="Light" x="391" y="739.333">
+   <point/>
+  </object>
+  <object id="1895" name="Chest" x="3200" y="3968">
+   <point/>
+  </object>
+  <object id="1896" name="Chest" x="2176" y="576">
    <point/>
   </object>
  </objectgroup>

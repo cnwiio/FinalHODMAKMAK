@@ -35,6 +35,7 @@ namespace game
         public float SortY => _movement.Position.Y + 48;
         public float SortX => _movement.Position.X;
         public Vector2 DestinationPos { get; set; }
+        public Potion potion { get; set; }
 
         public Player(AnimController texture, Vector2 startPosition)
         {
@@ -49,6 +50,9 @@ namespace game
             Vector2 collisionSize = new Vector2(40, 27); // width, height
             Vector2 collisionOffset = new Vector2(-20, 26); // offset from top-left of sprite
             Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
+
+            // potion
+            potion = new Potion(this);
         }
 
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
@@ -72,6 +76,9 @@ namespace game
 
             if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
+
+            if (_input.PotionTriggered && !_isAttacking && !_movement.IsDashing)
+                potion.Use();
 
             if (_isAttacking)
             {
@@ -102,6 +109,7 @@ namespace game
             Collision.Update();
 
             _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
+            potion.Update(gameTime); // เอาไว้อัพเดท คูลดาว
         }
 
         private void StartAttack()

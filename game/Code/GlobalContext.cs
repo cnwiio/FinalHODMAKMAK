@@ -50,6 +50,9 @@ namespace game
         // Audio
         public AudioController audioController;
 
+        // Chest
+        public List<Chest> Chests = new List<Chest>();
+
         // Other Setting
         public Game1 _Game1;
         public SpriteBatch SpriteBatch;
@@ -105,6 +108,23 @@ namespace game
             foreach (var item in shadowLayer.Objects)
             {
                 Shadow.Add(new GameObject(item.Position, Content.Load<Texture2D>("TileMap/" + item.Type)));
+            }
+        }
+
+        public void LoadChests(Player player)
+        {
+            var Content = _Game1.Content;
+            var spawnpoint = TileMaper.GetObjectLayer("SpawnPoint");
+            foreach (var obj in spawnpoint.Objects)
+            {
+                if (obj.Name == "Chest")
+                {
+                    var _chest = new Chest();
+                    _chest.Load(Content, "Chests", 32, 32, obj.Position, "F", player.potion);
+                    Chests.Add(_chest);
+                    Collisions.Add(_chest.Hitbox);
+                    Ysort.Add(_chest);
+                }
             }
         }
 
@@ -273,14 +293,21 @@ namespace game
             var Content = _Game1.Content;
             monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
             monster.LoadAnim("Walk", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
             monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
+
+            monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
             monster.LoadAnim("ChargeFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+
             monster.LoadAnim("Fire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
             monster.LoadAnim("EndFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
             monster.LoadAnim("ChargeFire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
             monster.LoadAnim("Fire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
+
+            monster.LoadAnim("ChargeAttack2", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Attack2", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndAttack2", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
+
+            monster.LoadAnim("Casting", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
             monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
             monster.LoadAssets(Content);
@@ -345,6 +372,7 @@ namespace game
         {
             LoadParticle();
             LoadTiledMap(Content, sceneName);
+            LoadChests(player);
             LoadMonster(preventMonster, player);
             LoadPlayer(preventMonster, player);
         }
@@ -379,6 +407,14 @@ namespace game
             else
             {
                 Debug.WriteLine("ERROR : Particle is null (Update)");
+            }
+        }
+
+        public void UpdateChest(Vector2 playerPos)
+        {
+            foreach (var item in Chests)
+            {
+                item.Update(playerPos);
             }
         }
 

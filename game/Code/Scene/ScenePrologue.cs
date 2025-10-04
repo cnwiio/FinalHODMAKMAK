@@ -56,7 +56,7 @@ namespace game
         public override void LoadContent()
         {
             // Load temporary drop texture
-            _healTexture = Content.Load<Texture2D>("Texture/Health");
+            _healTexture = Content.Load<Texture2D>("Texture/Heart");
             spriteFont = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
@@ -116,6 +116,7 @@ namespace game
             globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             globalContext.UpdateParticle(gameTime);
             globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
+            globalContext.UpdateChest(playerpos);
             globalContext.UpdatePendinQueue();
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
@@ -151,7 +152,6 @@ namespace game
             _spriteBatch.DrawString(spriteFont, str3, new Vector2(2186, 3520), Color.White);
 
             globalContext.DrawAll(_spriteBatch);
-
             // Optional debug overlay (collisions, monster ranges, etc.)
             if (isDebug)
                 DebugDraw();
@@ -159,6 +159,13 @@ namespace game
             _spriteBatch.End();
 
             globalContext.DrawBossUI(_spriteBatch);
+
+            // Begin UI sprite batch (screen space)
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            string str4 = "Potion x" + player.potion.Amout;
+            Color tint = player.potion.isinCoolDown ? Color.Gray : Color.White;
+            _spriteBatch.DrawString(spriteFont, str4, new Vector2(1100, 650), tint);
+            _spriteBatch.End();
         }
         private void DebugDraw()
         {
