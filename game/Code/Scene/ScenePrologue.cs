@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
+using MonoGame.Extended.ECS;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
@@ -56,7 +57,7 @@ namespace game
         public override void LoadContent()
         {
             // Load temporary drop texture
-            _healTexture = Content.Load<Texture2D>("Texture/Heart");
+            _healTexture = Content.Load<Texture2D>("Texture/Potion");
             spriteFont = Content.Load<SpriteFont>("Fonts/ArialFont");
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
@@ -120,6 +121,12 @@ namespace game
             globalContext.UpdatePendinQueue();
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
+
+            foreach (var entity in globalContext.Ysort)
+            {
+                if (entity is HealPickup heal)
+                    heal.DrawDebugOutline = isDebug;
+            }
 
             // Collision
             _collisionComponent.Update(gameTime);
