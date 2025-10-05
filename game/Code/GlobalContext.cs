@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assimp;
 using Assimp.Unmanaged;
+using game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;

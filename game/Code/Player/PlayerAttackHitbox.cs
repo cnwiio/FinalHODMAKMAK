@@ -2,45 +2,54 @@
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace game
 {
     public class PlayerAttackHitbox : IEntity
     {
-        public IShapeF Bounds { get; private set; }
-        public string LayerName { get; set; } /*= "PlayerAttack";*/ // ยังไม่มีเลเยอร์นี้ เลยคอมเม้นไว้ก่อน
+        public virtual IShapeF Bounds { get; protected set; }
+        public string LayerName { get; set; }
         private Player _player;
         private float _lifetime;
         private float _elapsed;
+        private int _damage;
+        private int _maxHitsPerMonster; // controlled via constructor
+        private float _hitDelay = 0f; // seconds
+        private Dictionary<IMonster, int> _hitCounts = new Dictionary<IMonster, int>();
+        private Dictionary<IMonster, float> _hitTimers = new Dictionary<IMonster, float>();
         public bool AlwaysDraw => true;
 
         private CollisionComponent _collisionComponent;
-        private bool _addedToWorld = false;
-
-        public PlayerAttackHitbox(Player player, RectangleF bounds, float lifetime = 0.2f, CollisionComponent collisionComponent = null)
+        public PlayerAttackHitbox(Player player, RectangleF bounds, float lifetime = 0.5f, CollisionComponent collisionComponent = null, int damage = 0, int maxHitsPerMonster = 1, float hitDelay = 0.3f)
         {
             _player = player;
             Bounds = bounds;
             _lifetime = lifetime;
             _collisionComponent = collisionComponent;
+
+            _damage = damage > 0 ? damage : (int)_player.Stats.AttackDamage.Value;
+            _maxHitsPerMonster = maxHitsPerMonster;
+            _hitDelay = hitDelay;
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             _elapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            //if (!_addedToWorld && _collisionComponent != null)
-            //{
-            //    //_collisionComponent.Insert(this); // ย้ายไปเพิ่มที่ player // ทั้งบรรทัด if ลบทิ้งได้เลย
-            //    _addedToWorld = true;
-            //}
+            // Update timers for each monster
+            var keys = new List<IMonster>(_hitTimers.Keys);
+            foreach (var monster in keys)
+            {
+                _hitTimers[monster] -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
 
-            // Lifetime expired → remove from world
             if (_elapsed >= _lifetime && _collisionComponent != null)
             {
                 _player.RemoveAttackHitbox(this);
-                //_collisionComponent.Remove(this); // ย้ายไปเพิ่มที่ player
+
             }
         }
 
@@ -54,18 +63,20 @@ namespace game
         {
             if (collisionInfo.Other is MonsterHurtbox monster)
             {
-                if (!monster.Monster.isHit)
+
+                if (!_hitCounts.ContainsKey(monster.Monster))
+                    _hitCounts[monster.Monster] = 0;
+
+
+                if (!_hitTimers.ContainsKey(monster.Monster))
+                    _hitTimers[monster.Monster] = 0f;
+
+                if (_hitCounts[monster.Monster] < _maxHitsPerMonster && _hitTimers[monster.Monster] <= 0f)
                 {
-                    // ย้ายไปเช็คที่มอนแต่ละตัวแทน
-                    //float multiplier = _player.CurrentElement != monster.Monster.ElementType
-                    //    ? 2.0f
-                    //    : 0.5f;
-
-                    monster.Monster.ApplyDamage(_player.Stats.AttackDamage.Value); // ใส่ดาเมจไปเลยตรงๆ
+                    monster.Monster.ApplyDamage(_damage);
+                    _hitCounts[monster.Monster]++;
+                    _hitTimers[monster.Monster] = _hitDelay;
                     monster.Monster.isHit = true;
-                    //System.Diagnostics.Debug.WriteLine($"Hit monster! HP: {monster.Monster.HP}");
-
-                    //monster.Monster.HP -= (int)(_player.Stats.AttackDamage.Value * multiplier); ไม่ใช้แล้ว
                 }
             }
         }

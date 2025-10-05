@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Assimp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
@@ -23,12 +24,26 @@ namespace game
         private RectangleF _attackHitbox;
         private Vector2 _attackPosition;
         private Vector2 _lastDirection = new Vector2(0, 1);
+        public Vector2 LastDirection => _lastDirection;
+
+        // Skill1 (PillarOfLight) state
+        public PillarOfLight Skill1 { get; private set; }
+        private bool _isUsingSkill1 = false;
+        private float _skill1Timer = 0f;
+        private float _skill1Duration = 0.6f; // match PillarOfLight.Duration
+
+        // Skill2 (ArclightCross) state
+        public ArclightCross Skill2 { get; private set; }
+        private bool _isUsingSkill2 = false;
+        private float _skill2Timer = 0f;
+        private float _skill2Duration = 0.5f; // match ArclightCross.Duration
+
 
         public PlayerHurtbox Hurtbox { get; private set; }
         public PlayerCollisionBox Collision { get; private set; }
 
         public List<IEntity> _entities;
-        private List<PlayerAttackHitbox> _activeHitboxes = new List<PlayerAttackHitbox>();
+        internal List<PlayerAttackHitbox> _activeHitboxes = new List<PlayerAttackHitbox>();
         public CollisionComponent _collisionComponent;
 
         public PlayerStats Stats => _stats;
@@ -61,8 +76,13 @@ namespace game
 
             if (!_entities.Contains(Collision)) _entities.Add(Collision);
             _collisionComponent?.Insert(Collision);
+
+            Skill1 = new PillarOfLight(this, _collisionComponent);
+            Skill2 = new ArclightCross(this, _collisionComponent);
+
         }
-        public void Update(GameTime gameTime)
+
+        public void Update(GameTime gameTime, OrthographicCamera sceneCamera)
         {
             _input.Update(gameTime);
 
@@ -77,7 +97,6 @@ namespace game
             {
                 _attackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _movement.SetPosition(_attackPosition);
-                //CheckAttackHit(attackTargets); // ไม่ต้องเช็คเองแล้ว เพราะไปใช้ของ Extended
 
                 if (_attackTimer <= 0f)
                 {
@@ -91,9 +110,39 @@ namespace game
 
                 if (_movement.Direction != Vector2.Zero)
                     _lastDirection = SnapDirection(_movement.Direction);
-
-                //attackTargets?.OfType<MonsterHurtbox>().ToList().ForEach(m => m.Monster.isHit = false); // ไม่ต้องใช้แล้ว
             }
+
+            // Handle Skill 1 (PillarOfLight)
+            if (_input.Skill1Triggered && !_isUsingSkill1 && sceneCamera != null)
+            {
+                StartSkill1(sceneCamera);
+            }
+
+            // If using skill, reduce timer and restore movement when done
+            if (_isUsingSkill1)
+            {
+                _skill1Timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_skill1Timer <= 0f)
+                {
+                    _isUsingSkill1 = false;
+                    _movement.SetCanMove(true); // allow movement again
+                }
+            }
+            if (_input.Skill2Triggered && !_isUsingSkill2)
+            {
+                StartSkill2();
+            }
+
+            if (_isUsingSkill2)
+            {
+                _skill2Timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_skill2Timer <= 0f)
+                {
+                    _isUsingSkill2 = false;
+                    _movement.SetCanMove(true);
+                }
+            }
+
 
             foreach (var hitbox in _activeHitboxes.ToList())
                 hitbox.Update(gameTime);
@@ -129,20 +178,44 @@ namespace game
                 hitboxSize
             );
 
-            var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent); 
-            // ให้เพิ่มเข้า List แค่ตรงนี้ เพราะจะได้เรียกแค่ที่เดียว
+            var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent);
             _activeHitboxes.Add(attackEntity);
+
             if (_entities != null)
             {
-                _entities.Add(attackEntity); // insert to entities list for update/draw
+                _entities.Add(attackEntity);
                 _collisionComponent.Insert(attackEntity);
             }
+        }
+        private void StartSkill1(OrthographicCamera sceneCamera)
+        {
+            _isUsingSkill1 = true;
+            _skill1Timer = _skill1Duration;
+
+            _movement.SetCanMove(false); // stop player from moving
+
+            // Get mouse position in world space
+            var mouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
+            Vector2 mouseScreen = new Vector2(mouseState.X, mouseState.Y);
+            Vector2 mouseWorldPos = ScreenToWorld(sceneCamera, mouseScreen);
+
+            // Spawn PillarOfLight hitbox
+            Skill1.Use(mouseWorldPos);
+        }
+        private void StartSkill2()
+        {
+            _isUsingSkill2 = true;
+            _skill2Timer = _skill2Duration;
+            _movement.SetCanMove(false);
+
+            Vector2 dir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
+
+            Skill2.Use();
         }
 
 
         public void RemoveAttackHitbox(PlayerAttackHitbox hitbox)
         {
-            // ให้มันลบตรงนี้ที่เดียว จะได้ไม่ต้องไปปรับที่อื่น
             _activeHitboxes.Remove(hitbox);
             _entities.Remove(hitbox);
             _collisionComponent.Remove(hitbox);
@@ -153,37 +226,19 @@ namespace game
             if (dir == Vector2.Zero) return _lastDirection;
 
             return Math.Abs(dir.X) >= Math.Abs(dir.Y)
-                ? new Vector2(Math.Sign(dir.X), 0)   // Left or Right
-                : new Vector2(0, Math.Sign(dir.Y)); // Up or Down
-        }
-
-        private void CheckAttackHit(List<IEntity> attackTargets)
-        {
-            if (attackTargets == null) return;
-            var playerAttack = new PlayerAttack(_attackHitbox);
-
-            foreach (var target in attackTargets.OfType<MonsterHurtbox>())
-            {
-                if (!target.Monster.isHit && playerAttack.Bounds.Intersects(target.Bounds) && target.Monster.HP > 0)
-                {
-                    target.Monster.HP -= _stats.AttackDamage.Value;
-                    target.Monster.isHit = true;
-                    Debug.WriteLine($"Hit monster! Remaining HP: {target.Monster.HP}");
-                }
-            }
+                ? new Vector2(Math.Sign(dir.X), 0)
+                : new Vector2(0, Math.Sign(dir.Y));
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             _animation.Draw(spriteBatch);
-
-            //// Draw active attack hitboxes (for debugging)
-            //foreach (var hitbox in _activeHitboxes)
-            //    hitbox.Draw(spriteBatch);
-
-            //Hurtbox.Draw(spriteBatch);
-            //Collision.Draw(spriteBatch); // Yellow debug box
         }
 
+        // Helper method to convert screen coordinates to world coordinates
+        private static Vector2 ScreenToWorld(OrthographicCamera camera, Vector2 screenPos)
+        {
+            return Vector2.Transform(screenPos, Matrix.Invert(camera.GetViewMatrix()));
+        }
     }
 }
