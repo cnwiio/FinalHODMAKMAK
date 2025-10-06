@@ -52,6 +52,7 @@ namespace game
         public AudioController audioController;
         public SoundEffect hitSound;
         public SoundEffect deadSound;
+        public SoundEffect parrySound;
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -357,6 +358,17 @@ namespace game
             }
             HP -= Value;
             //Debug.WriteLine("Damge : " + Value);
+        }
+        public void PlayeParrySound(MonsterAttackHitbox hitbox)
+        {
+            if (hitbox != null)
+            {
+                if (hitbox.PlaySound && parrySound != null)
+                {
+                    audioController.PlaySoundEffect(parrySound);
+                    hitbox.PlaySound = false;
+                } 
+            }
         }
         public virtual void ChangeState(IMonsterState newState) { }
         public virtual void Attack() { }

@@ -16,7 +16,7 @@ namespace game
         public bool AlwaysDraw => true;
 
         private CollisionComponent _collisionComponent;
-        private bool _addedToWorld = false;
+        //private bool _addedToWorld = false;
 
         public PlayerAttackHitbox(Player player, RectangleF bounds, float lifetime = 0.2f, CollisionComponent collisionComponent = null)
         {

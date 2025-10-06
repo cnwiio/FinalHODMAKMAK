@@ -7,8 +7,10 @@ using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
+using MonoGame.Extended.ECS;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
@@ -34,6 +36,7 @@ namespace game
         private SpriteBatch _spriteBatch;
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
+        private SpriteFont spriteFont;
         private bool isDebug = false;
 
         public ScenePrologue(Game game) : base(game)
@@ -55,7 +58,8 @@ namespace game
         public override void LoadContent()
         {
             // Load temporary drop texture
-            _healTexture = Content.Load<Texture2D>("Texture/Health");
+            _healTexture = Content.Load<Texture2D>("Texture/Potion");
+            spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
@@ -79,6 +83,10 @@ namespace game
             {
                 isDebug = !isDebug;
             }
+            if (_ks.IsKeyDown(Keys.M) && !_oldKs.IsKeyDown(Keys.M))
+            {
+                globalContext.audioController.ToggleMute();
+            }
             if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
             {
                 if (player.Stats.Speed.Value <= 900)
@@ -97,14 +105,18 @@ namespace game
             }
             if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
-                ScreenManager.LoadScreen(new SceneMenu(game1));
+                ScreenManager.LoadScreen(new SceneMenu(game1, true));
+                return;
             }
             if(player.Stats.CurrentHP == 0)
             {
-                ScreenManager.LoadScreen(new SceneMenu(game1));
-                player.Stats.Heal(100000);
+                ScreenManager.LoadScreen(new SceneDead(game1));
+                return;
             }
             #endregion
+
+            //Debug.WriteLine(game1.SavedHP);
+            //Debug.WriteLine(game1.SavedPotion);
 
             // Player
             player.Update(gameTime);
@@ -113,10 +125,17 @@ namespace game
 
             globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             globalContext.UpdateParticle(gameTime);
-            globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
+            globalContext.UpdateMonster(gameTime, player, _healTexture);
+            globalContext.UpdateChest(playerpos);
             globalContext.UpdatePendinQueue();
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
+
+            foreach (var entity in globalContext.Ysort)
+            {
+                if (entity is HealPickup heal)
+                    heal.DrawDebugOutline = isDebug;
+            }
 
             // Collision
             _collisionComponent.Update(gameTime);
@@ -141,15 +160,28 @@ namespace game
                 transformMatrix: globalContext._Camera.GetViewMatrix()
             );
 
-            globalContext.DrawAll(_spriteBatch);
+            string str1 = "W A S D to walk\nZ X to zoom\nP to return default zoom";
+            _spriteBatch.DrawString(spriteFont, str1, new Vector2(979, 3717), Color.White);
+            string str2 = "SPACE to dash";
+            _spriteBatch.DrawString(spriteFont, str2, new Vector2(1422, 3543), Color.White);
+            string str3 = "Left Click to attack\nQ to change element";
+            _spriteBatch.DrawString(spriteFont, str3, new Vector2(2186, 3520), Color.White);
+            string str4 = "Left-Shift to use potion\nPotion cannot be used during Attack and Dash";
+            _spriteBatch.DrawString(spriteFont, str4, new Vector2(2866, 1757), Color.White);
 
+            globalContext.DrawAll(_spriteBatch);
             // Optional debug overlay (collisions, monster ranges, etc.)
             if (isDebug)
                 DebugDraw();
 
             _spriteBatch.End();
 
+
+            // Begin UI sprite batch (screen space)
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawBossUI(_spriteBatch);
+            globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+            _spriteBatch.End();
         }
         private void DebugDraw()
         {
@@ -176,7 +208,7 @@ namespace game
 
         private void DrawMonsterDebug(IMonster monster)
         {
-            _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+            //_spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
             _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
 
             switch (monster)
@@ -225,9 +257,10 @@ namespace game
             //fireParticleDark = null;
             //fireParticleLight = null;
 
+            spriteFont = null;
             _healTexture = null;
             globalContext.UnloadAll();
-            //globalContext = null;
+            globalContext = null;
 
             base.UnloadContent();
         }

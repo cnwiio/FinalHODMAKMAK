@@ -16,8 +16,8 @@ namespace game
         private PlayerStats _stats;
 
         // Dash control variables
-        private readonly float _dashDuration = 0.2f;  // dash lasts 0.2 seconds
-        private readonly float _dashCooldown = 1.0f;  // 1 second cooldown between dashes
+        private readonly float _dashDuration = 0.15f;  // dash lasts 0.2 seconds
+        private readonly float _dashCooldown = 0.5f;  // 1 second cooldown between dashes
         private float _dashTimer = 0f;
         private float _cooldownTimer = 0f;
         public bool IsDashing => _isDashing;

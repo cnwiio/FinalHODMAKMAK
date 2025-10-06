@@ -35,6 +35,8 @@ namespace game
         public float SortY => _movement.Position.Y + 48;
         public float SortX => _movement.Position.X;
         public Vector2 DestinationPos { get; set; }
+        public string CurrentScene { get; set; }
+        public Potion potion { get; set; }
 
         public Player(AnimController texture, Vector2 startPosition)
         {
@@ -43,12 +45,15 @@ namespace game
             _movement = new PlayerMovement(startPosition, _stats);
             _animation = new PlayerAnimation(texture);
 
-            Hurtbox = new PlayerHurtbox(this, 64, 96);
+            Hurtbox = new PlayerHurtbox(this, 48, 72);
 
             // Manual collision size and offset
             Vector2 collisionSize = new Vector2(40, 27); // width, height
             Vector2 collisionOffset = new Vector2(-20, 26); // offset from top-left of sprite
             Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
+
+            // potion
+            potion = new Potion(this);
         }
 
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
@@ -73,10 +78,13 @@ namespace game
             if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
 
+            if (_input.PotionTriggered && !_isAttacking && !_movement.IsDashing)
+                potion.Use();
+
             if (_isAttacking)
             {
                 _attackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _movement.SetPosition(_attackPosition);
+                //_movement.SetPosition(_attackPosition);
                 //CheckAttackHit(attackTargets); // ไม่ต้องเช็คเองแล้ว เพราะไปใช้ของ Extended
 
                 if (_attackTimer <= 0f)
@@ -102,6 +110,7 @@ namespace game
             Collision.Update();
 
             _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
+            potion.Update(gameTime); // เอาไว้อัพเดท คูลดาว
         }
 
         private void StartAttack()
@@ -184,6 +193,5 @@ namespace game
             //Hurtbox.Draw(spriteBatch);
             //Collision.Draw(spriteBatch); // Yellow debug box
         }
-
     }
 }

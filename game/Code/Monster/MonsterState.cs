@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Assimp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
@@ -288,7 +289,8 @@ namespace game
                 }
                 else
                 {
-                    monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
+                    if (monster.animation.CurrentSpriteSheet != "Attack")
+                        monster.animation.SetAnimation("Idle", monster.GetDirection(monster.DirectionToPlayer)); // still in chasing state but in idle animation
                 }
             }
         }

@@ -14,6 +14,66 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/Attack.NoHit.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Attack.NoHit.mp3
+
+#begin Audio/AttackHit.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/AttackHit.mp3
+
+#begin Audio/AttackHit3.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/AttackHit3.mp3
+
+#begin Audio/AttackHitWhosh.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/AttackHitWhosh.wav
+
+#begin Audio/dead2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/dead2.wav
+
+#begin Audio/dead3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/dead3.wav
+
+#begin Audio/dead5.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/dead5.wav
+
+#begin Audio/dead7.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/dead7.wav
+
+#begin Audio/mixkit-jumping-around-8.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/mixkit-jumping-around-8.mp3
+
+#begin Audio/OpenChest.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/OpenChest.wav
+
 #begin Audio/SlimeDie.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
@@ -56,6 +116,20 @@
 /processorParam:Quality=Best
 /build:Audio/WoodHit.mp3
 
+#begin Fonts/ArialFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/ArialFont.spritefont
+
+#begin Fonts/Pixeltype.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Pixeltype.spritefont
+
 #begin Texture/BG_art.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -67,6 +141,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/BG_art.png
+
+#begin Texture/Button2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Button2.png
 
 #begin Texture/Char01.png
 /importer:TextureImporter
@@ -80,6 +166,30 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Char01.png
 
+#begin Texture/chest.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/chest.png
+
+#begin Texture/Chests.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Chests.png
+
 #begin Texture/Circle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -91,6 +201,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/Circle.png
+
+#begin Texture/Credit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Credit.png
 
 #begin Texture/DarkBullet.png
 /importer:TextureImporter
@@ -260,6 +382,30 @@
 /processorParam:TextureFormat=Color
 /build:Texture/DarkSlimeIdle.png
 
+#begin Texture/DeadScene.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/DeadScene.png
+
+#begin Texture/F.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/F.png
+
 #begin Texture/Health.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -307,6 +453,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/HealthBar7.png
+
+#begin Texture/Light-VoidDevouer-Attack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Light-VoidDevouer-Attack.png
+
+#begin Texture/Light-VoidDevouer-Dash.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Light-VoidDevouer-Dash.png
 
 #begin Texture/Light-VoidDevouer-HeavyMachineGun.png
 /importer:TextureImporter
@@ -572,6 +742,66 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Player_Walk.png
 
+#begin Texture/Potion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Potion.png
+
+#begin Texture/splash.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/splash.png
+
+#begin Texture/Victory.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/Victory.jpg
+
+#begin Texture/White-Circle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/White-Circle.png
+
+#begin Texture/White-Spike.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/White-Spike.png
+
 #begin TileMap/Bridge.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -657,15 +887,40 @@
 /processor:TiledMapTilesetProcessor
 /build:TileMap/Rock&Bush.tsx
 
+#begin TileMap/SceneFlowerHills.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TileMap/SceneFlowerHills.tmx
+
 #begin TileMap/SceneHome.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TileMap/SceneHome.tmx
 
+#begin TileMap/SceneHomeNorth.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TileMap/SceneHomeNorth.tmx
+
 #begin TileMap/ScenePrologue.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
 /build:TileMap/ScenePrologue.tmx
+
+#begin TileMap/SceneSmallBrigde.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TileMap/SceneSmallBrigde.tmx
+
+#begin TileMap/SceneUnderWaterfall.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TileMap/SceneUnderWaterfall.tmx
+
+#begin TileMap/SceneWaterfall.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:TileMap/SceneWaterfall.tmx
 
 #begin TileMap/soil.png
 /importer:TextureImporter

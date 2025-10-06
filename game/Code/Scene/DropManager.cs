@@ -24,7 +24,7 @@ namespace game
             // Add to collision system immediately
             collisionComponent.Insert(healPickup);
 
-            Debug.WriteLine($"HealPickup spawned at: {position}");
+            //Debug.WriteLine($"HealPickup spawned at: {position}");
             return healPickup;
         }
     }

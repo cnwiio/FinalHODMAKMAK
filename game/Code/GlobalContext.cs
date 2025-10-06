@@ -8,12 +8,16 @@ using System.Threading.Tasks;
 using Assimp;
 using Assimp.Unmanaged;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Collisions.Layers;
+using MonoGame.Extended.Screens;
 using MonoGame.Extended.Timers;
 
 namespace game
@@ -50,10 +54,18 @@ namespace game
         // Audio
         public AudioController audioController;
 
+        // Chest
+        public List<Chest> Chests = new List<Chest>();
+
         // Other Setting
         public Game1 _Game1;
         public SpriteBatch SpriteBatch;
         public KeyboardState Ks, OldKs; // keyboard
+        public bool isGameEnd = false;
+        private string hitSound = "AttackHitWhosh";
+        private string deadSound = "dead5";
+        private string parrySound = "AttackHitWhosh";
+        private string fireSound = "Attack.NoHit";
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -72,6 +84,14 @@ namespace game
             // Camera
             Camera = _Game1.camera;
             _Camera = Camera.Cam;
+        }
+
+        public void PlayBGM()
+        {
+            var Content = _Game1.Content;
+            var song = Content.Load<Song>("Audio/mixkit-jumping-around-8");
+            audioController.SongVolume = 0.1f;
+            audioController.PlaySong(song);
         }
 
         // ----------------------------------------------------------------------------------------------------- //
@@ -108,6 +128,24 @@ namespace game
             }
         }
 
+        public void LoadChests(Player player)
+        {
+            var Content = _Game1.Content;
+            var spawnpoint = TileMaper.GetObjectLayer("SpawnPoint");
+            foreach (var obj in spawnpoint.Objects)
+            {
+                if (obj.Name == "Chest")
+                {
+                    var sfx = Content.Load<SoundEffect>("Audio/OpenChest");
+                    var _chest = new Chest();
+                    _chest.Load(Content, "chest", 64, 64, obj.Position, "F", player.potion, audioController, sfx);
+                    Chests.Add(_chest);
+                    Collisions.Add(_chest.Hitbox);
+                    Ysort.Add(_chest);
+                }
+            }
+        }
+
         #region Load Player
         public void LoadPlayer(PreventMonster preventMonster, Player player)
         {
@@ -119,13 +157,16 @@ namespace game
                     if (obj.Name == "Player")
                     {
                         player._movement.SetPosition(obj.Position);
+                        //Debug.WriteLine("OBJ Pos : " + obj.Position);
                         break;
                     }
                 }
+                //Debug.WriteLine("No DestinationPos : " + player.DestinationPos);
             }
             else
             {
                 player._movement.SetPosition(player.DestinationPos);
+                //Debug.WriteLine("Have DestinationPos : " + player.DestinationPos);
             }
 
             player.SetWorldReferences(Collisions, CollisionComponents);
@@ -209,13 +250,13 @@ namespace game
                 monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, "WoodHit", "WoodDie");
+            monster.LoadSound(Content, audioController, hitSound, deadSound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
                 sreachRadius: 500f,
-                hp: 250,
-                damage: 10,
+                hp: 140,
+                damage: 30,
                 attackRange: (int)(monster.Width * 1.5),
                 activeRadius: (int)(monster.Width * 1.5),
                 dashForce: monster.Width * 7
@@ -249,13 +290,13 @@ namespace game
                 monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, "StoneHit", "StoneDie");
+            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound, fireSound);
             monster.CreateAnimation();
             monster.SetProperty(
-                speed: 100f,
+                speed: 75f,
                 sreachRadius: 500f,
-                hp: 150,
-                damage: 10,
+                hp: 100,
+                damage: 35,
                 attackRange: (int)(monster.Width * 2.5f),
                 dashForce: 300,
                 bulletSpeed: 750
@@ -273,16 +314,31 @@ namespace game
             var Content = _Game1.Content;
             monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
             monster.LoadAnim("Walk", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Attack", "LightGoonAttack", monster.Position, 128, 128, Content);
-            monster.LoadAnim("Charge", "LightGoonCharge", monster.Position, 128, 128, Content);
-            monster.LoadAnim("ChargeFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Fire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
-            monster.LoadAnim("EndFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+
+            monster.LoadAnim("ChargeRapidFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("RapidFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndRapidFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
+
             monster.LoadAnim("ChargeFire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
             monster.LoadAnim("Fire3Ball", "Light-VoidDevourer-3Balls", monster.Position, 320, 384, Content);
+
+            monster.LoadAnim("ChargeLineSpike", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
+            monster.LoadAnim("LineSpike", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndLineSpike", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
+
+            monster.LoadAnim("ChargeDash", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Dash", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndDash", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+
+            monster.LoadAnim("ChargeFollowSpike", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+            monster.LoadAnim("FollowSpike", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndFollowSpike", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+
             monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
+            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound);
             monster.LoadAssets(Content);
             monster.LoadUI(Content, "HealthBar7");
             monster.CreateAnimation();
@@ -323,16 +379,16 @@ namespace game
                 monster.LoadAnim("Die", "DarkSlimeDie", monster.Position, 64, 64, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, "SlimeHit", "SlimeDie");
+            monster.LoadSound(Content, audioController, hitSound, deadSound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
                 sreachRadius: 500f,
-                hp: 250,
+                hp: 60,
                 damage: 10,
                 attackRange: (int)(monster.Width * 1.5),
                 activeRadius: (int)(monster.Width * 1.5),
-                dashForce: monster.Width * 7
+                dashForce: monster.Width * 9
             );
             Ysort.Add(monster);
             Collisions.Add(monster.HurtBox);
@@ -345,9 +401,12 @@ namespace game
         {
             LoadParticle();
             LoadTiledMap(Content, sceneName);
+            LoadChests(player);
             LoadMonster(preventMonster, player);
             LoadPlayer(preventMonster, player);
+            PlayBGM();
         }
+
         // ----------------------------------------------------------------------------------------------------- //
         //                                          LOAD END                                                     //
         // ----------------------------------------------------------------------------------------------------- //
@@ -378,6 +437,14 @@ namespace game
             else
             {
                 Debug.WriteLine("ERROR : Particle is null (Update)");
+            }
+        }
+
+        public void UpdateChest(Vector2 playerPos)
+        {
+            foreach (var item in Chests)
+            {
+                item.Update(playerPos);
             }
         }
 
@@ -478,36 +545,7 @@ namespace game
             foreach (var monster in Monsters.ToList())
             {
                 var playerPos = _player._movement.Position;
-                switch (monster)
-                {
-                    case MonsterMelee m:
-                        m.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
-                        HandleShakeCamera(m, gameTime);
-                        if (m.IsDead)
-                            HandleMonsterDeath(m, healTexture, _player);
-                        break;
-
-                    case MonsterRange r:
-                        r.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
-                        HandleShakeCamera(r, gameTime);
-                        if (r.IsDead)
-                            HandleMonsterDeath(r, healTexture, _player);
-                        break;
-
-                    case MonsterBoss b:
-                        b.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
-                        HandleShakeCamera(b, gameTime);
-                        if (b.IsDead)
-                            HandleMonsterDeath(b, healTexture, _player);
-                        break;
-
-                    case MonsterSlime s:
-                        s.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
-                        HandleShakeCamera(s, gameTime);
-                        if (s.IsDead)
-                            HandleMonsterDeath(s, healTexture, _player);
-                        break;
-                }
+                HandleUpdateEachMonster(monster, gameTime,_player, healTexture);
             }
 
             // Remove dead monsters
@@ -518,6 +556,15 @@ namespace game
         #endregion
 
         #region Monster Extra
+        private void HandleUpdateEachMonster(IMonster monster, GameTime gameTime, Player _player, Texture2D healTexture)
+        {
+            var playerPos = _player._movement.Position;
+            monster.UpdateState(gameTime, Collisions, CollisionComponents, playerPos);
+            HandleShakeCamera(monster, gameTime);
+            if (monster.IsDead)
+                HandleMonsterDeath(monster, healTexture, _player);
+        }
+
         // Shake camera helper
         private void HandleShakeCamera(dynamic monster, GameTime gameTime)
         {
@@ -529,7 +576,7 @@ namespace game
         }
 
         // Handle monster death and spawn heal pickup
-        private void HandleMonsterDeath(dynamic monster, Texture2D _healTexture, Player _player)
+        private void HandleMonsterDeath(IMonster monster, Texture2D _healTexture, Player _player)
         {
             // Spawn heal pickup via DropManager
             var healPickup = DropManager.DropHeal(
@@ -542,13 +589,12 @@ namespace game
             PendingAdd.Add(healPickup);
             Ysort.Add(healPickup);
 
-            // Clean up monster
-            if (monster is MonsterRange)
-                monster.DeleteHitBox(1f); // Only 1 parameter
-            else
-                monster.DeleteHitBox(1f, Collisions, CollisionComponents); // 3 parameters
+            if (monster is MonsterBoss)
+            {
+                isGameEnd = true;
+            }
 
-            monster.RemoveMonster();
+            monster.UnLoad();
             PendingMonsterRemove.Add(monster);
         }
 
@@ -600,18 +646,19 @@ namespace game
         public void DrawBossUI(SpriteBatch _spriteBatch)
         {
             // Begin UI sprite batch (screen space)
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
 
             // Draw UI elements like boss health bars
-            foreach (var entity in Ysort)
+            if (Monsters.Exists(x => x is MonsterBoss))
             {
-                if (entity is MonsterBoss boss && !boss.IsDead && boss.isInActiveRadius)
+                var Boss = (MonsterBoss)Monsters.Find(x => x.GetType() == typeof(MonsterBoss));
+                if (!Boss.IsDead && Boss.isInActiveRadius)
                 {
-                    boss.DrawUI(_spriteBatch, new Vector2(_Game1.ScreenWidth / 2, 50));
-                }
+                    Boss.DrawUI(_spriteBatch, new Vector2(_Game1.ScreenWidth / 2, 50));
+                } 
             }
 
-            _spriteBatch.End();
+            //_spriteBatch.End();
         }
 
         public void DrawBossSkill(SpriteBatch _spriteBatch)
@@ -624,6 +671,15 @@ namespace game
                     Boss.DrawSkill(_spriteBatch);
                 }
             }
+        }
+
+        public void DrawPotionUI(SpriteBatch spriteBatch, Player player, Texture2D UI, SpriteFont font)
+        {
+            var potionAmout = player.potion.Amout;
+            string potionStr = "Potion x" + potionAmout;
+            Color tint = player.potion.isinCoolDown ? Color.Gray : Color.White;
+            spriteBatch.Draw(UI, new Vector2(1060, 650 - 8), tint);
+            spriteBatch.DrawString(font, potionStr, new Vector2(1100, 650), tint);
         }
 
         // IMPORTANT NOTE : อาจจะไม่ค่อยเสถียรและแก้ไขยาก
@@ -649,22 +705,51 @@ namespace game
             {
                 monster.UnLoad(); // actually calls UnLoad on each monster
             }
+            Monsters.Clear(); // Monster
+            Monsters = null;
 
             foreach (var item in Collisions)
             {
                 CollisionComponents.Remove(item);
             }
+            CollisionComponents = null;
+
             Collisions.Clear(); // Collision
-            Monsters.Clear(); // Monster
+            Collisions = null;
+
             Ysort.Clear(); // Ysort
+            Ysort = null;
+
             Shadow.Clear(); // Shadow
+            Shadow = null;
+
             GameObjects.Clear(); // Object
+            GameObjects = null;
+
+            // Chest
+            foreach (var chest in Chests)
+            {
+                chest.Unload();
+            }
+            Chests.Clear(); 
+            Chests = null;
+
+            Camera = null; // Camera
+            _Camera = null; //Camera
+
+            // TileMaper
+            TileMaper = null;
 
             // Particle
             HitParticle = null;
             DeadParticle = null;
             FireParticleDark = null;
             FireParticleLight = null;
+
+            // AudioController
+            audioController.PauseAudio();
+            audioController = null;
+
         }
 
         // ----------------------------------------------------------------------------------------------------- //
