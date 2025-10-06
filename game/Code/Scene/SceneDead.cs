@@ -59,13 +59,33 @@ namespace game
             if (Button.Active)
             {
                 var scene = game.Player.CurrentScene;
-                if (scene == "ScenePrologue")
+                if (scene == "SceneHome")
                 {
-                    ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
-                } 
-                else if (scene == "SceneHome")
+                    ScreenManager.LoadScreen(new SceneHome(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                else if (scene == "ScenePrologue")
                 {
-                    ScreenManager.LoadScreen(new SceneHome(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+                    ScreenManager.LoadScreen(new ScenePrologue(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                else if (scene == "SceneSmallBrigde")
+                {
+                    ScreenManager.LoadScreen(new SceneSmallBrigde(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                else if (scene == "SceneHomeNorth")
+                {
+                    ScreenManager.LoadScreen(new SceneHomeNorth(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                else if (scene == "SceneFlowerHills")
+                {
+                    ScreenManager.LoadScreen(new SceneFlowerHills(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                else if (scene == "SceneWaterfall")
+                {
+                    ScreenManager.LoadScreen(new SceneWaterfall(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                else if (scene == "SceneUnderWaterfall")
+                {
+                    ScreenManager.LoadScreen(new SceneUnderWaterfall(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
                 }
                 else
                 {
@@ -75,6 +95,7 @@ namespace game
             }
             else if (Button2.Active)
             {
+                game.Player.DestinationPos = Vector2.Zero;
                 ScreenManager.LoadScreen(new SceneMenu(Game, true));
                 return;
             }

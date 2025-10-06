@@ -34,7 +34,6 @@ namespace game
         public short SavedHP;// ใช้ในCheckPoint 
         public short SavedPotion { get; set; } // ใช้ในCheckPoint    
         public PreventMonster PreventMonster;
-        private List<IEntity> _monsters;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);

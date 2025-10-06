@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Assimp.Configs;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -81,6 +82,7 @@ namespace game
         // ----------------------------------
         public Texture2D bullet { get; set; }
         private FireParticle _fireParticle;
+        private SoundEffect fireSound;
         // ----------------Bool----------------
         public bool BulletVisible = false;
         // ----------------------------------
@@ -117,6 +119,14 @@ namespace game
             _deadParticle = deadParticle;
             _fireParticle = fireParticle;
             ElementType = element;
+        }
+        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName, string fireSfxName)
+        {
+            audioController = controller;
+            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
+            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
+            parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
+            fireSound = content.Load<SoundEffect>("Audio/" +  fireSfxName);
         }
         public void loadBullet(ContentManager content, string textureName)
         {
@@ -344,19 +354,13 @@ namespace game
                     _fireParticle.Trigger(Position, new Color(202, 174, 255));
                 }
 
+                audioController.PlaySoundEffect(fireSound);
                 animation.SetAnimation("Attack", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
 
         }
         public void RemoveMonster()
         {
-            if (_collisions != null || _collisionComponents != null)
-            {
-                _collisions.Remove(HurtBox);
-                _collisionComponents.Remove(HurtBox);
-                _collisions.Remove(Collision);
-                _collisionComponents.Remove(Collision); 
-            }
             animation.Unload(OnAnimationEvent);
             HurtBox = null;
             Collision = null;
@@ -368,6 +372,18 @@ namespace game
             _fireParticle = null;
             _deadParticle = null;
         }
+
+        public void RemoveCollision()
+        {
+            DeleteHitBox(10);
+            if (_collisions != null || _collisionComponents != null)
+            {
+                _collisions.Remove(HurtBox);
+                _collisionComponents.Remove(HurtBox);
+                _collisions.Remove(Collision);
+                _collisionComponents.Remove(Collision);
+            }
+        }
         public override void Attack()
         {
             if (!isAttack)
@@ -378,6 +394,7 @@ namespace game
         }
         public void UnLoad()
         {
+            RemoveCollision();
             RemoveMonster();
         }
 

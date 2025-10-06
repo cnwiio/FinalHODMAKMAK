@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using Assimp;
-using Assimp.Unmanaged;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
-using MonoGame.Extended.Collisions.Layers;
 using MonoGame.Extended.Screens;
-using MonoGame.Extended.Screens.Transitions;
 
 namespace game
 {
-    public class SceneHome : GameScreen
+    public class SceneHomeNorth : GameScreen
     {
         private GlobalContext globalContext;
 
@@ -37,7 +33,7 @@ namespace game
         private bool isDebug = false;
         private SpriteFont spriteFont;
 
-        public SceneHome(Game game) : base(game)
+        public SceneHomeNorth(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             game1 = (Game1)Game;
@@ -56,25 +52,8 @@ namespace game
         {
             _healTexture = Content.Load<Texture2D>("Texture/Potion");
             spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
-            //globalContext.LoadCamera();
-            //globalContext.LoadParticle();
-            //globalContext.LoadTiledMap(Content, "SceneHome");
-            //globalContext.LoadMonster(); 
 
-
-
-            globalContext.LoadAll(Content, "SceneHome", preventMonster, player);
-
-            //if (player.DestinationPos == Vector2.Zero)
-            //{
-            //    player._movement.SetPosition(new Vector2(250, 2200));
-            //}
-            //else
-            //{
-            //    player._movement.SetPosition(player.DestinationPos);
-            //}
-            //player.SetWorldReferences(_collision, _collisionComponent);
-            //globalContext.Ysort.Add(player);
+            globalContext.LoadAll(Content, "SceneHomeNorth", preventMonster, player);
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -153,9 +132,7 @@ namespace game
                 SamplerState.PointClamp,
                 transformMatrix: globalContext._Camera.GetViewMatrix()
             );
-            //globalContext.DrawTiledMaper();
-            //globalContext.DrawObject(_spriteBatch);
-            //globalContext.DrawParticle(_spriteBatch);
+
             globalContext.DrawAll(_spriteBatch);
 
             if (isDebug)
@@ -163,7 +140,6 @@ namespace game
 
             _spriteBatch.End();
 
-            globalContext.DrawBossUI(_spriteBatch);
 
             // UI sprite batch
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
@@ -173,6 +149,7 @@ namespace game
         public override void UnloadContent()
         {
             _healTexture = null;
+            spriteFont = null;
             globalContext.UnloadAll();
             globalContext = null;
             base.UnloadContent();
@@ -230,4 +207,3 @@ namespace game
         }
     }
 }
-

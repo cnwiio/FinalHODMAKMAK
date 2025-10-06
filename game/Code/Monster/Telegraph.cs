@@ -76,8 +76,7 @@ namespace game
             }
 
         }
-        private float _scale;
-        private float _alpha;
+
         private float _lifeTime;
         private Color holderColor = Color.White;
         public void Draw(SpriteBatch spriteBatch, Color telegraphColor)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="1195">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="1196">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Tree_1.tsx"/>
  <tileset firstgid="21" source="Path_1.tsx"/>
@@ -922,7 +922,7 @@
   </object>
   <object id="440" x="-0.333333" y="2084.33" width="64" height="27.6667"/>
   <object id="442" x="320" y="2752" width="320" height="64"/>
-  <object id="444" name="Warp" type="SceneHomeNorth" x="1729.17" y="12" width="511.333" height="16.9167">
+  <object id="444" name="Warp" type="SceneHomeNorth" x="1728.17" y="34" width="511.333" height="16.9167">
    <properties>
     <property name="X" type="float" value="0"/>
     <property name="Y" type="float" value="0"/>
@@ -1025,12 +1025,12 @@
   <object id="1183" x="832" y="384" width="128" height="192"/>
   <object id="1186" x="1920" y="1152" width="64" height="57.5"/>
   <object id="1187" x="1984" y="1346.67" width="64" height="61.3333"/>
-  <object id="1188" x="1728.5" y="0" width="511.5" height="12"/>
+  <object id="1188" x="1728.5" y="0" width="511.5" height="34"/>
   <object id="1189" x="3174.13" y="1885.5" width="24.6667" height="417.667"/>
   <object id="1190" name="Warp" type="SceneUnderWaterfall" x="3158.54" y="1884.17" width="13.8485" height="418.666">
    <properties>
-    <property name="X" type="float" value="125"/>
-    <property name="Y" type="float" value="2212"/>
+    <property name="X" type="float" value="0"/>
+    <property name="Y" type="float" value="0"/>
    </properties>
   </object>
  </objectgroup>

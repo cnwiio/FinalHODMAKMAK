@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="1771">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="1772">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Tree_1.tsx"/>
  <tileset firstgid="21" source="Cliff_Tileset.tsx"/>
@@ -758,19 +758,19 @@
   <object id="1374" type="Tree_Shadow2" gid="84" x="1690" y="187" width="192" height="64"/>
   <object id="1415" type="Tree_Shadow2" gid="84" x="1338.67" y="1776.67" width="192" height="64"/>
   <object id="1623" type="Tree_Shadow1" gid="83" x="1549" y="2664" width="192" height="64"/>
-  <object id="1666" gid="84" x="592" y="1114" width="192" height="64"/>
-  <object id="1667" gid="84" x="496" y="1270" width="192" height="64"/>
-  <object id="1668" gid="83" x="803" y="1743" width="192" height="64"/>
-  <object id="1669" gid="83" x="497.5" y="1524" width="192" height="64"/>
-  <object id="1670" gid="1073741907" x="273.5" y="1556" width="192" height="64"/>
-  <object id="1671" gid="83" x="319.5" y="1363" width="192" height="64"/>
-  <object id="1672" gid="83" x="413" y="1138" width="192" height="64"/>
-  <object id="1673" gid="83" x="320" y="945" width="192" height="64"/>
-  <object id="1674" gid="84" x="826" y="1264" width="192" height="64"/>
-  <object id="1675" gid="84" x="234" y="1077" width="192" height="64"/>
-  <object id="1676" gid="84" x="582" y="852" width="192" height="64"/>
-  <object id="1680" gid="83" x="1030" y="1819" width="192" height="64"/>
-  <object id="1681" gid="84" x="832" y="1853" width="192" height="64"/>
+  <object id="1666" type="Tree_Shadow2" gid="84" x="592" y="1114" width="192" height="64"/>
+  <object id="1667" type="Tree_Shadow2" gid="84" x="496" y="1270" width="192" height="64"/>
+  <object id="1668" type="Tree_Shadow1" gid="83" x="803" y="1743" width="192" height="64"/>
+  <object id="1669" type="Tree_Shadow1" gid="83" x="497.5" y="1524" width="192" height="64"/>
+  <object id="1670" type="Tree_Shadow1" gid="1073741907" x="273.5" y="1556" width="192" height="64"/>
+  <object id="1671" type="Tree_Shadow1" gid="83" x="319.5" y="1363" width="192" height="64"/>
+  <object id="1672" type="Tree_Shadow1" gid="83" x="413" y="1138" width="192" height="64"/>
+  <object id="1673" type="Tree_Shadow1" gid="83" x="320" y="945" width="192" height="64"/>
+  <object id="1674" type="Tree_Shadow2" gid="84" x="826" y="1264" width="192" height="64"/>
+  <object id="1675" type="Tree_Shadow2" gid="84" x="234" y="1077" width="192" height="64"/>
+  <object id="1676" type="Tree_Shadow2" gid="84" x="582" y="852" width="192" height="64"/>
+  <object id="1680" type="Tree_Shadow1" gid="83" x="1030" y="1819" width="192" height="64"/>
+  <object id="1681" type="Tree_Shadow2" gid="84" x="832" y="1853" width="192" height="64"/>
  </objectgroup>
  <objectgroup id="3" name="Object" locked="1">
   <object id="3" type="Tree3" gid="19" x="980" y="4594" width="192" height="256"/>
@@ -1257,7 +1257,7 @@
   <object id="1387" type="Tree1" gid="18" x="1592" y="4614" width="192" height="256"/>
   <object id="1410" type="Tree3" gid="19" x="3508.5" y="4555.5" width="192" height="256"/>
  </objectgroup>
- <objectgroup id="10" name="Collision" locked="1">
+ <objectgroup id="10" name="Collision">
   <object id="663" x="1946" y="3064" width="9" height="2"/>
   <object id="1390" x="4224" y="3328" width="256" height="1152"/>
   <object id="1394" x="4157.5" y="4107.5" width="67.1667" height="32.5"/>
@@ -1454,13 +1454,13 @@
    </properties>
   </object>
   <object id="1692" x="2625" y="4466.5" width="599.5" height="13.5"/>
-  <object id="1693" name="Warp" type="SceneFlowerHills" x="1226.08" y="17.5417" width="566.5" height="16.9167">
+  <object id="1693" name="Warp" type="SceneFlowerHills" x="1224.75" y="48.2084" width="566.5" height="16.9167">
    <properties>
     <property name="X" type="float" value="0"/>
     <property name="Y" type="float" value="0"/>
    </properties>
   </object>
-  <object id="1694" x="1228" y="0" width="563.333" height="16.6667"/>
+  <object id="1694" x="1228" y="0" width="563.333" height="44.6667"/>
   <object id="1706" x="4416" y="3200" width="64" height="128"/>
   <object id="1707" x="4352" y="3264" width="64" height="64"/>
   <object id="1708" x="4453.46" y="2816.17" width="24.6667" height="383.667"/>

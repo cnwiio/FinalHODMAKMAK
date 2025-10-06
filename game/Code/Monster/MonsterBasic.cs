@@ -141,13 +141,6 @@ namespace game
             hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
             deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
         }
-        public virtual void LoadSound(ContentManager content, AudioController controller,string hitSfxName, string deadSfxName, string parrySfxName)
-        {
-            audioController = controller;
-            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
-            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
-            parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
-        }
 
         private float _HPScale = 1;
         private float _followUpUI = 1;

@@ -46,8 +46,10 @@ namespace game
                 Player._movement.SetPosition(Bounds.Position - _offset);
             }
 
-            if (collisionInfo.Other is MonsterCollision)
+            if (collisionInfo.Other is MonsterCollision monsterCollision)
             {
+                var monster = monsterCollision.Monster;
+                if (monster.HP == 0) return;
                 Bounds.Position -= collisionInfo.PenetrationVector;
                 Player._movement.SetPosition(Bounds.Position - _offset);
             }

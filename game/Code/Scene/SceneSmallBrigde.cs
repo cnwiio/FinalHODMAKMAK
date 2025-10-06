@@ -56,25 +56,8 @@ namespace game
         {
             _healTexture = Content.Load<Texture2D>("Texture/Potion");
             spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
-            //globalContext.LoadCamera();
-            //globalContext.LoadParticle();
-            //globalContext.LoadTiledMap(Content, "SceneHome");
-            //globalContext.LoadMonster(); 
-
-
 
             globalContext.LoadAll(Content, "SceneSmallBrigde", preventMonster, player);
-
-            //if (player.DestinationPos == Vector2.Zero)
-            //{
-            //    player._movement.SetPosition(new Vector2(250, 2200));
-            //}
-            //else
-            //{
-            //    player._movement.SetPosition(player.DestinationPos);
-            //}
-            //player.SetWorldReferences(_collision, _collisionComponent);
-            //globalContext.Ysort.Add(player);
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -139,23 +122,18 @@ namespace game
 
             // Collision
             _collisionComponent.Update(gameTime);
-
-            // Debug FPS
-            int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds);
-            game1.Window.Title = $"FPS: {instantFps}";
         }
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
             _spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
                 SamplerState.PointClamp,
                 transformMatrix: globalContext._Camera.GetViewMatrix()
             );
-            //globalContext.DrawTiledMaper();
-            //globalContext.DrawObject(_spriteBatch);
-            //globalContext.DrawParticle(_spriteBatch);
+
             globalContext.DrawAll(_spriteBatch);
 
             if (isDebug)
@@ -163,19 +141,17 @@ namespace game
 
             _spriteBatch.End();
 
-            globalContext.DrawBossUI(_spriteBatch);
-
+            // UI sprite batch
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-            string str4 = "Potion x" + player.potion.Amout;
-            Color tint = player.potion.isinCoolDown ? Color.Gray : Color.White;
-            _spriteBatch.DrawString(spriteFont, str4, new Vector2(1100, 650), tint);
+            globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
             _spriteBatch.End();
         }
         public override void UnloadContent()
         {
             _healTexture = null;
             globalContext.UnloadAll();
-            //globalContext = null;
+            spriteFont = null;
+            globalContext = null;
             base.UnloadContent();
         }
 
@@ -231,3 +207,4 @@ namespace game
         }
     }
 }
+

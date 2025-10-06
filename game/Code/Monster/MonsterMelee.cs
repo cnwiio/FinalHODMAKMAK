@@ -183,7 +183,7 @@ namespace game
                     StateChecking(deltaTime);
                     CurrentState.Update(this, deltaTime);
                 }
-                DeleteHitBox(deltaTime, collisions, collisionComponents);
+                DeleteHitBox(deltaTime);
                 UpdateHitTimer(deltaTime);
                 hurtBox.Update(Position);
                 col.Update(DesiredPosition);
@@ -272,7 +272,7 @@ namespace game
                     PreventMonster.RemoveMonster(this);
             }
         }
-        public void DeleteHitBox(float deltaTime, List<IEntity> entities, CollisionComponent collisionComponent)
+        public void DeleteHitBox(float deltaTime)
         {
             if (Hitbox != null)
             {
@@ -281,8 +281,8 @@ namespace game
                     Hitbox.TimeToLiveSeconds -= deltaTime;
                     if (Hitbox.TimeToLiveSeconds <= 0f)
                     {
-                        entities.Remove(Hitbox);
-                        collisionComponent.Remove(Hitbox);
+                        _collisions.Remove(Hitbox);
+                        _collisionComponents.Remove(Hitbox);
                     }
                 }
             }
@@ -318,18 +318,12 @@ namespace game
         }
         public void UnLoad()
         {
+            RemoveCollision();
             RemoveMonster();
         }
         public void RemoveMonster()
         {
             PreventMonster.RemoveMonster(this);
-            if (_collisions != null || _collisionComponents != null)
-            {
-                _collisions.Remove(HurtBox);
-                _collisionComponents.Remove(HurtBox);
-                _collisions.Remove(Collision);
-                _collisionComponents.Remove(Collision);
-            }
             animation.Unload(OnAnimationEvent);
             HurtBox = null;
             Collision = null;
@@ -338,6 +332,18 @@ namespace game
             HealthUI = null;
             _hitParticle = null;
             _deadParticle = null;
+        }
+
+        public void RemoveCollision()
+        {
+            DeleteHitBox(10);
+            if (_collisions != null || _collisionComponents != null)
+            {
+                _collisions.Remove(HurtBox);
+                _collisionComponents.Remove(HurtBox);
+                _collisions.Remove(Collision);
+                _collisionComponents.Remove(Collision);
+            }
         }
         public override void ChangeState(IMonsterState newState)
         {

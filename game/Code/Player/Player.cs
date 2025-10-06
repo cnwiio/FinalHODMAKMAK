@@ -45,7 +45,7 @@ namespace game
             _movement = new PlayerMovement(startPosition, _stats);
             _animation = new PlayerAnimation(texture);
 
-            Hurtbox = new PlayerHurtbox(this, 64, 96);
+            Hurtbox = new PlayerHurtbox(this, 48, 72);
 
             // Manual collision size and offset
             Vector2 collisionSize = new Vector2(40, 27); // width, height

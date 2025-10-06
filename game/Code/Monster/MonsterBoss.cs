@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -114,6 +115,13 @@ namespace game
                 telegraph[i] = new Telegraph(telegraphTexture, individualSkillTexture);
             }
         }
+        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName)
+        {
+            audioController = controller;
+            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
+            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
+            parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
+        }
 
         public void loadBullet(ContentManager content, string lightBullet, string darkBullet)
         {
@@ -135,26 +143,20 @@ namespace game
             animation.CreateAnimation("Walk", "left", true, 200, 0, 8);
             animation.CreateAnimation("Walk", "right", true, 200, 0, 8);
 
-            animation.CreateAnimation("Charge", "right", false, 200, 0, 6);
-            animation.CreateAnimation("Charge", "left", false, 200, 0, 6);
-
             animation.CreateAnimation("Casting", "left", true, 100, 0, 4);
             animation.CreateAnimation("Casting", "right", true, 100, 0, 4);
-
-            animation.CreateAnimation("Attack", "left", false, 100, 0, 9);
-            animation.CreateAnimation("Attack", "right", false, 100, 0, 9);
 
             animation.CreateAnimation("Die", "right", false, 100, 0, 12);
             animation.CreateAnimation("Die", "left", false, 100, 0, 12);
 
-            animation.CreateAnimation("ChargeFire", "left", false, 200, 0, 2);
-            animation.CreateAnimation("ChargeFire", "right", false, 200, 0, 2);
+            animation.CreateAnimation("ChargeRapidFire", "left", false, 200, 0, 2);
+            animation.CreateAnimation("ChargeRapidFire", "right", false, 200, 0, 2);
 
-            animation.CreateAnimation("EndFire", "left", false, 200, 10, 8);
-            animation.CreateAnimation("EndFire", "right", false, 200, 10, 8);
+            animation.CreateAnimation("EndRapidFire", "left", false, 200, 10, 8);
+            animation.CreateAnimation("EndRapidFire", "right", false, 200, 10, 8);
 
-            animation.CreateAnimation("Fire", "left", true, 200, 2, 8);    
-            animation.CreateAnimation("Fire", "right", true, 200, 2, 8);
+            animation.CreateAnimation("RapidFire", "left", true, 200, 2, 8);    
+            animation.CreateAnimation("RapidFire", "right", true, 200, 2, 8);
 
             animation.CreateAnimation("ChargeFire3Ball", "left", false, 200, 0, 6);
             animation.CreateAnimation("ChargeFire3Ball", "right", false, 200, 0, 6);
@@ -162,14 +164,14 @@ namespace game
             animation.CreateAnimation("Fire3Ball", "right", false, 200, 6, 4);
             animation.CreateAnimation("Fire3Ball", "left", false, 200, 6, 4);
         
-            animation.CreateAnimation("ChargeAttack2", "right", false, 200, 0, 4);
-            animation.CreateAnimation("ChargeAttack2", "left", false, 200, 0, 4);
+            animation.CreateAnimation("ChargeLineSpike", "right", false, 200, 0, 4);
+            animation.CreateAnimation("ChargeLineSpike", "left", false, 200, 0, 4);
 
-            animation.CreateAnimation("Attack2", "left", false, 100, 4, 5);
-            animation.CreateAnimation("Attack2", "right", false, 100, 4, 5);
+            animation.CreateAnimation("LineSpike", "left", false, 100, 4, 5);
+            animation.CreateAnimation("LineSpike", "right", false, 100, 4, 5);
 
-            animation.CreateAnimation("EndAttack2", "right", false, 200, 9, 5);
-            animation.CreateAnimation("EndAttack2", "left", false, 200, 9, 5);
+            animation.CreateAnimation("EndLineSpike", "right", false, 200, 9, 5);
+            animation.CreateAnimation("EndLineSpike", "left", false, 200, 9, 5);
 
             animation.CreateAnimation("ChargeDash", "left", false, 200, 0, 3);
             animation.CreateAnimation("ChargeDash", "right", false, 200, 0, 3);
@@ -179,6 +181,15 @@ namespace game
 
             animation.CreateAnimation("EndDash", "right", false, 200, 7, 4);
             animation.CreateAnimation("EndDash", "left", false, 200, 7, 4);
+
+            animation.CreateAnimation("ChargeFollowSpike", "right", false, 200, 0, 3);
+            animation.CreateAnimation("ChargeFollowSpike", "left", false, 200, 0, 3);
+
+            animation.CreateAnimation("FollowSpike", "right", true, 200, 4, 3);
+            animation.CreateAnimation("FollowSpike", "left", true, 200, 4, 3);
+
+            animation.CreateAnimation("EndFollowSpike", "right", false, 200, 7, 4);
+            animation.CreateAnimation("EndFollowSpike", "left", false, 200, 7, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, int activeRadius, float dashForce, int bulletSpeed)
@@ -236,7 +247,7 @@ namespace game
                     StateChecking(deltaTime);
                     CurrentState.Update(this, deltaTime);
                 }
-                DeleteHitBox(deltaTime, collisions, collisionComponents);
+                DeleteHitBox(deltaTime);
                 UpdateHitTimer(deltaTime);
                 UpdateSkillTimer(gameTime);
                 UpdateHitbox(deltaTime);
@@ -454,7 +465,7 @@ namespace game
             _collisionComponents.Insert(bulletHitbox[i]);
         }
 
-        public void DeleteHitBox(float deltaTime, List<IEntity> entities, CollisionComponent collisionComponent)
+        public void DeleteHitBox(float deltaTime)
         {
             if (Hitbox != null)
             {
@@ -463,8 +474,8 @@ namespace game
                     Hitbox.TimeToLiveSeconds -= deltaTime;
                     if (Hitbox.TimeToLiveSeconds <= 0f)
                     {
-                        entities.Remove(Hitbox);
-                        collisionComponent.Remove(Hitbox);
+                        _collisions.Remove(Hitbox);
+                        _collisionComponents.Remove(Hitbox);
                     }
                 }
             }
@@ -498,25 +509,39 @@ namespace game
             {
                 IsDead = true;
             }
-            if (animation.CurrentSpriteSheet == "EndAttack2" && trigger == AnimationEventTrigger.AnimationCompleted)
+
+            #region FollowSpike(1)
+            if (animation.CurrentSpriteSheet == "EndFollowSpike" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
                 _attackCD = 0.5f;
                 ChangeState(new IdleState());
             }
-            if (animation.CurrentSpriteSheet == "Attack2" && trigger == AnimationEventTrigger.AnimationCompleted)
+
+            if (animation.CurrentSpriteSheet == "ChargeFollowSpike" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
-                if (currentBossAttack == 2)
-                {
-                    animation.SetAnimation("EndAttack2", GetDirection(_placeHolderDirection), OnAnimationEvent);
-                }
+                animation.SetAnimation("FollowSpike", GetDirection(DirectionToPlayer));
             }
-            if (animation.CurrentSpriteSheet == "ChargeAttack2" && trigger == AnimationEventTrigger.AnimationCompleted)
+            #endregion
+
+            #region LineSpike(2)
+            if (animation.CurrentSpriteSheet == "EndLineSpike" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
-                if (currentBossAttack == 2)
-                {
-                    animation.SetAnimation("Attack2", GetDirection(DirectionToPlayer), OnAnimationEvent);
-                }
+                _attackCD = 0.5f;
+                ChangeState(new IdleState());
             }
+            
+            if (animation.CurrentSpriteSheet == "LineSpike" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                animation.SetAnimation("EndLineSpike", GetDirection(_placeHolderDirection), OnAnimationEvent);
+            }
+
+            if (animation.CurrentSpriteSheet == "ChargeLineSpike" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                animation.SetAnimation("LineSpike", GetDirection(DirectionToPlayer), OnAnimationEvent);
+            }
+            #endregion
+
+            #region Dash(3)
             if (animation.CurrentSpriteSheet == "EndDash" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
                 _attackCD = 0.8f;
@@ -539,8 +564,6 @@ namespace game
                     }
 
                     animation.SetAnimation("EndDash", GetDirection(_placeHolderDirection), OnAnimationEvent);
-                    //_attackCD = 0.5f;
-                    //ChangeState(new IdleState());
                 }
             }
 
@@ -550,17 +573,9 @@ namespace game
                 CreateHitbox(_collisions, _collisionComponents);
                 animation.SetAnimation("Dash", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
-            if (animation.CurrentSpriteSheet == "ChargeFire" && trigger == AnimationEventTrigger.AnimationCompleted)
-            {
-                animation.SetAnimation("Fire", GetDirection(_placeHolderDirection));
-            }
+            #endregion
 
-            if (animation.CurrentSpriteSheet == "EndFire" && trigger == AnimationEventTrigger.AnimationCompleted)
-            {
-                _attackCD = 0.5f;
-                ChangeState(new IdleState());
-            }
-
+            #region Fire3Ball(5)
             if (animation.CurrentSpriteSheet == "Fire3Ball" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
                 _attackCD = 0.5f;
@@ -589,6 +604,21 @@ namespace game
 
                 animation.SetAnimation("Fire3Ball", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
+            #endregion
+
+            #region RapidFire(6)
+            if (animation.CurrentSpriteSheet == "ChargeRapidFire" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                animation.SetAnimation("RapidFire", GetDirection(_placeHolderDirection));
+            }
+
+            if (animation.CurrentSpriteSheet == "EndRapidFire" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                _attackCD = 0.5f;
+                ChangeState(new IdleState());
+            }
+            #endregion
+
         }
 
         private short currentBossAttack;
@@ -601,8 +631,12 @@ namespace game
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
                 //currentBossAttack = currentBossAttack == 3 ? (short)(currentBossAttack + 1) : (short)currentBossAttack;
-                currentBossAttack = 5;
-                if (currentBossAttack == 3 )
+                //currentBossAttack = 1;
+                if (currentBossAttack == 1)
+                {
+                    //animation.SetAnimation("ChargeFollowSpike", GetDirection(DirectionToPlayer), OnAnimationEvent);
+                }
+                else if (currentBossAttack == 3 )
                 {
                     animation.SetAnimation("ChargeDash", GetDirection(_placeHolderDirection), OnAnimationEvent);
                 }
@@ -619,19 +653,23 @@ namespace game
                 }
                 else if (currentBossAttack == 6)
                 {
-                    animation.SetAnimation("ChargeFire", GetDirection(DirectionToPlayer), OnAnimationEvent);
+                    animation.SetAnimation("ChargeRapidFire", GetDirection(DirectionToPlayer), OnAnimationEvent);
                 }
             }
             switch (currentBossAttack) 
             {
                 case 1:
-                    CreateTelegraph();
-                    animation.SetAnimation("Casting", GetDirection(DirectionToPlayer));
+                    if (animation.CurrentSpriteSheet != "ChargeFollowSpike" && animation.CurrentSpriteSheet != "EndFollowSpike")
+                    {
+                        //animation.SetAnimation("FollowSpike", GetDirection(DirectionToPlayer));
+                        animation.SetAnimation("Casting", GetDirection(DirectionToPlayer));
+                        CreateTelegraph();
+                    }
                     break;
                 case 2:
-                    if (animation.CurrentSpriteSheet != "Attack2" && animation.CurrentSpriteSheet != "EndAttack2")
+                    if (animation.CurrentSpriteSheet != "LineSpike" && animation.CurrentSpriteSheet != "EndLineSpike")
                     {
-                        animation.SetAnimation("ChargeAttack2", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                        animation.SetAnimation("ChargeLineSpike", GetDirection(_placeHolderDirection), OnAnimationEvent);
                     } 
                     else
                     {
@@ -639,9 +677,9 @@ namespace game
                     }
                     break;
                 case 6:
-                    if (animation.CurrentSpriteSheet != "ChargeFire" && animation.CurrentSpriteSheet != "EndFire")
+                    if (animation.CurrentSpriteSheet != "ChargeRapidFire" && animation.CurrentSpriteSheet != "EndRapidFire")
                     {
-                        animation.SetAnimation("Fire", GetDirection(DirectionToPlayer));
+                        animation.SetAnimation("RapidFire", GetDirection(DirectionToPlayer));
                         FireBullet();
                     }
                     break;
@@ -651,17 +689,11 @@ namespace game
         }
         public void UnLoad()
         {
+            RemoveCollision();
             RemoveMonster();
         }
         public void RemoveMonster()
         {
-            if (_collisions != null || _collisionComponents != null)
-            {
-                _collisions.Remove(HurtBox);
-                _collisionComponents.Remove(HurtBox);
-                _collisions.Remove(Collision);
-                _collisionComponents.Remove(Collision); 
-            }
             animation.Unload(OnAnimationEvent);
             HurtBox = null;
             Collision = null;
@@ -674,6 +706,18 @@ namespace game
             _hitParticle = null;
             _fireParticle = null;
             _deadParticle = null;
+        }
+
+        public void RemoveCollision()
+        {
+            DeleteHitBox(10);
+            if (_collisions != null || _collisionComponents != null)
+            {
+                _collisions.Remove(HurtBox);
+                _collisionComponents.Remove(HurtBox);
+                _collisions.Remove(Collision);
+                _collisionComponents.Remove(Collision);
+            }
         }
         public override void ChangeState(IMonsterState newState)
         {
@@ -753,10 +797,10 @@ namespace game
             else if (wave >= waveAmout && waveTimer == 0)
             {
                 wave = 0;
-                waveTimer = 2;
+                waveTimer = 0;
                 _attackCD = 1f;
                 ChangeState(new IdleState());
-                isAttack = false;
+                //animation.SetAnimation("EndFollowSpike", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
         }
         // ตีเป็นเส้น
@@ -780,7 +824,7 @@ namespace game
             else if (wave >= MAXWAVES && waveTimer == 0)
             {
                 wave = 0;
-                waveTimer = 2;
+                waveTimer = 0;
                 _attackCD = 1f;
                 ChangeState(new IdleState());
                 isAttack = false;
@@ -853,7 +897,7 @@ namespace game
             {
                 wave = 0;
                 waveTimer = 2;
-                animation.SetAnimation("EndFire", GetDirection(DirectionToPlayer), OnAnimationEvent);
+                animation.SetAnimation("EndRapidFire", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
         }
 

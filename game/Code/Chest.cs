@@ -20,6 +20,8 @@ using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 namespace game
 {
     public class Chest : IYsort
@@ -44,6 +46,8 @@ namespace game
         public Wall Hitbox;
         private KeyboardState ks;
         private Potion potion;
+        private AudioController audioController;
+        private SoundEffect soundEffect;
         public float SortY { get => Position.Y; }
         public float SortX { get => Position.X; }
         public Chest() { }
@@ -54,7 +58,7 @@ namespace game
             Region = ChestAtlas[0];
             Position = position;
         }
-        public void Load(ContentManager content, string textureName, int textureWidth, int textureHeight, Vector2 position, string TextTextureName, Potion potion)
+        public void Load(ContentManager content, string textureName, int textureWidth, int textureHeight, Vector2 position, string TextTextureName, Potion potion, AudioController audioController, SoundEffect soundEffect)
         {
             var texture2D = content.Load<Texture2D>("Texture/" + textureName);
             ChestAtlas = Texture2DAtlas.Create("Atlas/" + textureName, texture2D, textureWidth, textureHeight);
@@ -67,6 +71,9 @@ namespace game
             Hitbox = new Wall(new RectangleF(position.X - origin.X, position.Y - origin.Y, 64, 64));
 
             this.potion = potion;
+
+            this.audioController = audioController;
+            this.soundEffect = soundEffect;
         }
         public void Update(Vector2 targetpos)
         {
@@ -121,6 +128,16 @@ namespace game
         public void GiveReward()
         {
             potion.Add();
+            audioController.PlaySoundEffect(soundEffect);
+        }
+
+        public void Unload()
+        {
+            audioController = null;
+            soundEffect = null;
+            ChestAtlas = null;
+            Region = null;
+            Text = null;
         }
     }
 }

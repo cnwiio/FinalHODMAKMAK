@@ -180,10 +180,7 @@ namespace game
             // Begin UI sprite batch (screen space)
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawBossUI(_spriteBatch);
-            string potionStr = "Potion x" + player.potion.Amout;
-            Color tint = player.potion.isinCoolDown ? Color.Gray : Color.White;
-            _spriteBatch.Draw(_healTexture, new Vector2(1060, 650 - 8), tint);
-            _spriteBatch.DrawString(spriteFont, potionStr, new Vector2(1100, 650), tint);
+            globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
             _spriteBatch.End();
         }
         private void DebugDraw()
@@ -263,7 +260,7 @@ namespace game
             spriteFont = null;
             _healTexture = null;
             globalContext.UnloadAll();
-            //globalContext = null;
+            globalContext = null;
 
             base.UnloadContent();
         }
