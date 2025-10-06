@@ -40,6 +40,9 @@ namespace game
             if (collisionInfo.Other is PlayerCollisionBox)
             {
                 player.DestinationPos = TargetPos;
+                player.CurrentScene = TargetScene;
+                game.SavedHP = (short)game.Player.Stats.CurrentHP;
+                game.SavedPotion = game.Player.potion.Amout;
                 if (TargetScene == "SceneHome")
                 {
                     screenManager.LoadScreen(new SceneHome(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
@@ -47,6 +50,10 @@ namespace game
                 if (TargetScene == "ScenePrologue")
                 {
                     screenManager.LoadScreen(new ScenePrologue(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
+                }
+                if (TargetScene == "SceneSmallBrigde")
+                {
+                    screenManager.LoadScreen(new SceneSmallBrigde(game), new FadeTransition(game.GraphicsDevice, Color.Black, 1f));
                 }
             }
         }

@@ -31,9 +31,10 @@ namespace game
             Credit,
             Menu
         }
-        public SceneMenu(Game game) : base(game)
+        public SceneMenu(Game game, bool skipCutScene = false) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            scene = skipCutScene == false ? ScreenScene.Splash : ScreenScene.Menu; 
         }
 
         public override void LoadContent()
@@ -111,6 +112,8 @@ namespace game
         public override void UnloadContent()
         {
             BG = null;
+            SP = null;
+            CR = null;
             base.UnloadContent();
         }
     }

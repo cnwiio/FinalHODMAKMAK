@@ -35,6 +35,7 @@ namespace game
         public float SortY => _movement.Position.Y + 48;
         public float SortX => _movement.Position.X;
         public Vector2 DestinationPos { get; set; }
+        public string CurrentScene { get; set; }
         public Potion potion { get; set; }
 
         public Player(AnimController texture, Vector2 startPosition)
@@ -83,7 +84,7 @@ namespace game
             if (_isAttacking)
             {
                 _attackTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _movement.SetPosition(_attackPosition);
+                //_movement.SetPosition(_attackPosition);
                 //CheckAttackHit(attackTargets); // ไม่ต้องเช็คเองแล้ว เพราะไปใช้ของ Extended
 
                 if (_attackTimer <= 0f)
@@ -192,6 +193,5 @@ namespace game
             //Hurtbox.Draw(spriteBatch);
             //Collision.Draw(spriteBatch); // Yellow debug box
         }
-
     }
 }

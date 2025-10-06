@@ -58,7 +58,7 @@ namespace game
         {
             // Load temporary drop texture
             _healTexture = Content.Load<Texture2D>("Texture/Potion");
-            spriteFont = Content.Load<SpriteFont>("Fonts/ArialFont");
+            spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
@@ -104,10 +104,13 @@ namespace game
             }
             if(player.Stats.CurrentHP == 0)
             {
-                ScreenManager.LoadScreen(new SceneMenu(game1));
-                player.Stats.Heal(100000);
+                ScreenManager.LoadScreen(new SceneDead(game1));
+                return;
             }
             #endregion
+
+            //Debug.WriteLine(game1.SavedHP);
+            //Debug.WriteLine(game1.SavedPotion);
 
             // Player
             player.Update(gameTime);
@@ -157,6 +160,8 @@ namespace game
             _spriteBatch.DrawString(spriteFont, str2, new Vector2(1422, 3543), Color.White);
             string str3 = "Left Click to attack\nQ to change element";
             _spriteBatch.DrawString(spriteFont, str3, new Vector2(2186, 3520), Color.White);
+            string str4 = "Left-Shift to use potion\nPotion cannot be used during Attack and Dash";
+            _spriteBatch.DrawString(spriteFont, str4, new Vector2(2866, 1757), Color.White);
 
             globalContext.DrawAll(_spriteBatch);
             // Optional debug overlay (collisions, monster ranges, etc.)
@@ -165,13 +170,14 @@ namespace game
 
             _spriteBatch.End();
 
-            globalContext.DrawBossUI(_spriteBatch);
 
             // Begin UI sprite batch (screen space)
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-            string str4 = "Potion x" + player.potion.Amout;
+            globalContext.DrawBossUI(_spriteBatch);
+            string potionStr = "Potion x" + player.potion.Amout;
             Color tint = player.potion.isinCoolDown ? Color.Gray : Color.White;
-            _spriteBatch.DrawString(spriteFont, str4, new Vector2(1100, 650), tint);
+            _spriteBatch.Draw(_healTexture, new Vector2(1060, 650 - 8), tint);
+            _spriteBatch.DrawString(spriteFont, potionStr, new Vector2(1100, 650), tint);
             _spriteBatch.End();
         }
         private void DebugDraw()

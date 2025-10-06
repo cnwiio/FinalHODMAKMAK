@@ -207,6 +207,7 @@ namespace game
                     UpdateHitbox(deltaTime);
                 }
 
+                PlayeParrySound(Hitbox);
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }

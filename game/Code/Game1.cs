@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -30,6 +31,8 @@ namespace game
         // Player and monsters
         private AnimController _playerTexture;
         public Player Player;
+        public short SavedHP;// ใช้ในCheckPoint 
+        public short SavedPotion { get; set; } // ใช้ในCheckPoint    
         public PreventMonster PreventMonster;
         private List<IEntity> _monsters;
         public Game1()
@@ -94,7 +97,10 @@ namespace game
             Player.SetWorldReferences(Collision, CollisionComponent);
             PreventMonster = new PreventMonster(new Vector2(400, 400), 350f);
 
-            screenManager.LoadScreen(new SceneMenu(this)); 
+            SavedHP = (short)Player.Stats.CurrentHP; // checkpoint
+            SavedPotion = Player.potion.Amout; // checkpoint
+
+            screenManager.LoadScreen(new SceneMenu(this));
             base.LoadContent();
         }
 

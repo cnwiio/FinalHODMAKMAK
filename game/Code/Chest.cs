@@ -63,8 +63,8 @@ namespace game
             Region = ChestAtlas[0];
 
             // Important NOTE: change this in future
-            var origin = new Vector2(Region.Width, Region.Height);
-            Hitbox = new Wall(new RectangleF(position.X - origin.X, position.Y - origin.Y, textureWidth *2, textureHeight *2));
+            var origin = new Vector2(32, 32);
+            Hitbox = new Wall(new RectangleF(position.X - origin.X, position.Y - origin.Y, 64, 64));
 
             this.potion = potion;
         }
@@ -104,15 +104,15 @@ namespace game
             }
             else if (!isActive) 
             {
-                Region = ChestAtlas[27];
+                Region = ChestAtlas[1];
             }
             var origin = new Vector2(Region.Width/2, Region.Height/2);
-            spriteBatch.Draw(Region, Position, Color.White, 0f, origin, Vector2.One * 2, SpriteEffects.None, 0);
+            spriteBatch.Draw(Region, Position, Color.White, 0f, origin, Vector2.One, SpriteEffects.None, 0);
 
 
             if (playerInRadius)
             {
-                var offset = new Vector2(0, Region.Height * 2f);
+                var offset = new Vector2(0, Region.Height);
                 var textOrigin = new Vector2(Text.Width /2, Text.Height/2);
                 spriteBatch.Draw(Text, Position - offset, null, Color.White, 0f, textOrigin, Vector2.One, SpriteEffects.None, 0);
             }

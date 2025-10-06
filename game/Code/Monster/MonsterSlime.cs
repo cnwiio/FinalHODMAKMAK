@@ -185,7 +185,7 @@ namespace game
         //}
         public void CreateHitbox(List<IEntity> collisions, CollisionComponent collisionComponents)
         {
-            const float ttl = 0.7f; // ms
+            const float ttl = 0.3f; // ms
             var bounds = HurtBox.Bounds.BoundingRectangle;
             var center = bounds.Center;
             var topleft = bounds.TopLeft;

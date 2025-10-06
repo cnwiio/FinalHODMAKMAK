@@ -50,6 +50,7 @@ namespace game
                         _HP = 0;
                         _hitTimer += 5f;
                         _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
+                        audioController.PlaySoundEffect(deadSound);
                         animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent);
                     }
                 }
@@ -68,6 +69,9 @@ namespace game
                     _deadTimer = 1.2f;
                     if (HP > 0)
                     {
+                        var r = new Random();
+                        var pitch = r.NextSingle(0.75f);
+                        audioController.PlaySoundEffect(hitSound, 1, pitch, 0, false);
                         _hitParticle.Trigger(Position, -DirectionToPlayer);
                     }
                 }
@@ -97,11 +101,17 @@ namespace game
             for (int i = 0; i < MAXWAVES; i++)
             {
                 var individualSkillTexture = new AnimController(Position);
-                individualSkillTexture.LoadFrame(content, "Idle", "DarkGoonIdle", 128, 128);
-                individualSkillTexture.LoadFrame(content, "Attack", "DarkGoonAttack", 128, 128);
-                individualSkillTexture.CreateAnimation("Idle", "no", true, 50, 0, 4);
-                individualSkillTexture.CreateAnimation("Attack", "yes", false, 50, 0, 9);
-                telegraph[i] = new Telegraph(_teleGraph, individualSkillTexture);
+                individualSkillTexture.LoadFrame(content, "Idle", "White-Spike", 96, 128);
+                individualSkillTexture.LoadFrame(content, "Attack", "White-Spike", 96, 128);
+                individualSkillTexture.CreateAnimation("Idle", "no", true, 25, 0, 4);
+                individualSkillTexture.CreateAnimation("Attack", "yes", false, 25, 0, 9);
+
+                var telegraphTexture = new AnimController(Position);
+                telegraphTexture.LoadFrame(content, "Attack", "White-Circle", 96, 96);
+                telegraphTexture.LoadFrame(content, "Idle", "White-Circle", 96, 96);
+                telegraphTexture.CreateAnimation("Attack", "yes", false, 100, 0, 12);
+                telegraphTexture.CreateAnimation("Idle", "no", true, 100, 11, 1);
+                telegraph[i] = new Telegraph(telegraphTexture, individualSkillTexture);
             }
         }
 
@@ -160,6 +170,15 @@ namespace game
 
             animation.CreateAnimation("EndAttack2", "right", false, 200, 9, 5);
             animation.CreateAnimation("EndAttack2", "left", false, 200, 9, 5);
+
+            animation.CreateAnimation("ChargeDash", "left", false, 200, 0, 3);
+            animation.CreateAnimation("ChargeDash", "right", false, 200, 0, 3);
+
+            animation.CreateAnimation("Dash", "right", false, 200, 3, 4);
+            animation.CreateAnimation("Dash", "left", false, 200, 3, 4);
+
+            animation.CreateAnimation("EndDash", "right", false, 200, 7, 4);
+            animation.CreateAnimation("EndDash", "left", false, 200, 7, 4);
         }
         // Need Change in future
         public void SetProperty(float speed, float sreachRadius, int hp, int damage, int attackRange, int activeRadius, float dashForce, int bulletSpeed)
@@ -168,7 +187,7 @@ namespace game
                 speed,
                 sreachRadius,
                 new MonsterHurtbox(
-                    animation.AnimSprite["Idle"].GetBoundingRectangle(new Transform2(animation.Position, 0f, new Vector2(0.6f, 0.9f))),
+                    animation.AnimSprite["Idle"].GetBoundingRectangle(new Transform2(animation.Position, 0f, new Vector2(0.4f, 0.5f))),
                     this),
                 new MonsterCollision(
                     new RectangleF(0, 0, 60, 30),
@@ -221,13 +240,19 @@ namespace game
                 UpdateHitTimer(deltaTime);
                 UpdateSkillTimer(gameTime);
                 UpdateHitbox(deltaTime);
-                hurtBox.Update(Position);
+                foreach (var hitbox in bulletHitbox)
+                {
+                    PlayeParrySound(hitbox);
+                }
+
+                var offset = new Vector2(0, 32);
+                hurtBox.Update(Position + offset);
                 col.Update(DesiredPosition);
 
                 if (Hitbox != null)
                 {
                     var rect = (RectangleF)Hitbox.Bounds;
-                    var offset = new Vector2(0, 32);
+                    offset = new Vector2(0, 16);
                     rect.Position = Position - (rect.Size / 2f) + offset;
                     Hitbox.Bounds = rect;
                 }
@@ -359,9 +384,10 @@ namespace game
 
         public void DrawSkill(SpriteBatch spriteBatch)
         {
+            var tint = ElementType == ElementType.Light ? new Color(255, 248, 174) : new Color(202, 174, 255);
             for (int i = 0; i < MAXWAVES; i++)
             {
-                telegraph[i].Draw(spriteBatch); 
+                telegraph[i].Draw(spriteBatch, tint); 
             }
         }
         #endregion
@@ -372,8 +398,8 @@ namespace game
             var bounds = HurtBox.Bounds.BoundingRectangle;
             var center = bounds.Center;
             var topleft = bounds.TopLeft;
-            SizeF size = new SizeF(bounds.Width * 0.65f, bounds.Height * 0.6f); // Hitbox size; 
-            var offset = new Vector2(0, 32);
+            SizeF size = new SizeF(bounds.Width * 0.8f, bounds.Height * 0.8f); // Hitbox size; 
+            var offset = new Vector2(0, 0);
             if (Hitbox == null)
             {
                 Hitbox = new MonsterAttackHitbox(
@@ -479,16 +505,32 @@ namespace game
             }
             if (animation.CurrentSpriteSheet == "Attack2" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
+                if (currentBossAttack == 2)
+                {
+                    animation.SetAnimation("EndAttack2", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                }
+            }
+            if (animation.CurrentSpriteSheet == "ChargeAttack2" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                if (currentBossAttack == 2)
+                {
+                    animation.SetAnimation("Attack2", GetDirection(DirectionToPlayer), OnAnimationEvent);
+                }
+            }
+            if (animation.CurrentSpriteSheet == "EndDash" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
+                _attackCD = 0.8f;
+                ChangeState(new IdleState());
+            }
+            if (animation.CurrentSpriteSheet == "Dash" && trigger == AnimationEventTrigger.AnimationCompleted)
+            {
                 if (currentBossAttack == 3)
                 {
                     if (dashCounter < 3)
                     {
                         dashCounter++;
                         _placeHolderDirection = DirectionToPlayer;
-                        //ApplyKnockback(DashForce, _placeHolderDirection);
-                        //CreateHitbox(_collisions, _collisionComponents);
-                        animation.SetAnimation("ChargeAttack2", GetDirection(_placeHolderDirection), OnAnimationEvent);
-                        //animation.SetAnimation("Dash", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                        animation.SetAnimation("ChargeDash", GetDirection(_placeHolderDirection), OnAnimationEvent);
                         return;
                     }
                     else
@@ -496,24 +538,17 @@ namespace game
                         dashCounter = 1;
                     }
 
-                    animation.SetAnimation("EndAttack2", GetDirection(_placeHolderDirection), OnAnimationEvent); 
-                }
-                else if (currentBossAttack == 2)
-                {
-                    animation.SetAnimation("EndAttack2", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                    animation.SetAnimation("EndDash", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                    //_attackCD = 0.5f;
+                    //ChangeState(new IdleState());
                 }
             }
-            if (animation.CurrentSpriteSheet == "ChargeAttack2" && trigger == AnimationEventTrigger.AnimationCompleted)
+
+            if (animation.CurrentSpriteSheet == "ChargeDash" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
-                if (currentBossAttack == 3)
-                {
-                    ApplyKnockback(DashForce, _placeHolderDirection);
-                    CreateHitbox(_collisions, _collisionComponents);
-                    animation.SetAnimation("Attack2", GetDirection(_placeHolderDirection), OnAnimationEvent);  
-                } else if (currentBossAttack == 2)
-                {
-                    animation.SetAnimation("Attack2", GetDirection(DirectionToPlayer), OnAnimationEvent);
-                }
+                ApplyKnockback(DashForce, _placeHolderDirection);
+                CreateHitbox(_collisions, _collisionComponents);
+                animation.SetAnimation("Dash", GetDirection(_placeHolderDirection), OnAnimationEvent);
             }
             if (animation.CurrentSpriteSheet == "ChargeFire" && trigger == AnimationEventTrigger.AnimationCompleted)
             {
@@ -552,7 +587,7 @@ namespace game
                 bulletDirection[2] = RotateVector(DirectionToPlayer, angle45);
                 CreateBulletHitbox(2);
 
-                animation.SetAnimation("Fire3Ball", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                animation.SetAnimation("Fire3Ball", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
         }
 
@@ -565,10 +600,11 @@ namespace game
                 isAttack = true;
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
-                currentBossAttack = 2;
+                //currentBossAttack = currentBossAttack == 3 ? (short)(currentBossAttack + 1) : (short)currentBossAttack;
+                currentBossAttack = 5;
                 if (currentBossAttack == 3 )
                 {
-                    animation.SetAnimation("ChargeAttack2", GetDirection(_placeHolderDirection), OnAnimationEvent);
+                    animation.SetAnimation("ChargeDash", GetDirection(_placeHolderDirection), OnAnimationEvent);
                 }
                 else if (currentBossAttack == 5)
                 { 

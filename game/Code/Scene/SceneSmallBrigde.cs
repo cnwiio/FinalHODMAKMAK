@@ -17,7 +17,7 @@ using MonoGame.Extended.Screens.Transitions;
 
 namespace game
 {
-    public class SceneHome : GameScreen
+    public class SceneSmallBrigde : GameScreen
     {
         private GlobalContext globalContext;
 
@@ -37,7 +37,7 @@ namespace game
         private bool isDebug = false;
         private SpriteFont spriteFont;
 
-        public SceneHome(Game game) : base(game)
+        public SceneSmallBrigde(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             game1 = (Game1)Game;
@@ -63,7 +63,7 @@ namespace game
 
 
 
-            globalContext.LoadAll(Content, "SceneHome", preventMonster, player);
+            globalContext.LoadAll(Content, "SceneSmallBrigde", preventMonster, player);
 
             //if (player.DestinationPos == Vector2.Zero)
             //{
@@ -117,7 +117,8 @@ namespace game
             {
                 ScreenManager.LoadScreen(new SceneDead(game1));
                 return;
-            };
+            }
+            ;
             #endregion
 
             player.Update(gameTime);
@@ -225,4 +226,3 @@ namespace game
         }
     }
 }
-

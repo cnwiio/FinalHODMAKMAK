@@ -52,6 +52,7 @@ namespace game
         public AudioController audioController;
         public SoundEffect hitSound;
         public SoundEffect deadSound;
+        public SoundEffect parrySound;
         // ----------------Bool----------------
         public bool ShakeViewport = false;
         public bool WaitingToReturn { get; set; } = false;
@@ -139,6 +140,13 @@ namespace game
             audioController = controller;
             hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
             deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
+        }
+        public virtual void LoadSound(ContentManager content, AudioController controller,string hitSfxName, string deadSfxName, string parrySfxName)
+        {
+            audioController = controller;
+            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
+            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
+            parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
         }
 
         private float _HPScale = 1;
@@ -357,6 +365,17 @@ namespace game
             }
             HP -= Value;
             //Debug.WriteLine("Damge : " + Value);
+        }
+        public void PlayeParrySound(MonsterAttackHitbox hitbox)
+        {
+            if (hitbox != null)
+            {
+                if (hitbox.PlaySound && parrySound != null)
+                {
+                    audioController.PlaySoundEffect(parrySound);
+                    hitbox.PlaySound = false;
+                } 
+            }
         }
         public virtual void ChangeState(IMonsterState newState) { }
         public virtual void Attack() { }

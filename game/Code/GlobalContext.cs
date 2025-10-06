@@ -57,6 +57,9 @@ namespace game
         public Game1 _Game1;
         public SpriteBatch SpriteBatch;
         public KeyboardState Ks, OldKs; // keyboard
+        private string hitSound = "AttackHitWhosh";
+        private string deadSound = "dead5";
+        private string parrySound = "AttackHitWhosh";
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -120,7 +123,7 @@ namespace game
                 if (obj.Name == "Chest")
                 {
                     var _chest = new Chest();
-                    _chest.Load(Content, "Chests", 32, 32, obj.Position, "F", player.potion);
+                    _chest.Load(Content, "chest", 64, 64, obj.Position, "F", player.potion);
                     Chests.Add(_chest);
                     Collisions.Add(_chest.Hitbox);
                     Ysort.Add(_chest);
@@ -139,13 +142,16 @@ namespace game
                     if (obj.Name == "Player")
                     {
                         player._movement.SetPosition(obj.Position);
+                        //Debug.WriteLine("OBJ Pos : " + obj.Position);
                         break;
                     }
                 }
+                //Debug.WriteLine("No DestinationPos : " + player.DestinationPos);
             }
             else
             {
                 player._movement.SetPosition(player.DestinationPos);
+                //Debug.WriteLine("Have DestinationPos : " + player.DestinationPos);
             }
 
             player.SetWorldReferences(Collisions, CollisionComponents);
@@ -229,7 +235,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, "WoodHit", "WoodDie");
+            monster.LoadSound(Content, audioController, hitSound, deadSound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
@@ -269,7 +275,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, "StoneHit", "StoneDie");
+            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
@@ -307,9 +313,14 @@ namespace game
             monster.LoadAnim("Attack2", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
             monster.LoadAnim("EndAttack2", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
 
-            monster.LoadAnim("Casting", "Light-VoidDevouer-Attack", monster.Position, 320, 384, Content);
+            monster.LoadAnim("ChargeDash", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+            monster.LoadAnim("Dash", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+            monster.LoadAnim("EndDash", "Light-VoidDevouer-Dash", monster.Position, 320, 384, Content);
+
+            monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
             monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
+            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound);
             monster.LoadAssets(Content);
             monster.LoadUI(Content, "HealthBar7");
             monster.CreateAnimation();
@@ -350,7 +361,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkSlimeDie", monster.Position, 64, 64, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, "SlimeHit", "SlimeDie");
+            monster.LoadSound(Content, audioController, hitSound, deadSound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
@@ -637,18 +648,19 @@ namespace game
         public void DrawBossUI(SpriteBatch _spriteBatch)
         {
             // Begin UI sprite batch (screen space)
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            //_spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
 
             // Draw UI elements like boss health bars
-            foreach (var entity in Ysort)
+            if (Monsters.Exists(x => x is MonsterBoss))
             {
-                if (entity is MonsterBoss boss && !boss.IsDead && boss.isInActiveRadius)
+                var Boss = (MonsterBoss)Monsters.Find(x => x.GetType() == typeof(MonsterBoss));
+                if (!Boss.IsDead && Boss.isInActiveRadius)
                 {
-                    boss.DrawUI(_spriteBatch, new Vector2(_Game1.ScreenWidth / 2, 50));
-                }
+                    Boss.DrawUI(_spriteBatch, new Vector2(_Game1.ScreenWidth / 2, 50));
+                } 
             }
 
-            _spriteBatch.End();
+            //_spriteBatch.End();
         }
 
         public void DrawBossSkill(SpriteBatch _spriteBatch)

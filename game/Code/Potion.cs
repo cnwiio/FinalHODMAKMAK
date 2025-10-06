@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,13 +11,17 @@ namespace game
 {
     public class Potion
     {
-        public short Amout = 0;
+        #region Property
+        public short Amout = 1;
         public const short MAXAMOUT = 3;
-        public short HealPower = 10;
+        public short HealPower = 25;
         public const short COOLDOWN = 3;
-        public float timer = 0;
+        #endregion
+        #region Calculater Value
+        private float timer = 0;
         public bool isinCoolDown => timer > 0;
         private Player player;
+        #endregion
         public Potion(Player player)
         {
             this.player = player;
@@ -34,6 +39,7 @@ namespace game
                 Amout--;
                 timer = COOLDOWN;
                 player.Stats.Heal(HealPower);
+                Debug.WriteLine("Healed! HP: " + player.Stats.CurrentHP);
             }
         }
 
