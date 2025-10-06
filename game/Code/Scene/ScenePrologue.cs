@@ -7,6 +7,7 @@ using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.ECS;
@@ -82,6 +83,10 @@ namespace game
             {
                 isDebug = !isDebug;
             }
+            if (_ks.IsKeyDown(Keys.M) && !_oldKs.IsKeyDown(Keys.M))
+            {
+                globalContext.audioController.ToggleMute();
+            }
             if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
             {
                 if (player.Stats.Speed.Value <= 900)
@@ -100,7 +105,8 @@ namespace game
             }
             if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
-                ScreenManager.LoadScreen(new SceneMenu(game1));
+                ScreenManager.LoadScreen(new SceneMenu(game1, true));
+                return;
             }
             if(player.Stats.CurrentHP == 0)
             {
@@ -119,7 +125,7 @@ namespace game
 
             globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             globalContext.UpdateParticle(gameTime);
-            globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
+            globalContext.UpdateMonster(gameTime, player, _healTexture);
             globalContext.UpdateChest(playerpos);
             globalContext.UpdatePendinQueue();
             globalContext.UpdateTiledMaper(gameTime);
@@ -254,6 +260,7 @@ namespace game
             //fireParticleDark = null;
             //fireParticleLight = null;
 
+            spriteFont = null;
             _healTexture = null;
             globalContext.UnloadAll();
             //globalContext = null;

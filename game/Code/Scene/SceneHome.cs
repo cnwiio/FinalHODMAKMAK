@@ -93,9 +93,9 @@ namespace game
             {
                 isDebug = !isDebug;
             }
-            if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
+            if (_ks.IsKeyDown(Keys.M) && !_oldKs.IsKeyDown(Keys.M))
             {
-                ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+                globalContext.audioController.ToggleMute();
             }
             if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
             {
@@ -113,11 +113,16 @@ namespace game
                     globalContext._Camera.Zoom = 1;
                 }
             }
+            if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
+            {
+                ScreenManager.LoadScreen(new SceneMenu(game1, true));
+                return;
+            }
             if (player.Stats.CurrentHP == 0)
             {
                 ScreenManager.LoadScreen(new SceneDead(game1));
                 return;
-            };
+            }
             #endregion
 
             player.Update(gameTime);
@@ -127,6 +132,7 @@ namespace game
             globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             globalContext.UpdateParticle(gameTime);
             globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
+            globalContext.UpdateChest(playerpos);
             globalContext.UpdatePendinQueue();
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();

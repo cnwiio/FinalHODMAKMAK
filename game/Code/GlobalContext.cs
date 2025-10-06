@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Collisions.Layers;
@@ -78,6 +79,14 @@ namespace game
             // Camera
             Camera = _Game1.camera;
             _Camera = Camera.Cam;
+        }
+
+        public void PlayBGM()
+        {
+            var Content = _Game1.Content;
+            var song = Content.Load<Song>("Audio/mixkit-jumping-around-8");
+            audioController.SongVolume = 0.1f;
+            audioController.PlaySong(song);
         }
 
         // ----------------------------------------------------------------------------------------------------- //
@@ -386,6 +395,7 @@ namespace game
             LoadChests(player);
             LoadMonster(preventMonster, player);
             LoadPlayer(preventMonster, player);
+            PlayBGM();
         }
 
         // ----------------------------------------------------------------------------------------------------- //
@@ -698,22 +708,46 @@ namespace game
             {
                 monster.UnLoad(); // actually calls UnLoad on each monster
             }
+            Monsters.Clear(); // Monster
+            Monsters = null;
 
             foreach (var item in Collisions)
             {
                 CollisionComponents.Remove(item);
             }
+            CollisionComponents = null;
+
             Collisions.Clear(); // Collision
-            Monsters.Clear(); // Monster
+            Collisions = null;
+
             Ysort.Clear(); // Ysort
+            Ysort = null;
+
             Shadow.Clear(); // Shadow
+            Shadow = null;
+
             GameObjects.Clear(); // Object
+            GameObjects = null;
+
+            Chests.Clear(); // Chest
+            Chests = null;
+
+            Camera = null; // Camera
+            _Camera = null; //Camera
+
+            // TileMaper
+            TileMaper = null;
 
             // Particle
             HitParticle = null;
             DeadParticle = null;
             FireParticleDark = null;
             FireParticleLight = null;
+
+            // AudioController
+            audioController.PauseAudio();
+            audioController = null;
+
         }
 
         // ----------------------------------------------------------------------------------------------------- //
