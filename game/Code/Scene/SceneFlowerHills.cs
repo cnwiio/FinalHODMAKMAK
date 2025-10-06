@@ -106,6 +106,11 @@ namespace game
             ScreenManager.LoadScreen(new SceneDead(game1));
             return;
         }
+        if (globalContext.isGameEnd)
+        {
+            ScreenManager.LoadScreen(new SceneVictory(game1), new FadeTransition(GraphicsDevice, Color.Black, 5f));
+            return;
+        }
         #endregion
 
         player.Update(gameTime);
@@ -143,8 +148,8 @@ namespace game
 
         // UI sprite batch
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-            globalContext.DrawBossUI(_spriteBatch);
-            globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+        globalContext.DrawBossUI(_spriteBatch);
+        globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
         _spriteBatch.End();
     }
     public override void UnloadContent()

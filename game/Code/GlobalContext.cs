@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Collisions.Layers;
+using MonoGame.Extended.Screens;
 using MonoGame.Extended.Timers;
 
 namespace game
@@ -60,6 +61,7 @@ namespace game
         public Game1 _Game1;
         public SpriteBatch SpriteBatch;
         public KeyboardState Ks, OldKs; // keyboard
+        public bool isGameEnd = false;
         private string hitSound = "AttackHitWhosh";
         private string deadSound = "dead5";
         private string parrySound = "AttackHitWhosh";
@@ -586,6 +588,11 @@ namespace game
             );
             PendingAdd.Add(healPickup);
             Ysort.Add(healPickup);
+
+            if (monster is MonsterBoss)
+            {
+                isGameEnd = true;
+            }
 
             monster.UnLoad();
             PendingMonsterRemove.Add(monster);

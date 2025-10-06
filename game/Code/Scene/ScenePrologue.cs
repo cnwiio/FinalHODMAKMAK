@@ -160,7 +160,7 @@ namespace game
                 transformMatrix: globalContext._Camera.GetViewMatrix()
             );
 
-            string str1 = "W A S D to walk\nZ X to zoom";
+            string str1 = "W A S D to walk\nZ X to zoom\nP to return default zoom";
             _spriteBatch.DrawString(spriteFont, str1, new Vector2(979, 3717), Color.White);
             string str2 = "SPACE to dash";
             _spriteBatch.DrawString(spriteFont, str2, new Vector2(1422, 3543), Color.White);

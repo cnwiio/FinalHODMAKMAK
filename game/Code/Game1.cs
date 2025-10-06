@@ -52,7 +52,7 @@ namespace game
 
         protected override void Initialize()
         {
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, ScreenWidth, ScreenHeight);
+            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1280, 720);
             camera = new GlobalCamera(viewportAdapter);
 
             _graphics.PreferredBackBufferWidth = ScreenWidth;

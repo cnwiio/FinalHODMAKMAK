@@ -1058,7 +1058,7 @@
   <object id="1073" name="Chest" x="2847.33" y="4074.67">
    <point/>
   </object>
-  <object id="1081" name="Player" x="1575" y="4405">
+  <object id="1081" name="Player" x="1600" y="4352">
    <point/>
   </object>
  </objectgroup>
