@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Animations;
 using MonoGame.Extended.Collisions;
@@ -37,6 +38,8 @@ namespace game
         public MonsterAttackHitbox[] telegraphHitbox;
         private SoundEffect fireSound;
         private SoundEffect spikeSound;
+        private Song savedBGMSound;
+        private Song BGMSound;
         // ----------------Bool----------------
         public bool[] BulletVisible;
         // ----------------------------------
@@ -117,7 +120,7 @@ namespace game
                 telegraph[i] = new Telegraph(telegraphTexture, individualSkillTexture);
             }
         }
-        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName, string fireSfxName, string spikeSfxName)
+        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName, string fireSfxName, string spikeSfxName, string normalBgmSfxName, string bossBgmSfxName)
         {
             audioController = controller;
             hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
@@ -125,6 +128,9 @@ namespace game
             parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
             fireSound = content.Load<SoundEffect>("Audio/" + fireSfxName);
             spikeSound = content.Load<SoundEffect>("Audio/" + spikeSfxName);
+            savedBGMSound = content.Load<Song>("Audio/" + normalBgmSfxName);
+            BGMSound = content.Load<Song>("Audio/" + bossBgmSfxName);
+            
         }
 
         public void loadBullet(ContentManager content, string lightBullet, string darkBullet)
@@ -289,10 +295,13 @@ namespace game
             if (!isInActiveRadius && Vector2.Distance(Position, TargetPos) <= ActiveRadius)
             {
                 isInActiveRadius = true;
-            } else if (!isInRange) 
+                audioController.PlaySong(BGMSound, true);
+            } 
+            else if (!isInRange && isInActiveRadius) 
             {
                 Reset();
                 isInActiveRadius = false;
+                audioController.PlaySong(savedBGMSound, true);
             }
             //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
             isInAttackList = isInRange;

@@ -67,6 +67,8 @@ namespace game
         private string parrySound = "AttackHitWhosh";
         private string fireSound = "Attack.NoHit";
         private string spikeSound = "Attack.NoHit";
+        private string bossbgmSound = "epic-version";
+        private string BGMSound = "mixkit-jumping-around-8";
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -92,7 +94,7 @@ namespace game
             var Content = _Game1.Content;
             var song = Content.Load<Song>("Audio/mixkit-jumping-around-8");
             audioController.SongVolume = 0.1f;
-            audioController.PlaySong(song);
+            audioController.PlaySong(song, true);
         }
 
         // ----------------------------------------------------------------------------------------------------- //
@@ -339,7 +341,7 @@ namespace game
             monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
 
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
-            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound, fireSound, spikeSound);
+            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound, fireSound, spikeSound, BGMSound, bossbgmSound);
             monster.LoadAssets(Content);
             monster.LoadUI(Content, "HealthBar7");
             monster.CreateAnimation();
