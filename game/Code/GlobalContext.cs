@@ -66,6 +66,7 @@ namespace game
         private string deadSound = "dead5";
         private string parrySound = "AttackHitWhosh";
         private string fireSound = "Attack.NoHit";
+        private string spikeSound = "Attack.NoHit";
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -338,7 +339,7 @@ namespace game
             monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
 
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
-            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound);
+            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound, fireSound, spikeSound);
             monster.LoadAssets(Content);
             monster.LoadUI(Content, "HealthBar7");
             monster.CreateAnimation();
