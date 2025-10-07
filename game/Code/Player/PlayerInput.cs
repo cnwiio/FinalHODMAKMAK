@@ -23,6 +23,7 @@ namespace game
         private MouseState _oldMouseState;
 
         private const float DoubleTapTime = 0.3f; // seconds allowed between taps
+        public bool PotionTriggered { get; private set; }
 
         private double _lastTapTimeW = -1;
         private double _lastTapTimeA = -1;

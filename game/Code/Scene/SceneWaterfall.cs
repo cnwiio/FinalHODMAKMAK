@@ -104,7 +104,7 @@ namespace game
             }
             #endregion
 
-            player.Update(gameTime);
+            player.Update(gameTime, globalContext._Camera);
             var playerpos = player._movement.Position;
             preventMonster.UpdatePosition(playerpos);
 
