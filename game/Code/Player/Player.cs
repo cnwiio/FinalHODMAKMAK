@@ -1,5 +1,7 @@
 ﻿using Assimp;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
@@ -38,6 +40,13 @@ namespace game
         private float _skill2Timer = 0f;
         private float _skill2Duration = 0.5f; // match ArclightCross.Duration
 
+        // Audio
+        private AudioController audioController;
+        private SoundEffect attackSound;
+        private SoundEffect hurtSound;
+        private SoundEffect skill1Sound;
+        private SoundEffect skill2Sound;
+        private SoundEffect potionSound;
 
         public PlayerHurtbox Hurtbox { get; private set; }
         public PlayerCollisionBox Collision { get; private set; }
@@ -64,6 +73,16 @@ namespace game
             Vector2 collisionSize = new Vector2(40, 27); // width, height
             Vector2 collisionOffset = new Vector2(-20, 26); // offset from top-left of sprite
             Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
+        }
+
+        public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName)
+        {
+            this.audioController = audioController;
+            attackSound = content.Load<SoundEffect>(attackSfxName);
+            hurtSound = content.Load<SoundEffect>(hurtSfxName);
+            skill1Sound = content.Load<SoundEffect>(skill1SfxName);
+            skill2Sound = content.Load<SoundEffect>(skill2SfxName);
+            potionSound = content.Load<SoundEffect>(potionSfxName);
         }
 
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
@@ -143,6 +162,7 @@ namespace game
                 }
             }
 
+            PlayHurtSound();
 
             foreach (var hitbox in _activeHitboxes.ToList())
                 hitbox.Update(gameTime);
@@ -180,6 +200,7 @@ namespace game
 
             var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent);
             _activeHitboxes.Add(attackEntity);
+            audioController.PlaySoundEffect(attackSound);
 
             if (_entities != null)
             {
@@ -239,6 +260,14 @@ namespace game
         private static Vector2 ScreenToWorld(OrthographicCamera camera, Vector2 screenPos)
         {
             return Vector2.Transform(screenPos, Matrix.Invert(camera.GetViewMatrix()));
+        }
+
+        private void PlayHurtSound()
+        {
+            if (Hurtbox.PlaySound())
+            {
+                audioController.PlaySoundEffect(hurtSound);
+            }
         }
     }
 }

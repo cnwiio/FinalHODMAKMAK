@@ -18,6 +18,10 @@ namespace game
 
         // Audio
         public AudioController audioController;
+        private string attackSound;
+        private string hurtSound;
+        private string skill1Sound;
+        private string skill2Sound;
 
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
@@ -92,6 +96,7 @@ namespace game
             Player = new Player(_playerTexture, new Vector2(0));
 
             Player.SetWorldReferences(Collision, CollisionComponent);
+            Player.LoadSound(Content, audioController, );
             PreventMonster = new PreventMonster(new Vector2(400, 400), 350f);
 
             screenManager.LoadScreen(new SceneMenu(this)); 
