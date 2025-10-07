@@ -19,7 +19,7 @@ namespace game
         public ParticleEffect ParticleEffect;
         private Texture2D particleTexture;
         private Texture2DRegion textureRegion;
-        private ParticleEmitter emitter;
+        //private ParticleEmitter emitter;
         public Vector2 Position;
         public int Capacity, Quantity;
         public float LifeSpan;

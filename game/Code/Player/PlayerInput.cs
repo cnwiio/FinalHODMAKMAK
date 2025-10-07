@@ -23,6 +23,7 @@ namespace game
         private MouseState _oldMouseState;
 
         private const float DoubleTapTime = 0.3f; // seconds allowed between taps
+        public bool PotionTriggered { get; private set; }
 
         private double _lastTapTimeW = -1;
         private double _lastTapTimeA = -1;
@@ -72,6 +73,8 @@ namespace game
             // Skill 2 (R)
             Skill2Triggered = _keyboardState.IsKeyDown(Keys.R) && !_oldkeyboardState.IsKeyDown(Keys.R);
 
+
+            PotionTriggered = _keyboardState.IsKeyDown(Keys.LeftShift) && !_oldkeyboardState.IsKeyDown(Keys.LeftShift);
 
 
             Direction = dir;

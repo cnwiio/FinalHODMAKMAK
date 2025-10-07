@@ -35,6 +35,7 @@ namespace game
         private KeyboardState _ks, _oldKs; // keyboard
         private Texture2D _healTexture; // tempo
         private bool isDebug = false;
+        private SpriteFont spriteFont;
 
         public SceneHome(Game game) : base(game)
         {
@@ -53,14 +54,14 @@ namespace game
 
         public override void LoadContent()
         {
-            _healTexture = Content.Load<Texture2D>("Texture/Health");
-
+            _healTexture = Content.Load<Texture2D>("Texture/Potion");
+            spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
             //globalContext.LoadCamera();
             //globalContext.LoadParticle();
             //globalContext.LoadTiledMap(Content, "SceneHome");
             //globalContext.LoadMonster(); 
 
-            
+
 
             globalContext.LoadAll(Content, "SceneHome", preventMonster, player);
 
@@ -92,9 +93,9 @@ namespace game
             {
                 isDebug = !isDebug;
             }
-            if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter))
+            if (_ks.IsKeyDown(Keys.M) && !_oldKs.IsKeyDown(Keys.M))
             {
-                ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+                globalContext.audioController.ToggleMute();
             }
             if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
             {
@@ -112,10 +113,15 @@ namespace game
                     globalContext._Camera.Zoom = 1;
                 }
             }
+            if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
+            {
+                ScreenManager.LoadScreen(new SceneMenu(game1, true));
+                return;
+            }
             if (player.Stats.CurrentHP == 0)
             {
-                ScreenManager.LoadScreen(new SceneMenu(game1));
-                player.Stats.Heal(100000);
+                ScreenManager.LoadScreen(new SceneDead(game1), new FadeTransition(GraphicsDevice, Color.Black, 3f));
+                return;
             }
             #endregion
 
@@ -126,6 +132,7 @@ namespace game
             globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
             globalContext.UpdateParticle(gameTime);
             globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
+            globalContext.UpdateChest(playerpos);
             globalContext.UpdatePendinQueue();
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
@@ -157,12 +164,17 @@ namespace game
             _spriteBatch.End();
 
             globalContext.DrawBossUI(_spriteBatch);
+
+            // UI sprite batch
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+            _spriteBatch.End();
         }
         public override void UnloadContent()
         {
             _healTexture = null;
             globalContext.UnloadAll();
-            //globalContext = null;
+            globalContext = null;
             base.UnloadContent();
         }
 
@@ -191,7 +203,7 @@ namespace game
 
         private void DrawMonsterDebug(IMonster monster)
         {
-            _spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
+            //_spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
             _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
 
             switch (monster)

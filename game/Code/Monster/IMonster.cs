@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using MonoGame.Extended.Collisions;
 
 namespace game
 {
@@ -23,6 +25,7 @@ namespace game
         int Damage { get; set; }
         float preventMonsterEdge { get; set; }
         bool isHit { get; set; }
+        bool IsDead { get; set; }
         bool isInAttackList { get; set; }
         bool isAwayHome { get; set; }
         bool isInRange { get; set; }
@@ -48,6 +51,8 @@ namespace game
         string GetDirection(Vector2 direction);
         void UnLoad();
         void ApplyDamage(int value);
+        void UpdateState(GameTime gameTime, List<IEntity> collisions, CollisionComponent collisionComponents, Vector2 targetPosition);
+        void RemoveCollision();
     }
 }
 
