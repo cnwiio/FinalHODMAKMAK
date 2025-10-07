@@ -34,6 +34,9 @@ namespace game
         private bool isDebug = false;
         private SpriteFont spriteFont;
 
+        // HUD
+        private HealthBarHUD healthBar;
+
         public SceneUnderWaterfall(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -117,6 +120,8 @@ namespace game
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
 
+            healthBar.Update();
+
             // Collision
             _collisionComponent.Update(gameTime);
         }
@@ -141,6 +146,7 @@ namespace game
             // UI sprite batch
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+            healthBar.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         public override void UnloadContent()

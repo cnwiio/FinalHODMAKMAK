@@ -34,6 +34,9 @@ namespace game
         private bool isDebug = false;
         private SpriteFont spriteFont;
 
+        // HUD
+        private HealthBarHUD healthBar;
+
         public SceneHomeNorth(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -55,6 +58,10 @@ namespace game
             spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
             globalContext.LoadAll(Content, "SceneHomeNorth", preventMonster, player);
+
+            // HUD
+            healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
+            healthBar.LoadContent(Content);
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -117,6 +124,8 @@ namespace game
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
 
+            healthBar.Update();
+
             // Collision
             _collisionComponent.Update(gameTime);
 
@@ -145,6 +154,7 @@ namespace game
             // UI sprite batch
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+            healthBar.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         public override void UnloadContent()
