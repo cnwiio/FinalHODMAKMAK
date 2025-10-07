@@ -37,6 +37,9 @@ namespace game
         private bool isDebug = false;
         private SpriteFont spriteFont;
 
+        // HUD
+        private HealthBarHUD healthBar;
+
         public SceneHome(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -64,6 +67,9 @@ namespace game
 
 
             globalContext.LoadAll(Content, "SceneHome", preventMonster, player);
+
+            healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
+            healthBar.LoadContent(Content);
 
             //if (player.DestinationPos == Vector2.Zero)
             //{
@@ -137,6 +143,9 @@ namespace game
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
 
+            // HUD
+            healthBar.Update();
+
             // Collision
             _collisionComponent.Update(gameTime);
 
@@ -168,6 +177,7 @@ namespace game
             // UI sprite batch
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+            healthBar.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         public override void UnloadContent()

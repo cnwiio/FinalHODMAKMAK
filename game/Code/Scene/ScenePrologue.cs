@@ -39,6 +39,8 @@ namespace game
         private SpriteFont spriteFont;
         private bool isDebug = false;
 
+        private HealthBarHUD healthBar;
+
         public ScenePrologue(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -60,6 +62,9 @@ namespace game
             // Load temporary drop texture
             _healTexture = Content.Load<Texture2D>("Texture/Potion");
             spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
+
+            healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
+            healthBar.LoadContent(Content);
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
@@ -130,6 +135,8 @@ namespace game
             globalContext.UpdateTiledMaper(gameTime);
             globalContext.UpdateYsort();
 
+            healthBar.Update();
+
             foreach (var entity in globalContext.Ysort)
             {
                 if (entity is HealPickup heal)
@@ -180,6 +187,7 @@ namespace game
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawBossUI(_spriteBatch);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+            healthBar.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         private void DebugDraw()

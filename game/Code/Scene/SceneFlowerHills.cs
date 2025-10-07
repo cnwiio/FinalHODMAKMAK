@@ -37,7 +37,10 @@ namespace game
     private bool isDebug = false;
     private SpriteFont spriteFont;
 
-    public SceneFlowerHills(Game game) : base(game)
+    // HUD
+    private HealthBarHUD healthBar;
+
+        public SceneFlowerHills(Game game) : base(game)
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         game1 = (Game1)Game;
@@ -59,8 +62,11 @@ namespace game
 
         globalContext.LoadAll(Content, "SceneFlowerHills", preventMonster, player);
 
-        // Insert collision entities
-        foreach (IEntity entity in _collision)
+            healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
+            healthBar.LoadContent(Content);
+
+            // Insert collision entities
+            foreach (IEntity entity in _collision)
         {
             _collisionComponent.Insert(entity);
         }
@@ -125,6 +131,8 @@ namespace game
         globalContext.UpdateTiledMaper(gameTime);
         globalContext.UpdateYsort();
 
+        healthBar.Update();
+
         // Collision
         _collisionComponent.Update(gameTime);
     }
@@ -150,6 +158,7 @@ namespace game
         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
         globalContext.DrawBossUI(_spriteBatch);
         globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
+        healthBar.Draw(_spriteBatch);
         _spriteBatch.End();
     }
     public override void UnloadContent()
