@@ -63,8 +63,8 @@ namespace game
         public SpriteBatch SpriteBatch;
         public KeyboardState Ks, OldKs; // keyboard
         public bool isGameEnd = false;
-        private string hitSound = "Attackhit";
-        private string deadSound = "dead5";
+        private string hitSound = "MonHurt";
+        private string deadSound = "MonDead";
         private string parrySound = "Parry";
         private string fireSound = "MonShoot";
 
@@ -90,7 +90,7 @@ namespace game
         public void PlayBGM()
         {
             var Content = _Game1.Content;
-            var song = Content.Load<Song>("Audio/mixkit-jumping-around-8");
+            var song = Content.Load<Song>("Audio/BgmNormal");
             audioController.SongVolume = 0f;
             audioController.PlaySong(song);
         }

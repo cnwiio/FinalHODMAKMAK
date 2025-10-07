@@ -14,53 +14,29 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Audio/AttackHit.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/AttackHit.mp3
-
-#begin Audio/Attackhit.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/Attackhit.wav
-
-#begin Audio/AttackNoHit.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/AttackNoHit.wav
-
 #begin Audio/BossSpike.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/BossSpike.wav
 
-#begin Audio/dead2.wav
+#begin Audio/Dash.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/dead2.wav
+/build:Audio/Dash.wav
 
-#begin Audio/dead5.wav
+#begin Audio/Logo.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Logo.mp3
+
+#begin Audio/MonHurt.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/dead5.wav
-
-#begin Audio/Hurt.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:Audio/Hurt.mp3
-
-#begin Audio/mixkit-jumping-around-8.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:Audio/mixkit-jumping-around-8.mp3
+/build:Audio/MonHurt.wav
 
 #begin Audio/MonShoot.wav
 /importer:WavImporter
@@ -80,23 +56,11 @@
 /processorParam:Quality=Best
 /build:Audio/Parry.wav
 
-#begin Audio/PlayerDash.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/PlayerDash.mp3
-
-#begin Audio/PlayerDie.wav
+#begin Audio/PlayerAttack.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/PlayerDie.wav
-
-#begin Audio/PlayerHit.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/PlayerHit.wav
+/build:Audio/PlayerAttack.wav
 
 #begin Audio/PlayerHurt.wav
 /importer:WavImporter
@@ -104,23 +68,23 @@
 /processorParam:Quality=Best
 /build:Audio/PlayerHurt.wav
 
-#begin Audio/SipPotion1.wav
+#begin Audio/SipPotion.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/SipPotion1.wav
+/build:Audio/SipPotion.wav
 
-#begin Audio/Skill1.1.wav
+#begin Audio/Skill1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/Skill1.1.wav
+/build:Audio/Skill1.wav
 
-#begin Audio/Skill2.1.wav
+#begin Audio/Skill2.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/Skill2.1.wav
+/build:Audio/Skill2.wav
 
 #begin Fonts/ArialFont.spritefont
 /importer:FontDescriptionImporter

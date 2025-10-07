@@ -19,12 +19,12 @@ namespace game
 
         // Audio
         public AudioController audioController;
-        private string attackSound = "AttackNoHit";
+        private string attackSound = "PlayerAttack";
         private string hurtSound = "PlayerHurt";
-        private string skill1Sound = "Skill1.1";
-        private string skill2Sound = "Skill2.1";
-        private string potionSound = "SipPotion1";
-        private string dashSound = "PlayerDash";
+        private string skill1Sound = "Skill1";
+        private string skill2Sound = "Skill2";
+        private string potionSound = "SipPotion";
+        private string dashSound = "Dash";
 
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
