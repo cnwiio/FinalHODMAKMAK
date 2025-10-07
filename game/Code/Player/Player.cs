@@ -83,11 +83,11 @@ namespace game
         public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName)
         {
             this.audioController = audioController;
-            attackSound = content.Load<SoundEffect>(attackSfxName);
-            hurtSound = content.Load<SoundEffect>(hurtSfxName);
-            skill1Sound = content.Load<SoundEffect>(skill1SfxName);
-            skill2Sound = content.Load<SoundEffect>(skill2SfxName);
-            potionSound = content.Load<SoundEffect>(potionSfxName);
+            attackSound = content.Load<SoundEffect>("Audio/" + attackSfxName);
+            hurtSound = content.Load<SoundEffect>("Audio/" + hurtSfxName);
+            skill1Sound = content.Load<SoundEffect>("Audio/" + skill1SfxName);
+            skill2Sound = content.Load<SoundEffect>("Audio/" + skill2SfxName);
+            potionSound = content.Load<SoundEffect>("Audio/" + potionSfxName);
         }
 
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
@@ -118,7 +118,9 @@ namespace game
                 StartAttack();
 
             if (_input.PotionTriggered && !_isAttacking && !_movement.IsDashing)
-                potion.Use();
+            {
+                potion.Use(audioController, potionSound);
+            }
 
             if (_isAttacking)
             {
@@ -232,6 +234,8 @@ namespace game
 
             // Spawn PillarOfLight hitbox
             Skill1.Use(mouseWorldPos);
+
+            audioController.PlaySoundEffect(skill1Sound);
         }
         private void StartSkill2()
         {
@@ -242,6 +246,8 @@ namespace game
             Vector2 dir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
             Skill2.Use();
+
+            audioController.PlaySoundEffect(skill2Sound);
         }
 
 

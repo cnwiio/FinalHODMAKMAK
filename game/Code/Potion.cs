@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using MonoGame.Extended;
 
 namespace game
@@ -32,13 +33,14 @@ namespace game
             if (Amout < MAXAMOUT) 
                 Amout++;
         }
-        public void Use()
+        public void Use(AudioController audio, SoundEffect soundEffect)
         {
             if (Amout > 0 && !isinCoolDown)
             {
                 Amout--;
                 timer = COOLDOWN;
                 player.Stats.Heal(HealPower);
+                audio.PlaySoundEffect(soundEffect);
                 Debug.WriteLine("Healed! HP: " + player.Stats.CurrentHP);
             }
         }
