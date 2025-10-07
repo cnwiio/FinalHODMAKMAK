@@ -66,7 +66,7 @@ namespace game
         private string hitSound = "Attackhit";
         private string deadSound = "dead5";
         private string parrySound = "Parry";
-        private string fireSound = "Attack.NoHit";
+        private string fireSound = "MonShoot";
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);

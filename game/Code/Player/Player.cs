@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using System;
@@ -47,6 +48,7 @@ namespace game
         private SoundEffect skill1Sound;
         private SoundEffect skill2Sound;
         private SoundEffect potionSound;
+        private SoundEffect dashSound;
 
         public PlayerHurtbox Hurtbox { get; private set; }
         public PlayerCollisionBox Collision { get; private set; }
@@ -80,7 +82,7 @@ namespace game
             potion = new Potion(this);
         }
 
-        public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName)
+        public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName, string runningSfxName)
         {
             this.audioController = audioController;
             attackSound = content.Load<SoundEffect>("Audio/" + attackSfxName);
@@ -88,6 +90,7 @@ namespace game
             skill1Sound = content.Load<SoundEffect>("Audio/" + skill1SfxName);
             skill2Sound = content.Load<SoundEffect>("Audio/" + skill2SfxName);
             potionSound = content.Load<SoundEffect>("Audio/" + potionSfxName);
+            dashSound = content.Load<SoundEffect>("Audio/" + runningSfxName);
         }
 
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)

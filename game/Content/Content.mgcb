@@ -14,12 +14,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Audio/Attack.NoHit.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/Attack.NoHit.mp3
-
 #begin Audio/AttackHit.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
@@ -44,6 +38,18 @@
 /processorParam:Quality=Best
 /build:Audio/AttackHitWhosh.wav
 
+#begin Audio/AttackNoHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/AttackNoHit.wav
+
+#begin Audio/BossSpike.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/BossSpike.wav
+
 #begin Audio/dead2.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -58,7 +64,7 @@
 
 #begin Audio/Hurt.mp3
 /importer:Mp3Importer
-/processor:SoundEffectProcessor
+/processor:SongProcessor
 /processorParam:Quality=Best
 /build:Audio/Hurt.mp3
 
@@ -85,6 +91,48 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/Parry.wav
+
+#begin Audio/PlayerDash.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/PlayerDash.mp3
+
+#begin Audio/PlayerDie.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/PlayerDie.wav
+
+#begin Audio/PlayerHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/PlayerHit.wav
+
+#begin Audio/running.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/running.mp3
+
+#begin Audio/SipPotion1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SipPotion1.wav
+
+#begin Audio/Skill1.1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Skill1.1.wav
+
+#begin Audio/Skill2.1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Skill2.1.wav
 
 #begin Fonts/ArialFont.spritefont
 /importer:FontDescriptionImporter
