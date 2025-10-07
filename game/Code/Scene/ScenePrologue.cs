@@ -119,7 +119,7 @@ namespace game
             //Debug.WriteLine(game1.SavedPotion);
 
             // Player
-            player.Update(gameTime);
+            player.Update(gameTime, globalContext._Camera);
             var playerpos = player._movement.Position;
             preventMonster.UpdatePosition(playerpos);
 

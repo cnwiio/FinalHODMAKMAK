@@ -13,8 +13,10 @@ namespace game
         public Vector2 Direction { get; private set; }
         public bool DashTriggered { get; private set; }
         public bool AttackTriggered { get; private set; }
-        public bool ElementToggleTriggered { get; private set; }   // NEW
-        public bool PotionTriggered { get; private set; }   // NEW
+        public bool ElementToggleTriggered { get; private set; } // Q key
+        public bool Skill1Triggered { get; private set; } // E key
+        public bool Skill2Triggered { get; private set; } // R key
+
 
         private KeyboardState _keyboardState;
         private KeyboardState _oldkeyboardState;
@@ -63,6 +65,13 @@ namespace game
 
             // Element Toggle: press Q
             ElementToggleTriggered = _keyboardState.IsKeyDown(Keys.Q) && !_oldkeyboardState.IsKeyDown(Keys.Q);
+
+            // Skill 1 (E)
+            Skill1Triggered = _keyboardState.IsKeyDown(Keys.E) && !_oldkeyboardState.IsKeyDown(Keys.E);
+
+            // Skill 2 (R)
+            Skill2Triggered = _keyboardState.IsKeyDown(Keys.R) && !_oldkeyboardState.IsKeyDown(Keys.R);
+
 
             PotionTriggered = _keyboardState.IsKeyDown(Keys.LeftShift) && !_oldkeyboardState.IsKeyDown(Keys.LeftShift);
 

@@ -357,7 +357,7 @@ namespace game
                 //Debug.WriteLine("dif element");
             }
             HP -= Value;
-            //Debug.WriteLine("Damge : " + Value);
+            Debug.WriteLine($"Monster took {Value} damage (after element modifier). Remaining HP: {HP}");
         }
         public void PlayeParrySound(MonsterAttackHitbox hitbox)
         {
