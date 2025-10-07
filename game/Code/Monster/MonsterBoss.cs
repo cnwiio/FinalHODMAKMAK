@@ -72,7 +72,7 @@ namespace game
                     _isHit = true;
                     ShakeViewport = true;
                     _hitTimer = 0.25f;
-                    _deadTimer = 1.2f;
+                    _deadTimer = 2f;
                     if (HP > 0)
                     {
                         var r = new Random();
@@ -156,8 +156,8 @@ namespace game
             animation.CreateAnimation("Casting", "left", true, 100, 0, 4);
             animation.CreateAnimation("Casting", "right", true, 100, 0, 4);
 
-            animation.CreateAnimation("Die", "right", false, 100, 0, 12);
-            animation.CreateAnimation("Die", "left", false, 100, 0, 12);
+            animation.CreateAnimation("Die", "right", false, 100, 0, 13);
+            animation.CreateAnimation("Die", "left", false, 100, 0, 13);
 
             animation.CreateAnimation("ChargeRapidFire", "left", false, 200, 0, 2);
             animation.CreateAnimation("ChargeRapidFire", "right", false, 200, 0, 2);

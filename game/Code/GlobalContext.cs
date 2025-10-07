@@ -317,7 +317,7 @@ namespace game
             var Content = _Game1.Content;
             monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
             monster.LoadAnim("Walk", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+            monster.LoadAnim("Die", "KINGDOMCUM", monster.Position, 1472, 1472, Content);
 
             monster.LoadAnim("ChargeRapidFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
             monster.LoadAnim("RapidFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);

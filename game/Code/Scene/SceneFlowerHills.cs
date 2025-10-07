@@ -108,7 +108,7 @@ namespace game
         }
         if (globalContext.isGameEnd)
         {
-            ScreenManager.LoadScreen(new SceneVictory(game1), new FadeTransition(GraphicsDevice, Color.Black, 5f));
+            ScreenManager.LoadScreen(new SceneVictory(game1), new FadeTransition(GraphicsDevice, Color.White, 1f));
             return;
         }
         #endregion
