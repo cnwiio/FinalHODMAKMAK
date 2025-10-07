@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 
 namespace game
 {
@@ -94,7 +95,7 @@ namespace game
             }
             if (!_ks.IsKeyDown(Keys.Enter) && _oldKs.IsKeyDown(Keys.Enter))
             {
-                ScreenManager.LoadScreen(new SceneMenu(game1, true));
+                ScreenManager.LoadScreen(new SceneMenu(game1, true), new FadeTransition(GraphicsDevice, Color.Black, 3f));
                 return;
             }
             if (player.Stats.CurrentHP == 0)

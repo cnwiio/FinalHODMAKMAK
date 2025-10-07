@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 
 namespace game
 {
@@ -99,7 +100,7 @@ namespace game
             }
             if (player.Stats.CurrentHP == 0)
             {
-                ScreenManager.LoadScreen(new SceneDead(game1));
+                ScreenManager.LoadScreen(new SceneDead(game1), new FadeTransition(GraphicsDevice, Color.Black, 3f));
                 return;
             }
             #endregion
