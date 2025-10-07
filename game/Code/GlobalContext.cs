@@ -63,10 +63,13 @@ namespace game
         public SpriteBatch SpriteBatch;
         public KeyboardState Ks, OldKs; // keyboard
         public bool isGameEnd = false;
-        private string hitSound = "MonHurt";
-        private string deadSound = "MonDead";
-        private string parrySound = "Parry";
-        private string fireSound = "MonShoot";
+        private string hitSound = "AttackHitWhosh";
+        private string deadSound = "dead5";
+        private string parrySound = "AttackHitWhosh";
+        private string fireSound = "Attack.NoHit";
+        private string spikeSound = "Attack.NoHit";
+        private string bossbgmSound = "epic-version";
+        private string BGMSound = "mixkit-jumping-around-8";
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -90,9 +93,9 @@ namespace game
         public void PlayBGM()
         {
             var Content = _Game1.Content;
-            var song = Content.Load<Song>("Audio/BgmNormal");
-            audioController.SongVolume = 0f;
-            audioController.PlaySong(song);
+            var song = Content.Load<Song>("Audio/mixkit-jumping-around-8");
+            audioController.SongVolume = 0.1f;
+            audioController.PlaySong(song, true);
         }
 
         // ----------------------------------------------------------------------------------------------------- //
@@ -315,7 +318,7 @@ namespace game
             var Content = _Game1.Content;
             monster.LoadAnim("Idle", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
             monster.LoadAnim("Walk", "Light-VoidDevourer-Idle", monster.Position, 320, 384, Content);
-            monster.LoadAnim("Die", "LightGoonFuckingDie-Sheet", monster.Position, 128, 128, Content);
+            monster.LoadAnim("Die", "KINGDOMCUM", monster.Position, 1472, 1472, Content);
 
             monster.LoadAnim("ChargeRapidFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
             monster.LoadAnim("RapidFire", "Light-VoidDevouer-HeavyMachineGun", monster.Position, 320, 384, Content);
@@ -339,7 +342,7 @@ namespace game
             monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
 
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
-            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound);
+            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound, fireSound, spikeSound, BGMSound, bossbgmSound);
             monster.LoadAssets(Content);
             monster.LoadUI(Content, "HealthBar7");
             monster.CreateAnimation();
