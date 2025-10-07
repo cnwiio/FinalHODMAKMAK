@@ -103,7 +103,7 @@ namespace game
         }
         if (player.Stats.CurrentHP == 0)
         {
-            ScreenManager.LoadScreen(new SceneDead(game1));
+            ScreenManager.LoadScreen(new SceneDead(game1), new FadeTransition(GraphicsDevice, Color.Black, 3f));
             return;
         }
         if (globalContext.isGameEnd)

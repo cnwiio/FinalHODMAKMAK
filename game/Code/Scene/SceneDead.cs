@@ -96,6 +96,7 @@ namespace game
             else if (Button2.Active)
             {
                 game.Player.DestinationPos = Vector2.Zero;
+                game.Player.CurrentScene = null;
                 ScreenManager.LoadScreen(new SceneMenu(Game, true));
                 return;
             }
