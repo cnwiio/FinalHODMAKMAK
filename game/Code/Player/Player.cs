@@ -177,6 +177,7 @@ namespace game
             }
 
             PlayHurtSound();
+            PlayDashSound();
 
             foreach (var hitbox in _activeHitboxes.ToList())
                 hitbox.Update(gameTime);
@@ -286,6 +287,13 @@ namespace game
             if (Hurtbox.PlaySound())
             {
                 audioController.PlaySoundEffect(hurtSound);
+            }
+        }
+        private void PlayDashSound()
+        {
+            if (_movement.IsPlaySound())
+            {
+                audioController.PlaySoundEffect(dashSound);
             }
         }
     }

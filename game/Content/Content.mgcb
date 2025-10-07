@@ -26,18 +26,6 @@
 /processorParam:Quality=Best
 /build:Audio/Attackhit.wav
 
-#begin Audio/AttackHit3.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/AttackHit3.mp3
-
-#begin Audio/AttackHitWhosh.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/AttackHitWhosh.wav
-
 #begin Audio/AttackNoHit.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -110,11 +98,11 @@
 /processorParam:Quality=Best
 /build:Audio/PlayerHit.wav
 
-#begin Audio/running.mp3
-/importer:Mp3Importer
+#begin Audio/PlayerHurt.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/running.mp3
+/build:Audio/PlayerHurt.wav
 
 #begin Audio/SipPotion1.wav
 /importer:WavImporter

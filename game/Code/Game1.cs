@@ -20,7 +20,7 @@ namespace game
         // Audio
         public AudioController audioController;
         private string attackSound = "AttackNoHit";
-        private string hurtSound = "PlayerHit";
+        private string hurtSound = "PlayerHurt";
         private string skill1Sound = "Skill1.1";
         private string skill2Sound = "Skill2.1";
         private string potionSound = "SipPotion1";
