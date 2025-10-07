@@ -63,13 +63,13 @@ namespace game
         public SpriteBatch SpriteBatch;
         public KeyboardState Ks, OldKs; // keyboard
         public bool isGameEnd = false;
-        private string hitSound = "AttackHitWhosh";
-        private string deadSound = "dead5";
-        private string parrySound = "AttackHitWhosh";
-        private string fireSound = "Attack.NoHit";
-        private string spikeSound = "Attack.NoHit";
-        private string bossbgmSound = "epic-version";
-        private string BGMSound = "mixkit-jumping-around-8";
+        private string hitSound = "MonHurt";
+        private string deadSound = "MonDead";
+        private string parrySound = "Parry";
+        private string fireSound = "MonShoot";
+        private string spikeSound = "BossSpike";
+        private string bossbgmSound = "BgmBoss";
+        private string BGMSound = "BgmNormal";
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -93,7 +93,7 @@ namespace game
         public void PlayBGM()
         {
             var Content = _Game1.Content;
-            var song = Content.Load<Song>("Audio/mixkit-jumping-around-8");
+            var song = Content.Load<Song>("Audio/" + BGMSound);
             audioController.SongVolume = 0.1f;
             audioController.PlaySong(song, true);
         }

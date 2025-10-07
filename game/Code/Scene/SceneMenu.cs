@@ -47,7 +47,7 @@ namespace game
             BG = Content.Load<Texture2D>("Texture/BG_art");
             SP = Content.Load<Texture2D>("Texture/splash");
             CR = Content.Load<Texture2D>("Texture/Credit");
-            LOGOSFX = Content.Load<SoundEffect>("Audio/WoodHit");
+            LOGOSFX = Content.Load<SoundEffect>("Audio/Logo");
             timer = SCREENTIME;
             base.LoadContent();
         }

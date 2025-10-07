@@ -14,6 +14,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/BgmBoss.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/BgmBoss.mp3
+
+#begin Audio/BgmNormal.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/BgmNormal.mp3
+
 #begin Audio/BossSpike.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -31,6 +43,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/Logo.mp3
+
+#begin Audio/MonDead.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/MonDead.wav
 
 #begin Audio/MonHurt.wav
 /importer:WavImporter
@@ -399,6 +417,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/DeadScene.png
+
+#begin Texture/End.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture/End.png
 
 #begin Texture/F.png
 /importer:TextureImporter
@@ -783,18 +813,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/splash.png
-
-#begin Texture/Victory.jpg
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/Victory.jpg
 
 #begin Texture/White-Circle.png
 /importer:TextureImporter

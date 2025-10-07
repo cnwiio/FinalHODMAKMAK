@@ -38,15 +38,15 @@ namespace game
     {
         public OrthographicCamera Cam;
         public Vector2 Position;
-        private short _cameraWidth;
-        private short _cameraHeight;
+        public short cameraWidth;
+        public short cameraHeight;
         private short _mapHeight = 64 * 70;
         private short _mapWidth = 64 * 70;
         public GlobalCamera(ViewportAdapter viewportAdapter)
         {
             Cam = new OrthographicCamera(viewportAdapter);
-            _cameraWidth = (short)viewportAdapter.VirtualWidth;
-            _cameraHeight = (short)viewportAdapter.VirtualHeight;
+            cameraWidth = (short)viewportAdapter.VirtualWidth;
+            cameraHeight = (short)viewportAdapter.VirtualHeight;
             Position = Vector2.Zero;
             Cam.MaximumZoom = 2f;
             Cam.MinimumZoom = 1f;
@@ -55,11 +55,11 @@ namespace game
 
         public void Update(Vector2 position)
         {
-            if (position.X > 0 && position.X < _mapHeight - _cameraWidth)
+            if (position.X > 0 && position.X < _mapHeight - cameraWidth)
             {
                 Position.X = position.X;
             }
-            if (position.Y > 0 && position.Y < _mapWidth - _cameraHeight)
+            if (position.Y > 0 && position.Y < _mapWidth - cameraHeight)
             {
                 Position.Y = position.Y;
             }
@@ -67,17 +67,17 @@ namespace game
             {
                 Position.X = 0;
             }
-            else if (position.X > _mapWidth - _cameraWidth)
+            else if (position.X > _mapWidth - cameraWidth)
             {
-                Position.X = _mapWidth - _cameraWidth;
+                Position.X = _mapWidth - cameraWidth;
             }
             if (position.Y < 0)
             {
                 Position.Y = 0;
             } 
-            else if (position.Y > _mapHeight - _cameraHeight) 
+            else if (position.Y > _mapHeight - cameraHeight) 
             {
-                Position.Y = _mapHeight - _cameraHeight;
+                Position.Y = _mapHeight - cameraHeight;
             }
 
             Cam.Position = Position;

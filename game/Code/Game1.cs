@@ -28,7 +28,7 @@ namespace game
 
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
-        public short ScreenWidth = 1920, ScreenHeight = 1080;
+        public short ScreenWidth = 1280, ScreenHeight = 720;
 
         // Collision 
         public CollisionComponent CollisionComponent { get; set; }
@@ -63,7 +63,7 @@ namespace game
 
             _graphics.PreferredBackBufferWidth = ScreenWidth;
             _graphics.PreferredBackBufferHeight = ScreenHeight;
-            _graphics.IsFullScreen = true;
+            //_graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
                 
             base.Initialize();
@@ -106,8 +106,7 @@ namespace game
             SavedHP = (short)Player.Stats.CurrentHP; // checkpoint
             SavedPotion = Player.potion.Amout; // checkpoint
 
-            screenManager.LoadScreen(new SceneFlowerHills(this));
-            //screenManager.LoadScreen(new SceneMenu(this));
+            screenManager.LoadScreen(new SceneMenu(this));
             base.LoadContent();
         }
 

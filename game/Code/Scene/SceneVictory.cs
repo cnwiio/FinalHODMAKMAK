@@ -32,7 +32,7 @@ namespace game
 
         public override void LoadContent()
         {
-            BG = Content.Load<Texture2D>("Texture/Victory");
+            BG = Content.Load<Texture2D>("Texture/End");
             Button = new Button(new Vector2(1280 / 2, 720 - 96 * 2), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
             font = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
@@ -58,11 +58,11 @@ namespace game
         {
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
-            _spriteBatch.Draw(BG, new Rectangle(0, 0, 1280, 720), Color.White); // BG
+            _spriteBatch.Draw(BG, Vector2.Zero, Color.White); // BG
 
-            var str = "Congratulation YOU WIN!";
-            _spriteBatch.DrawString(font, str, new Vector2(1280 / 2 - 250, 100), Color.Black, 
-                0, Vector2.Zero, Vector2.One * 2, SpriteEffects.None, 0);
+            //var str = "Congratulation YOU WIN!";
+            //_spriteBatch.DrawString(font, str, new Vector2(1280 / 2 - 250, 100), Color.Black, 
+            //    0, Vector2.Zero, Vector2.One * 2, SpriteEffects.None, 0);
 
             Button.Draw(_spriteBatch, 1);
             _spriteBatch.End();
