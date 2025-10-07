@@ -1,6 +1,9 @@
 ﻿using Assimp;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using System;
@@ -38,6 +41,14 @@ namespace game
         private float _skill2Timer = 0f;
         private float _skill2Duration = 0.5f; // match ArclightCross.Duration
 
+        // Audio
+        private AudioController audioController;
+        private SoundEffect attackSound;
+        private SoundEffect hurtSound;
+        private SoundEffect skill1Sound;
+        private SoundEffect skill2Sound;
+        private SoundEffect potionSound;
+        private SoundEffect dashSound;
 
         public PlayerHurtbox Hurtbox { get; private set; }
         public PlayerCollisionBox Collision { get; private set; }
@@ -71,6 +82,17 @@ namespace game
             potion = new Potion(this);
         }
 
+        public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName, string runningSfxName)
+        {
+            this.audioController = audioController;
+            attackSound = content.Load<SoundEffect>("Audio/" + attackSfxName);
+            hurtSound = content.Load<SoundEffect>("Audio/" + hurtSfxName);
+            skill1Sound = content.Load<SoundEffect>("Audio/" + skill1SfxName);
+            skill2Sound = content.Load<SoundEffect>("Audio/" + skill2SfxName);
+            potionSound = content.Load<SoundEffect>("Audio/" + potionSfxName);
+            dashSound = content.Load<SoundEffect>("Audio/" + runningSfxName);
+        }
+
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
         {
             _entities = entities ?? new List<IEntity>();
@@ -99,7 +121,9 @@ namespace game
                 StartAttack();
 
             if (_input.PotionTriggered && !_isAttacking && !_movement.IsDashing)
-                potion.Use();
+            {
+                potion.Use(audioController, potionSound);
+            }
 
             if (_isAttacking)
             {
@@ -152,6 +176,8 @@ namespace game
                 }
             }
 
+            PlayHurtSound();
+            PlayDashSound();
 
             foreach (var hitbox in _activeHitboxes.ToList())
                 hitbox.Update(gameTime);
@@ -190,6 +216,7 @@ namespace game
 
             var attackEntity = new PlayerAttackHitbox(this, attackBounds, _attackDuration, _collisionComponent);
             _activeHitboxes.Add(attackEntity);
+            audioController.PlaySoundEffect(attackSound);
 
             if (_entities != null)
             {
@@ -211,6 +238,8 @@ namespace game
 
             // Spawn PillarOfLight hitbox
             Skill1.Use(mouseWorldPos);
+
+            audioController.PlaySoundEffect(skill1Sound);
         }
         private void StartSkill2()
         {
@@ -221,6 +250,8 @@ namespace game
             Vector2 dir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
             Skill2.Use();
+
+            audioController.PlaySoundEffect(skill2Sound);
         }
 
 
@@ -249,6 +280,21 @@ namespace game
         private static Vector2 ScreenToWorld(OrthographicCamera camera, Vector2 screenPos)
         {
             return Vector2.Transform(screenPos, Matrix.Invert(camera.GetViewMatrix()));
+        }
+
+        private void PlayHurtSound()
+        {
+            if (Hurtbox.PlaySound())
+            {
+                audioController.PlaySoundEffect(hurtSound);
+            }
+        }
+        private void PlayDashSound()
+        {
+            if (_movement.IsPlaySound())
+            {
+                audioController.PlaySoundEffect(dashSound);
+            }
         }
     }
 }

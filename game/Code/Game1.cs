@@ -19,6 +19,12 @@ namespace game
 
         // Audio
         public AudioController audioController;
+        private string attackSound = "PlayerAttack";
+        private string hurtSound = "PlayerHurt";
+        private string skill1Sound = "Skill1";
+        private string skill2Sound = "Skill2";
+        private string potionSound = "SipPotion";
+        private string dashSound = "Dash";
 
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
@@ -94,6 +100,7 @@ namespace game
             Player = new Player(_playerTexture, new Vector2(0));
 
             Player.SetWorldReferences(Collision, CollisionComponent);
+            Player.LoadSound(Content, audioController, attackSound, hurtSound, skill1Sound, skill2Sound, potionSound, dashSound);
             PreventMonster = new PreventMonster(new Vector2(400, 400), 350f);
 
             SavedHP = (short)Player.Stats.CurrentHP; // checkpoint

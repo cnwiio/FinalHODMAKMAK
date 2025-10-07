@@ -14,59 +14,35 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Audio/Attack.NoHit.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/Attack.NoHit.mp3
-
-#begin Audio/AttackHit.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/AttackHit.mp3
-
-#begin Audio/AttackHit3.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/AttackHit3.mp3
-
-#begin Audio/AttackHitWhosh.wav
+#begin Audio/BossSpike.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/AttackHitWhosh.wav
+/build:Audio/BossSpike.wav
 
-#begin Audio/dead2.wav
+#begin Audio/Dash.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/dead2.wav
+/build:Audio/Dash.wav
 
-#begin Audio/dead3.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/dead3.wav
-
-#begin Audio/dead5.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/dead5.wav
-
-#begin Audio/dead7.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/dead7.wav
-
-#begin Audio/mixkit-jumping-around-8.mp3
+#begin Audio/Logo.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Audio/mixkit-jumping-around-8.mp3
+/build:Audio/Logo.mp3
+
+#begin Audio/MonHurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/MonHurt.wav
+
+#begin Audio/MonShoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/MonShoot.wav
 
 #begin Audio/OpenChest.wav
 /importer:WavImporter
@@ -74,47 +50,41 @@
 /processorParam:Quality=Best
 /build:Audio/OpenChest.wav
 
-#begin Audio/SlimeDie.mp3
-/importer:Mp3Importer
+#begin Audio/Parry.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/SlimeDie.mp3
+/build:Audio/Parry.wav
 
-#begin Audio/SlimeHit.mp3
-/importer:Mp3Importer
+#begin Audio/PlayerAttack.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/SlimeHit.mp3
+/build:Audio/PlayerAttack.wav
 
-#begin Audio/SlimeJump.mp3
-/importer:Mp3Importer
+#begin Audio/PlayerHurt.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/SlimeJump.mp3
+/build:Audio/PlayerHurt.wav
 
-#begin Audio/StoneDie.mp3
-/importer:Mp3Importer
+#begin Audio/SipPotion.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/StoneDie.mp3
+/build:Audio/SipPotion.wav
 
-#begin Audio/StoneHit.mp3
-/importer:Mp3Importer
+#begin Audio/Skill1.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/StoneHit.mp3
+/build:Audio/Skill1.wav
 
-#begin Audio/WoodDie.mp3
-/importer:Mp3Importer
+#begin Audio/Skill2.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Audio/WoodDie.mp3
-
-#begin Audio/WoodHit.mp3
-/importer:Mp3Importer
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Audio/WoodHit.mp3
+/build:Audio/Skill2.wav
 
 #begin Fonts/ArialFont.spritefont
 /importer:FontDescriptionImporter

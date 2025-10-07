@@ -71,7 +71,7 @@ namespace game
                 if (!_hitTimers.ContainsKey(monster.Monster))
                     _hitTimers[monster.Monster] = 0f;
 
-                if (_hitCounts[monster.Monster] < _maxHitsPerMonster && _hitTimers[monster.Monster] <= 0f)
+                if (_hitCounts[monster.Monster] < _maxHitsPerMonster && _hitTimers[monster.Monster] <= 0f && !monster.Monster.isHit)
                 {
                     monster.Monster.ApplyDamage(_damage);
                     _hitCounts[monster.Monster]++;

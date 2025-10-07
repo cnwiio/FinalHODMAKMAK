@@ -92,7 +92,7 @@ namespace game
                         _deadParticle.Trigger(Position, -Vector2.UnitY, (float)Math.PI);
                         audioController.PlaySoundEffect(deadSound);
                         if (_placeHolderDirection == Vector2.Zero) _placeHolderDirection = DirectionToPlayer;
-                        animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent); 
+                        animation.SetAnimation("Die", GetDirection(_placeHolderDirection), OnAnimationEvent);
                     }
                 }
             }
