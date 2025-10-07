@@ -36,6 +36,9 @@ namespace game
 
         // HUD
         private HealthBarHUD healthBar;
+        private ElementHUD _elementHUD;
+        private PotionHUD _potionHUD;
+
 
         public SceneUnderWaterfall(Game game) : base(game)
         {
@@ -58,6 +61,18 @@ namespace game
             spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
             globalContext.LoadAll(Content, "SceneUnderWaterfall", preventMonster, player);
+
+            // HUD
+            healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
+            healthBar.LoadContent(Content);
+
+            _potionHUD = new PotionHUD(player, GraphicsDevice);
+            _potionHUD.LoadContent(Content);
+
+
+            _elementHUD = new ElementHUD(player, GraphicsDevice);
+            _elementHUD.LoadContent(Content);
+
 
             // Insert collision entities
             foreach (IEntity entity in _collision)
@@ -121,6 +136,8 @@ namespace game
             globalContext.UpdateYsort();
 
             healthBar.Update();
+            _elementHUD.Update(gameTime);
+            _potionHUD.Update(gameTime);
 
             // Collision
             _collisionComponent.Update(gameTime);
@@ -147,6 +164,9 @@ namespace game
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
             healthBar.Draw(_spriteBatch);
+            _elementHUD.Draw(_spriteBatch);
+            _potionHUD.Draw(_spriteBatch);
+
             _spriteBatch.End();
         }
         public override void UnloadContent()

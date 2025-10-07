@@ -13,7 +13,7 @@ namespace game
     {
         #region Property
         public short Amout = 1;
-        public const short MAXAMOUT = 3;
+        public const short MAXAMOUT = 5;
         public short HealPower = 40;
         public const short COOLDOWN = 3;
         #endregion

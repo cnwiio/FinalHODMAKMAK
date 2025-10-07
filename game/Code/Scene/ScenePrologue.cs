@@ -41,6 +41,8 @@ namespace game
 
         private HealthBarHUD healthBar;
         private ElementHUD _elementHUD;
+        private PotionHUD _potionHUD;
+
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -66,6 +68,10 @@ namespace game
 
             healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
             healthBar.LoadContent(Content);
+
+            _potionHUD = new PotionHUD(player, GraphicsDevice);
+            _potionHUD.LoadContent(Content);
+
 
             _elementHUD = new ElementHUD(player, GraphicsDevice);
             _elementHUD.LoadContent(Content);
@@ -142,6 +148,8 @@ namespace game
 
             healthBar.Update();
             _elementHUD.Update(gameTime);
+            _potionHUD.Update(gameTime);
+
 
             foreach (var entity in globalContext.Ysort)
             {
@@ -195,6 +203,7 @@ namespace game
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
             healthBar.Draw(_spriteBatch);
             _elementHUD.Draw(_spriteBatch);
+            _potionHUD.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         private void DebugDraw()
