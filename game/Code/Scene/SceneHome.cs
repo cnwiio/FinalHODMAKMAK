@@ -39,6 +39,7 @@ namespace game
 
         // HUD
         private HealthBarHUD healthBar;
+        private ElementHUD _elementHUD;
 
         public SceneHome(Game game) : base(game)
         {
@@ -59,6 +60,10 @@ namespace game
         {
             _healTexture = Content.Load<Texture2D>("Texture/Potion");
             spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
+
+            _elementHUD = new ElementHUD(player, GraphicsDevice);
+            _elementHUD.LoadContent(Content);
+
             //globalContext.LoadCamera();
             //globalContext.LoadParticle();
             //globalContext.LoadTiledMap(Content, "SceneHome");
@@ -145,6 +150,7 @@ namespace game
 
             // HUD
             healthBar.Update();
+            _elementHUD.Update(gameTime);
 
             // Collision
             _collisionComponent.Update(gameTime);
@@ -178,6 +184,7 @@ namespace game
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
             healthBar.Draw(_spriteBatch);
+            _elementHUD.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         public override void UnloadContent()

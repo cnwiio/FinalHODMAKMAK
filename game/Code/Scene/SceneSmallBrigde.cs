@@ -65,6 +65,7 @@ namespace game
             // HUD
             healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
             healthBar.LoadContent(Content);
+
             // Insert collision entities
             foreach (IEntity entity in _collision)
             {

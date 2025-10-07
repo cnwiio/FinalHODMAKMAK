@@ -40,6 +40,7 @@ namespace game
         private bool isDebug = false;
 
         private HealthBarHUD healthBar;
+        private ElementHUD _elementHUD;
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -65,6 +66,9 @@ namespace game
 
             healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
             healthBar.LoadContent(Content);
+
+            _elementHUD = new ElementHUD(player, GraphicsDevice);
+            _elementHUD.LoadContent(Content);
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
@@ -137,6 +141,7 @@ namespace game
             globalContext.UpdateYsort();
 
             healthBar.Update();
+            _elementHUD.Update(gameTime);
 
             foreach (var entity in globalContext.Ysort)
             {
@@ -189,6 +194,7 @@ namespace game
             globalContext.DrawBossUI(_spriteBatch);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
             healthBar.Draw(_spriteBatch);
+            _elementHUD.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         private void DebugDraw()

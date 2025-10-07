@@ -22,6 +22,8 @@ namespace game
         public Texture2D myTexture;
         private float TimePerFrame;
         private int Frame;
+        public int CurrentFrame => Frame;
+        public void SetFrame(int frame) => Frame = frame;
         public int framerow = 1; // frame row
         private int frame_r; // count frame row 
         private int startframe;
