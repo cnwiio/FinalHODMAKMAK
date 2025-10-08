@@ -183,8 +183,8 @@ namespace game
             animation.CreateAnimation("EndLineSpike", "right", false, 200, 9, 5);
             animation.CreateAnimation("EndLineSpike", "left", false, 200, 9, 5);
 
-            animation.CreateAnimation("ChargeDash", "left", false, 200, 0, 3);
-            animation.CreateAnimation("ChargeDash", "right", false, 200, 0, 3);
+            animation.CreateAnimation("ChargeDash", "left", false, 300, 0, 3);
+            animation.CreateAnimation("ChargeDash", "right", false, 300, 0, 3);
 
             animation.CreateAnimation("Dash", "right", false, 200, 3, 4);
             animation.CreateAnimation("Dash", "left", false, 200, 3, 4);
@@ -645,7 +645,7 @@ namespace game
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
                 //currentBossAttack = currentBossAttack == 3 ? (short)(currentBossAttack + 1) : (short)currentBossAttack;
-                //currentBossAttack = 1;
+                currentBossAttack = 3;
                 if (currentBossAttack == 1)
                 {
                     //animation.SetAnimation("ChargeFollowSpike", GetDirection(DirectionToPlayer), OnAnimationEvent);

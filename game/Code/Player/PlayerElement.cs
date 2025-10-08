@@ -23,6 +23,7 @@ namespace game
                 ? ElementType.Dark
                 : ElementType.Light;
 
+            audioController.PlaySoundEffect(changeElementSound);
             // Optional: feedback
             System.Diagnostics.Debug.WriteLine($"Element changed to: {CurrentElement}");
         }

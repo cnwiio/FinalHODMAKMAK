@@ -32,6 +32,12 @@
 /processorParam:Quality=Best
 /build:Audio/BossSpike.wav
 
+#begin Audio/ChangeElement.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/ChangeElement.wav
+
 #begin Audio/Dash.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -850,7 +856,7 @@
 /processorParam:TextureFormat=Color
 /build:Texture/DarkSlimeIdle.png
 
-#begin Texture/DarkSlimeIdle.png
+#begin Texture/Dash_final_Dark.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -860,9 +866,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Texture/DarkSlimeIdle.png
+/build:Texture/Dash_final_Dark.png
 
-#begin Texture/DeadScene.png
+#begin Texture/Dash_final_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -872,7 +878,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Texture/DeadScene.png
+/build:Texture/Dash_final_Light.png
 
 #begin Texture/DeadScene.png
 /importer:TextureImporter
@@ -1558,7 +1564,7 @@
 /processorParam:TextureFormat=Color
 /build:Texture/LightSlimeWalk_Attack.png
 
-#begin Texture/LightSlimeWalk_Attack.png
+#begin Texture/Player_Attadck_Dark.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1568,9 +1574,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Texture/LightSlimeWalk_Attack.png
+/build:Texture/Player_Attadck_Dark.png
 
-#begin Texture/Player_Attack.png
+#begin Texture/Player_Attadck_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1580,7 +1586,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Texture/Player_Attack.png
+/build:Texture/Player_Attadck_Light.png
 
 #begin Texture/Player_Attack.png
 /importer:TextureImporter

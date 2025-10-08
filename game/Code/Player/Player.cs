@@ -55,6 +55,7 @@ namespace game
         private SoundEffect skill2Sound;
         private SoundEffect potionSound;
         private SoundEffect dashSound;
+        private SoundEffect changeElementSound;
 
         public PlayerHurtbox Hurtbox { get; private set; }
         public PlayerCollisionBox Collision { get; private set; }
@@ -100,7 +101,7 @@ namespace game
             Skill2Texture = skill2Texture;
         }
 
-        public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName, string runningSfxName)
+        public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName, string runningSfxName, string changeEleSfxName)
         {
             this.audioController = audioController;
             attackSound = content.Load<SoundEffect>("Audio/" + attackSfxName);
@@ -109,6 +110,7 @@ namespace game
             skill2Sound = content.Load<SoundEffect>("Audio/" + skill2SfxName);
             potionSound = content.Load<SoundEffect>("Audio/" + potionSfxName);
             dashSound = content.Load<SoundEffect>("Audio/" + runningSfxName);
+            changeElementSound = content.Load<SoundEffect>("Audio/" +  changeEleSfxName);
         }
 
         public void SetWorldReferences(List<IEntity> entities, CollisionComponent collisionComponent)
@@ -157,7 +159,7 @@ namespace game
             }
             else
             {
-                _movement.Update(gameTime, _input.Direction, _input.DashTriggered, _animation);
+                _movement.Update(gameTime, _input.Direction, _input.DashTriggered, _animation, CurrentElement);
 
                 if (_movement.Direction != Vector2.Zero)
                     _lastDirection = SnapDirection(_movement.Direction);
@@ -230,7 +232,7 @@ namespace game
             _attackTimer = _attackDuration;
             _movement.SetCanMove(false);
             _attackPosition = _movement.Position;
-            _animation.TriggerAttack();
+            _animation.TriggerAttack(CurrentElement);
 
             Vector2 attackDir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
