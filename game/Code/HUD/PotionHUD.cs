@@ -42,7 +42,8 @@ namespace game
             // Draw the texture corresponding to current potion amount
             Texture2D tex = _potionTextures[amount];
             Vector2 origin = new Vector2(tex.Width / 2f, tex.Height / 2f);
-            spriteBatch.Draw(tex, _position, null, Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
+            Color tint = _player.potion.isinCoolDown ? Color.Gray : Color.White;    
+            spriteBatch.Draw(tex, _position, null, tint, 0f, origin, 1f, SpriteEffects.None, 0f);
         }
     }
 }
