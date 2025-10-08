@@ -135,7 +135,11 @@ namespace game
 
             // Handle Element Toggle
             if (_input.ElementToggleTriggered)
+            {
                 ToggleElement();
+                _animation.PlayElementToggleAnimation(CurrentElement);
+            }
+            
 
             if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
@@ -159,7 +163,7 @@ namespace game
             }
             else
             {
-                _movement.Update(gameTime, _input.Direction, _input.DashTriggered, _animation, CurrentElement);
+                _movement.Update(gameTime, _input.Direction, _input.DashTriggered, _animation, CurrentElement, _input.ElementToggleTriggered);
 
                 if (_movement.Direction != Vector2.Zero)
                     _lastDirection = SnapDirection(_movement.Direction);

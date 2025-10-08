@@ -42,11 +42,18 @@ namespace game
             Position = startPosition;
             _stats = stats;
         }
-        public void Update(GameTime gameTime, Vector2 direction, bool dashTriggered ,PlayerAnimation texture, ElementType ele)
+        public void Update(GameTime gameTime, Vector2 direction, bool dashTriggered, PlayerAnimation texture, ElementType ele, bool ElementToggleTriggered)
         {
-            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             _animation = texture;
+
+            // Prevent movement if element toggle animation is playing
+            if (_animation.IsPlayingElementToggle)
+            {
+                Direction = Vector2.Zero;
+                return;
+            }
+
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Reduce cooldown timer if > 0
             if (_cooldownTimer > 0f)
@@ -72,7 +79,7 @@ namespace game
             }
 
             Vector2 moveDir = direction;
-            if (moveDir != Vector2.Zero && _canMove)
+            if (!ElementToggleTriggered && moveDir != Vector2.Zero && _canMove)
                 moveDir.Normalize();
             else
                 moveDir = Vector2.Zero;
