@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Tracing;
-using System.Linq;
-using System.Threading;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
+using MonoGame.Extended.Collisions.Layers;
 using MonoGame.Extended.ECS;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Timers;
 using MonoGame.Extended.ViewportAdapters;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Tracing;
+using System.Linq;
+using System.Threading;
 
 namespace game
 {
@@ -39,9 +40,11 @@ namespace game
         private SpriteFont spriteFont;
         private bool isDebug = false;
 
+        // HUD
         private HealthBarHUD healthBar;
         private ElementHUD _elementHUD;
         private PotionHUD _potionHUD;
+        private SkillHUD _skillHUD;
 
 
         public ScenePrologue(Game game) : base(game)
@@ -75,6 +78,9 @@ namespace game
 
             _elementHUD = new ElementHUD(player, GraphicsDevice);
             _elementHUD.LoadContent(Content);
+
+            _skillHUD = new SkillHUD(player, GraphicsDevice);
+            _skillHUD.LoadContent(Content);
 
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
@@ -150,7 +156,6 @@ namespace game
             _elementHUD.Update(gameTime);
             _potionHUD.Update(gameTime);
 
-
             foreach (var entity in globalContext.Ysort)
             {
                 if (entity is HealPickup heal)
@@ -204,6 +209,7 @@ namespace game
             healthBar.Draw(_spriteBatch);
             _elementHUD.Draw(_spriteBatch);
             _potionHUD.Draw(_spriteBatch);
+            _skillHUD.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         private void DebugDraw()

@@ -41,6 +41,7 @@ namespace game
         private HealthBarHUD healthBar;
         private ElementHUD _elementHUD;
         private PotionHUD _potionHUD;
+        private SkillHUD _skillHUD;
 
         public SceneHome(Game game) : base(game)
         {
@@ -62,25 +63,24 @@ namespace game
             _healTexture = Content.Load<Texture2D>("Texture/Potion");
             spriteFont = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
+            healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
+            healthBar.LoadContent(Content);
+
             _elementHUD = new ElementHUD(player, GraphicsDevice);
             _elementHUD.LoadContent(Content);
 
             _potionHUD = new PotionHUD(player, GraphicsDevice);
             _potionHUD.LoadContent(Content);
 
+            _skillHUD = new SkillHUD(player, GraphicsDevice);
+            _skillHUD.LoadContent(Content);
+
             //globalContext.LoadCamera();
             //globalContext.LoadParticle();
             //globalContext.LoadTiledMap(Content, "SceneHome");
             //globalContext.LoadMonster(); 
 
-
-
             globalContext.LoadAll(Content, "SceneHome", preventMonster, player);
-
-            healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
-            healthBar.LoadContent(Content);
-
-
 
             //if (player.DestinationPos == Vector2.Zero)
             //{
@@ -193,6 +193,7 @@ namespace game
             healthBar.Draw(_spriteBatch);
             _elementHUD.Draw(_spriteBatch);
             _potionHUD.Draw(_spriteBatch);
+            _skillHUD.Draw(_spriteBatch);
 
             _spriteBatch.End();
         }

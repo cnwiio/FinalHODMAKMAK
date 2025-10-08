@@ -38,6 +38,7 @@ namespace game
         private HealthBarHUD healthBar;
         private ElementHUD _elementHUD;
         private PotionHUD _potionHUD;
+        private SkillHUD _skillHUD;
 
 
         public SceneUnderWaterfall(Game game) : base(game)
@@ -72,6 +73,9 @@ namespace game
 
             _elementHUD = new ElementHUD(player, GraphicsDevice);
             _elementHUD.LoadContent(Content);
+
+            _skillHUD = new SkillHUD(player, GraphicsDevice);
+            _skillHUD.LoadContent(Content);
 
 
             // Insert collision entities
@@ -166,6 +170,7 @@ namespace game
             healthBar.Draw(_spriteBatch);
             _elementHUD.Draw(_spriteBatch);
             _potionHUD.Draw(_spriteBatch);
+            _skillHUD.Draw(_spriteBatch);
 
             _spriteBatch.End();
         }
