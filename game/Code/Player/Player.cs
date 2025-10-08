@@ -194,10 +194,10 @@ namespace game
             Vector2 attackDir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
             // Hitbox size
-            float horizontalWidth = 70f;
-            float horizontalHeight = 110f;
-            float verticalWidth = 110f;
-            float verticalHeight = 70f;
+            float horizontalWidth = 148;
+            float horizontalHeight = 72f;
+            float verticalWidth = 155f;
+            float verticalHeight = 65f;
 
             SizeF hitboxSize = attackDir.X != 0
                 ? new SizeF(horizontalWidth, horizontalHeight)
