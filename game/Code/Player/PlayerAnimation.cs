@@ -50,5 +50,10 @@ namespace game
         {
             _animController.SetAnimation("Attack", _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" });
         }
+
+        public void Dashing()
+        {
+            _animController.SetAnimation("Dash", _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" });
+        }
     }
 }

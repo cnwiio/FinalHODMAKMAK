@@ -18,7 +18,7 @@ namespace game
         public PlayerMovement _movement;
 
         private bool _isAttacking = false;
-        private float _attackDuration = 0.2f;
+        private float _attackDuration = 0.25f;
         private float _attackTimer = 0f;
         private float _attackRange = 50f;
         private RectangleF _attackHitbox;
@@ -119,7 +119,7 @@ namespace game
             }
             else
             {
-                _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
+                _movement.Update(gameTime, _input.Direction, _input.DashTriggered, _animation);
 
                 if (_movement.Direction != Vector2.Zero)
                     _lastDirection = SnapDirection(_movement.Direction);

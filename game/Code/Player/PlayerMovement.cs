@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Assimp;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,12 @@ namespace game
 {
     public class PlayerMovement
     {
+        private PlayerAnimation _animation;
+
         public Vector2 Position { get; private set; }
         public Vector2 Direction { get; private set; }
         private bool _canMove = true;
+
 
         private PlayerStats _stats;
 
@@ -36,9 +41,11 @@ namespace game
             Position = startPosition;
             _stats = stats;
         }
-        public void Update(GameTime gameTime, Vector2 direction, bool dashTriggered)
+        public void Update(GameTime gameTime, Vector2 direction, bool dashTriggered ,PlayerAnimation texture)
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _animation = texture;
 
             // Reduce cooldown timer if > 0
             if (_cooldownTimer > 0f)
@@ -70,7 +77,11 @@ namespace game
 
             float speed = _stats.Speed.Value;
             if (_isDashing && _canMove)
+            {
                 speed *= 5f;
+                _animation.Dashing();
+
+            }
 
             Position += moveDir * speed * deltaTime;
             Direction = moveDir; // store normalized direction

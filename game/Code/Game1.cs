@@ -57,7 +57,7 @@ namespace game
 
             _graphics.PreferredBackBufferWidth = ScreenWidth;
             _graphics.PreferredBackBufferHeight = ScreenHeight;
-            _graphics.IsFullScreen = true;
+            //_graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
                 
             base.Initialize();
@@ -90,6 +90,14 @@ namespace game
             _playerTexture.CreateAnimation("Attack", "right", false, 25, 8, 8);  // row 1
             _playerTexture.CreateAnimation("Attack", "left", false, 25, 16, 8);  // row 2
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
+
+            _playerTexture.LoadFrame(Content, "Dash", "Player_Dash", 128, 128);
+
+            _playerTexture.CreateAnimation("Dash", "down", false, 90, 0, 2);   // row 0
+            _playerTexture.CreateAnimation("Dash", "right", false, 90, 2, 2); // row 1
+            _playerTexture.CreateAnimation("Dash", "left", false, 90, 4, 2); // row 2
+            _playerTexture.CreateAnimation("Dash", "up", false, 90, 6, 2); // row 3
+
 
             Player = new Player(_playerTexture, new Vector2(0));
 
