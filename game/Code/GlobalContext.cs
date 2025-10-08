@@ -94,7 +94,7 @@ namespace game
         {
             var Content = _Game1.Content;
             var song = Content.Load<Song>("Audio/" + BGMSound);
-            audioController.SongVolume = 0.1f;
+            audioController.SongVolume = 0.3f;
             audioController.PlaySong(song, true);
         }
 
