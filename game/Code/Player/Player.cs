@@ -34,7 +34,7 @@ namespace game
         private bool _isUsingSkill1 = false;
         private float _skill1Timer = 0f;
         private float _skill1Duration = 0.6f; // match PillarOfLight.Duration
-        public  float Skill1Cooldown = 5f; // in seconds
+        public  float Skill1Cooldown = 1f; // in seconds
         public float _skill1CooldownTimer = 0f;
 
         // Skill2 (ArclightCross) state
@@ -68,6 +68,12 @@ namespace game
         public string CurrentScene { get; set; }
         public Potion potion { get; set; }
 
+        public bool IsSkill1Visible => _skill1Timer > 0;
+        public bool IsSkill2Visible => _skill2Timer > 0;
+        public Vector2 skill1Pos;
+        public AnimController skillAnim;
+        public Texture2D skill2Tex;
+
         public Player(AnimController texture, Vector2 startPosition)
         {
             _stats = new PlayerStats();
@@ -84,6 +90,12 @@ namespace game
 
             // potion
             potion = new Potion(this);
+        }
+
+        public void LoadSkill(AnimController skill1, Texture2D skill2)
+        {
+            skillAnim = skill1;
+            skill2Tex = skill2;
         }
 
         public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName, string runningSfxName)
@@ -205,6 +217,7 @@ namespace game
             Hurtbox.Update(gameTime);
             Collision.Update();
 
+            skillAnim.UpdateFrame(gameTime, skill1Pos - new Vector2(0, 30));  
             _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking, _movement.IsDashing);
             potion.Update(gameTime); // เอาไว้อัพเดท คูลดาว
         }
@@ -256,9 +269,12 @@ namespace game
             var mouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
             Vector2 mouseScreen = new Vector2(mouseState.X, mouseState.Y);
             Vector2 mouseWorldPos = ScreenToWorld(sceneCamera, mouseScreen);
+            skill1Pos = mouseWorldPos;
+            string elt = CurrentElement == ElementType.Light ? "Light" : "Dark";
+            skillAnim.SetAnimation(elt, "Active");
 
             // Spawn PillarOfLight hitbox
-            Skill1.Use(mouseWorldPos);
+            Skill1.Use(skill1Pos);
 
             audioController.PlaySoundEffect(skill1Sound);
         }
@@ -297,6 +313,14 @@ namespace game
         public void Draw(SpriteBatch spriteBatch)
         {
             _animation.Draw(spriteBatch);
+            if (IsSkill1Visible)
+            {
+                skillAnim.DrawFrame(spriteBatch);
+            }
+            else
+            {
+                skillAnim.SetAnimation("idle", "no");
+            }
         }
 
         // Helper method to convert screen coordinates to world coordinates

@@ -10,6 +10,7 @@ namespace game
         private Vector2 _direction;
         private float _speed;
         private RectangleF _rect; // Moving rectangle
+        public Vector2 Pos => _rect.Position;
 
         public ArclightCrossHitbox(
             Player player,

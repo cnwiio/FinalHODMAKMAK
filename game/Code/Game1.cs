@@ -104,11 +104,21 @@ namespace game
             _playerTexture.CreateAnimation("Dash", "left", false, 90, 4, 2); // row 2
             _playerTexture.CreateAnimation("Dash", "up", false, 90, 6, 2); // row 3
 
+            var skillTexture = new AnimController(Vector2.Zero);
+            skillTexture.LoadFrame(Content, "Light", "BoneOfMySword", 192, 384);
+            skillTexture.LoadFrame(Content, "Dark", "BoneOfMySwordButBlack", 192, 384);
+            skillTexture.LoadFrame(Content, "idle", "BoneOfMySword", 192, 384);
+            skillTexture.CreateAnimation("Light", "Active", false, 30, 0, 36);
+            skillTexture.CreateAnimation("Dark", "Active", false, 30, 0, 36);
+            skillTexture.CreateAnimation("idle", "no", true, 30, 0, 36);
+
+            var skill2Texture = Content.Load<Texture2D>("Texture/DarkBullet");
 
             Player = new Player(_playerTexture, new Vector2(0));
 
             Player.SetWorldReferences(Collision, CollisionComponent);
             Player.LoadSound(Content, audioController, attackSound, hurtSound, skill1Sound, skill2Sound, potionSound, dashSound);
+            Player.LoadSkill(skillTexture, skill2Texture);
             PreventMonster = new PreventMonster(new Vector2(400, 400), 350f);
 
             SavedHP = (short)Player.Stats.CurrentHP; // checkpoint
