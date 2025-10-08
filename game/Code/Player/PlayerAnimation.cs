@@ -19,7 +19,7 @@ namespace game
             _animController = animController;
         }
 
-        public void Update(GameTime gameTime, Vector2 direction, Vector2 position, bool isAttacking)
+        public void Update(GameTime gameTime, Vector2 direction, Vector2 position, bool isAttacking, bool isDashing)
         {
             if (direction != Vector2.Zero) _lastDirection = direction;
 
@@ -30,9 +30,9 @@ namespace game
 
             string dirName = _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" };
 
-            if (direction != Vector2.Zero && !isAttacking)
+            if (direction != Vector2.Zero && !isAttacking && !isDashing)
                 _animController.SetAnimation("Walk", dirName);
-            else if (!isAttacking)
+            else if (!isAttacking && !isDashing)
                 _animController.SetAnimation("Idle", dirName);
 
             _animController.UpdateFrame(gameTime, position);

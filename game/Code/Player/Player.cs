@@ -179,7 +179,7 @@ namespace game
             Hurtbox.Update(gameTime);
             Collision.Update();
 
-            _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
+            _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking, _movement.IsDashing);
             potion.Update(gameTime); // เอาไว้อัพเดท คูลดาว
         }
 
