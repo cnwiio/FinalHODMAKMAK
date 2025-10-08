@@ -90,12 +90,20 @@ namespace game
             _playerTexture.CreateAnimation("Idle", "up", true, 200, 18, 6);    // row 3
 
             // Attack animation (4 directions, 6 frames per row)
-            _playerTexture.LoadFrame(Content, "Attack", "Player_Attack", 288, 240);
+            _playerTexture.LoadFrame(Content, "Attack", "Player_Attack", 288, 192);
 
             _playerTexture.CreateAnimation("Attack", "down", false, 25, 0, 8);   // row 0
-            _playerTexture.CreateAnimation("Attack", "left", false, 25, 8, 8);  // row 1
-            _playerTexture.CreateAnimation("Attack", "right", false, 25, 16, 8);  // row 2
+            _playerTexture.CreateAnimation("Attack", "right", false, 25, 8, 8);  // row 1
+            _playerTexture.CreateAnimation("Attack", "left", false, 25, 16, 8);  // row 2
             _playerTexture.CreateAnimation("Attack", "up", false, 25, 24, 8);    // row 3
+
+            _playerTexture.LoadFrame(Content, "Dash", "Player_Dash", 128, 128);
+
+            _playerTexture.CreateAnimation("Dash", "down", false, 90, 0, 2);   // row 0
+            _playerTexture.CreateAnimation("Dash", "right", false, 90, 2, 2); // row 1
+            _playerTexture.CreateAnimation("Dash", "left", false, 90, 4, 2); // row 2
+            _playerTexture.CreateAnimation("Dash", "up", false, 90, 6, 2); // row 3
+
 
             Player = new Player(_playerTexture, new Vector2(0));
 

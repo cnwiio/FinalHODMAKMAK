@@ -21,7 +21,7 @@ namespace game
         public PlayerMovement _movement;
 
         private bool _isAttacking = false;
-        private float _attackDuration = 0.2f;
+        private float _attackDuration = 0.25f;
         private float _attackTimer = 0f;
         private float _attackRange = 50f;
         private RectangleF _attackHitbox;
@@ -34,12 +34,16 @@ namespace game
         private bool _isUsingSkill1 = false;
         private float _skill1Timer = 0f;
         private float _skill1Duration = 0.6f; // match PillarOfLight.Duration
+        public  float Skill1Cooldown = 5f; // in seconds
+        public float _skill1CooldownTimer = 0f;
 
         // Skill2 (ArclightCross) state
         public ArclightCross Skill2 { get; private set; }
         private bool _isUsingSkill2 = false;
         private float _skill2Timer = 0f;
         private float _skill2Duration = 0.5f; // match ArclightCross.Duration
+        public float Skill2Cooldown = 5f; // in seconds
+        public float _skill2CooldownTimer = 0f;
 
         // Audio
         private AudioController audioController;
@@ -139,14 +143,14 @@ namespace game
             }
             else
             {
-                _movement.Update(gameTime, _input.Direction, _input.DashTriggered);
+                _movement.Update(gameTime, _input.Direction, _input.DashTriggered, _animation);
 
                 if (_movement.Direction != Vector2.Zero)
                     _lastDirection = SnapDirection(_movement.Direction);
             }
 
             // Handle Skill 1 (PillarOfLight)
-            if (_input.Skill1Triggered && !_isUsingSkill1 && sceneCamera != null)
+            if (_input.Skill1Triggered && !_isUsingSkill1 && _skill1CooldownTimer <= 0f && sceneCamera != null)
             {
                 StartSkill1(sceneCamera);
             }
@@ -161,7 +165,17 @@ namespace game
                     _movement.SetCanMove(true); // allow movement again
                 }
             }
-            if (_input.Skill2Triggered && !_isUsingSkill2)
+
+            if (_skill1CooldownTimer > 0f) // Reduce skill cooldown timers
+
+            {
+                _skill1CooldownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_skill1CooldownTimer < 0f) _skill1CooldownTimer = 0f;
+            }
+
+            // Handle Skill 2 ArclightCross)
+
+            if (_input.Skill2Triggered && !_isUsingSkill2 && _skill2CooldownTimer <= 0f)
             {
                 StartSkill2();
             }
@@ -176,6 +190,12 @@ namespace game
                 }
             }
 
+            if (_skill2CooldownTimer > 0f)
+            {
+                _skill2CooldownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_skill2CooldownTimer < 0f) _skill2CooldownTimer = 0f;
+            }
+
             PlayHurtSound();
             PlayDashSound();
 
@@ -185,7 +205,7 @@ namespace game
             Hurtbox.Update(gameTime);
             Collision.Update();
 
-            _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking);
+            _animation.Update(gameTime, _movement.Direction, _movement.Position, _isAttacking, _movement.IsDashing);
             potion.Update(gameTime); // เอาไว้อัพเดท คูลดาว
         }
 
@@ -200,10 +220,10 @@ namespace game
             Vector2 attackDir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);
 
             // Hitbox size
-            float horizontalWidth = 70f;
-            float horizontalHeight = 110f;
-            float verticalWidth = 110f;
-            float verticalHeight = 70f;
+            float horizontalWidth = 148;
+            float horizontalHeight = 72f;
+            float verticalWidth = 155f;
+            float verticalHeight = 65f;
 
             SizeF hitboxSize = attackDir.X != 0
                 ? new SizeF(horizontalWidth, horizontalHeight)
@@ -228,6 +248,7 @@ namespace game
         {
             _isUsingSkill1 = true;
             _skill1Timer = _skill1Duration;
+            _skill1CooldownTimer = Skill1Cooldown; // start cooldown
 
             _movement.SetCanMove(false); // stop player from moving
 
@@ -245,6 +266,8 @@ namespace game
         {
             _isUsingSkill2 = true;
             _skill2Timer = _skill2Duration;
+            _skill2CooldownTimer = Skill2Cooldown; // start cooldown
+
             _movement.SetCanMove(false);
 
             Vector2 dir = SnapDirection(_movement.Direction != Vector2.Zero ? _movement.Direction : _lastDirection);

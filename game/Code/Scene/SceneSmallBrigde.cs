@@ -39,6 +39,10 @@ namespace game
 
         // HUD
         private HealthBarHUD healthBar;
+        private ElementHUD _elementHUD;
+        private PotionHUD _potionHUD;
+        private SkillHUD _skillHUD;
+
 
         public SceneSmallBrigde(Game game) : base(game)
         {
@@ -65,6 +69,18 @@ namespace game
             // HUD
             healthBar = new HealthBarHUD(game1.Player.Stats, GraphicsDevice);
             healthBar.LoadContent(Content);
+
+            _potionHUD = new PotionHUD(player, GraphicsDevice);
+            _potionHUD.LoadContent(Content);
+
+
+            _elementHUD = new ElementHUD(player, GraphicsDevice);
+            _elementHUD.LoadContent(Content);
+
+            _skillHUD = new SkillHUD(player, GraphicsDevice);
+            _skillHUD.LoadContent(Content);
+
+
             // Insert collision entities
             foreach (IEntity entity in _collision)
             {
@@ -127,6 +143,9 @@ namespace game
             globalContext.UpdateYsort();
 
             healthBar.Update();
+            _elementHUD.Update(gameTime);
+            _potionHUD.Update(gameTime);
+
 
             // Collision
             _collisionComponent.Update(gameTime);
@@ -153,6 +172,10 @@ namespace game
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
             globalContext.DrawPotionUI(_spriteBatch, player, _healTexture, spriteFont);
             healthBar.Draw(_spriteBatch);
+            _elementHUD.Draw(_spriteBatch);
+            _potionHUD.Draw(_spriteBatch);
+            _skillHUD.Draw(_spriteBatch);
+
             _spriteBatch.End();
         }
         public override void UnloadContent()

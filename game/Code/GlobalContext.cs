@@ -679,11 +679,11 @@ namespace game
 
         public void DrawPotionUI(SpriteBatch spriteBatch, Player player, Texture2D UI, SpriteFont font)
         {
-            var potionAmout = player.potion.Amout;
-            string potionStr = "Potion x" + potionAmout;
-            Color tint = player.potion.isinCoolDown ? Color.Gray : Color.White;
-            spriteBatch.Draw(UI, new Vector2(1060, 650 - 8), tint);
-            spriteBatch.DrawString(font, potionStr, new Vector2(1100, 650), tint);
+            //var potionAmout = player.potion.Amout;
+            //string potionStr = "Potion x" + potionAmout;
+            //Color tint = player.potion.isinCoolDown ? Color.Gray : Color.White;
+            //spriteBatch.Draw(UI, new Vector2(1060, 650 - 8), tint);
+            //spriteBatch.DrawString(font, potionStr, new Vector2(1100, 650), tint);
         }
 
         // IMPORTANT NOTE : อาจจะไม่ค่อยเสถียรและแก้ไขยาก
