@@ -1180,7 +1180,7 @@
   </object>
   <object id="440" x="-0.333333" y="2084.33" width="64" height="27.6667"/>
   <object id="442" x="320" y="2752" width="320" height="64"/>
-  <object id="444" name="Warp" type="SceneHomeNorth" x="1729.17" y="12" width="511.333" height="16.9167">
+  <object id="444" name="Warp" type="SceneHomeNorth" x="1729.17" y="30" width="511.333" height="16.9167">
    <properties>
     <property name="X" type="float" value="0"/>
     <property name="Y" type="float" value="0"/>
@@ -1281,7 +1281,7 @@
   <object id="1183" x="832" y="384" width="128" height="319.333"/>
   <object id="1186" x="1920" y="1152" width="64" height="57.5"/>
   <object id="1187" x="1984" y="1346.67" width="64" height="61.3333"/>
-  <object id="1188" x="1728.5" y="0" width="511.5" height="12"/>
+  <object id="1188" x="1728.5" y="0" width="511.5" height="27.3333"/>
   <object id="1723" x="3200" y="2496" width="960" height="192"/>
   <object id="1724" x="3970" y="1600" width="254" height="896"/>
   <object id="1725" x="3200" y="1344" width="960" height="255"/>
@@ -1365,7 +1365,7 @@
   <object id="1766" name="Chest" x="205.333" y="1178.67">
    <point/>
   </object>
-  <object id="1765" name="Chest" x="3748.33" y="1696.83">
+  <object id="1765" name="Chest" x="3745.33" y="1769.33">
    <point/>
   </object>
  </objectgroup>

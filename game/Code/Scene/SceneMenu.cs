@@ -44,7 +44,7 @@ namespace game
         public override void LoadContent()
         {
             //ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
-            BG = Content.Load<Texture2D>("Texture/BG_art");
+            BG = Content.Load<Texture2D>("Texture/Title_Screen");
             SP = Content.Load<Texture2D>("Texture/splash");
             CR = Content.Load<Texture2D>("Texture/Credit");
             LOGOSFX = Content.Load<SoundEffect>("Audio/Logo");
@@ -104,13 +104,13 @@ namespace game
             switch (scene)
             {
                 case ScreenScene.Menu:
-                    _spriteBatch.Draw(BG, new Rectangle(0, 0, 1280, 720), Color.White);
+                    _spriteBatch.Draw(BG, Vector2.Zero, Color.White);
                     break;
                 case ScreenScene.Splash:
-                    _spriteBatch.Draw(SP, new Rectangle(0, 0, 1280, 720), Color.White * alpha);
+                    _spriteBatch.Draw(SP, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White * alpha);
                     break;
                 case ScreenScene.Credit:
-                    _spriteBatch.Draw(CR, new Rectangle(0, 0, 1280, 720), Color.White * alpha);
+                    _spriteBatch.Draw(CR, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White * alpha);
                     break;
             }
             _spriteBatch.End();

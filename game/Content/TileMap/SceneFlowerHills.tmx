@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="18" nextobjectid="1202">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="18" nextobjectid="1159">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Cliff_Tileset.tsx"/>
  <tileset firstgid="59" source="Tree_1.tsx"/>
@@ -610,12 +610,6 @@
   <object id="1036" type="Tree_Shadow1" gid="226" x="1742" y="2393" width="192" height="64"/>
   <object id="1037" type="Tree_Shadow1" gid="226" x="2001" y="2344" width="192" height="64"/>
   <object id="1038" type="Tree_Shadow1" gid="226" x="2500" y="2249" width="192" height="64"/>
-  <object id="1190" type="Tree_Shadow1" gid="226" x="458" y="2800.67" width="192" height="64"/>
-  <object id="1191" type="Tree_Shadow2" gid="227" x="813.333" y="2864" width="192" height="64"/>
-  <object id="1192" type="Tree_Shadow2" gid="227" x="2702" y="3623.33" width="192" height="64"/>
-  <object id="1193" type="Tree_Shadow2" gid="227" x="3101.33" y="3322" width="192" height="64"/>
-  <object id="1194" type="Tree_Shadow1" gid="226" x="2321.33" y="3045.33" width="192" height="64"/>
-  <object id="1195" type="Tree_Shadow1" gid="226" x="2012.67" y="3627.33" width="192" height="64"/>
  </objectgroup>
  <layer id="16" name="Rock" width="70" height="70">
   <data encoding="csv">
@@ -1128,21 +1122,15 @@
   <object id="1074" type="Tree3" gid="61" x="2876" y="4606" width="192" height="256"/>
   <object id="1075" type="Tree4" gid="62" x="2346" y="4538" width="192" height="256"/>
   <object id="1078" type="Tree2" gid="59" x="1154.67" y="4353.33" width="192" height="256"/>
-  <object id="1166" type="Tree4" gid="62" x="3098" y="3302" width="192" height="256"/>
-  <object id="1167" type="Tree4" gid="62" x="2700" y="3601" width="192" height="256"/>
-  <object id="1168" type="Tree1" gid="60" x="2326" y="3026" width="192" height="256"/>
-  <object id="1169" type="Tree2" gid="59" x="2020" y="3608" width="192" height="256"/>
-  <object id="1170" type="Tree2" gid="59" x="461" y="2784" width="192" height="256"/>
-  <object id="1171" type="Tree4" gid="62" x="812" y="2842" width="192" height="256"/>
  </objectgroup>
  <objectgroup id="13" name="SpawnPoint">
-  <object id="869" name="Boss" x="1879.76" y="1335.76">
+  <object id="869" name="Boss" x="1827.09" y="1137.09">
    <point/>
   </object>
   <object id="1073" name="Chest" x="2847.33" y="4074.67">
    <point/>
   </object>
-  <object id="1081" name="Player" x="1575" y="4405">
+  <object id="1081" name="Player" x="1579" y="4354.33">
    <point/>
   </object>
   <object id="1107" name="Chest" x="675.152" y="2868.73">
@@ -1251,7 +1239,7 @@
   <object id="715" x="864" y="257" width="416" height="127"/>
   <object id="716" x="1200" y="677.333" height="1.33333"/>
   <object id="718" x="1214.67" y="4152.67" width="55.3333" height="28.6667"/>
-  <object id="719" x="1216" y="3520" width="63.5" height="158.5"/>
+  <object id="719" x="1216" y="3520" width="63.5" height="192"/>
   <object id="720" x="1215.33" y="4004.67" width="62.8333" height="28.6667"/>
   <object id="725" x="0" y="3776" width="256" height="704"/>
   <object id="727" x="0" y="3200" width="64" height="576"/>
@@ -1376,18 +1364,18 @@
   <object id="1072" x="3072" y="3932" width="64" height="164"/>
   <object id="1079" x="1216" y="4323" width="66" height="30.5"/>
   <object id="1080" x="3456" y="2584" width="320" height="104"/>
-  <object id="1082" name="Warp" type="SceneHomeNorth" x="1217.08" y="4439.54" width="770.833" height="16.9167">
+  <object id="1082" name="Warp" type="SceneHomeNorth" x="1217.08" y="4418.21" width="770.833" height="16.9167">
    <properties>
-    <property name="X" type="float" value="0"/>
-    <property name="Y" type="float" value="0"/>
+    <property name="X" type="float" value="1501.33"/>
+    <property name="Y" type="float" value="126.67"/>
    </properties>
   </object>
-  <object id="1083" x="1217" y="4456" width="768" height="23"/>
+  <object id="1083" x="1217" y="4437.33" width="768" height="41.6667"/>
   <object id="1084" x="4455.33" y="640.667" width="24.6667" height="382.667"/>
   <object id="1086" name="Warp" type="SceneWaterfall" x="4439.74" y="640.667" width="13.8485" height="383.333">
    <properties>
-    <property name="X" type="float" value="125"/>
-    <property name="Y" type="float" value="2212"/>
+    <property name="X" type="float" value="0"/>
+    <property name="Y" type="float" value="0"/>
    </properties>
   </object>
   <object id="1087" x="4224" y="576" width="64" height="64"/>
@@ -1426,26 +1414,17 @@
   <object id="1140" x="896" y="640" width="128" height="1280"/>
   <object id="1141" x="768" y="704" width="128" height="832"/>
   <object id="1142" x="832" y="1536" width="64" height="192"/>
+  <object id="1143" x="2752" y="320" width="64" height="192"/>
   <object id="1145" x="1024" y="1088" width="64" height="1024"/>
   <object id="1146" x="960" y="1920" width="64" height="128"/>
-  <object id="1148" x="1216" y="1854.67" width="64" height="321.333"/>
-  <object id="1149" x="1344" y="1984.67" width="65.3333" height="191.333"/>
-  <object id="1150" x="1472" y="2050" width="128" height="126"/>
+  <object id="1147" x="1088" y="1600" width="128" height="512"/>
+  <object id="1148" x="1216" y="1728" width="128" height="448"/>
+  <object id="1149" x="1344" y="1792" width="128" height="384"/>
+  <object id="1150" x="1472" y="1856" width="256" height="320"/>
+  <object id="1151" x="1728" y="1920" width="320" height="256"/>
+  <object id="1152" x="2048" y="1920" width="192" height="192"/>
+  <object id="1153" x="2176" y="1856" width="320" height="64"/>
+  <object id="1154" x="2240" y="1920" width="256" height="128"/>
   <object id="1156" x="2432" y="2048" width="64" height="64"/>
-  <object id="1158" x="1088" y="1600" width="64" height="512"/>
-  <object id="1159" x="1152" y="1728" width="64" height="384"/>
-  <object id="1160" x="1280" y="1920" width="64" height="256"/>
-  <object id="1161" x="1408" y="2048" width="64" height="128"/>
-  <object id="1162" x="2240" y="320" width="58" height="128"/>
-  <object id="1163" x="2295.33" y="320" width="72.6667" height="50"/>
-  <object id="1164" x="1536" y="2176" width="128" height="128"/>
-  <object id="1188" x="512.333" y="2754" width="76.6667" height="30.3333"/>
-  <object id="1189" x="876.667" y="2813.67" width="61.3333" height="29.3333"/>
-  <object id="1196" x="4066.33" y="2793" width="60.6667" height="27.6667"/>
-  <object id="1197" x="3163.75" y="3274.38" width="60" height="27.75"/>
-  <object id="1198" x="2765.5" y="3572.63" width="61.125" height="28.625"/>
-  <object id="1199" x="2389.64" y="2995.27" width="64.3636" height="30.9091"/>
-  <object id="1200" x="2083.09" y="3578" width="64.9091" height="30.5455"/>
-  <object id="1201" x="78" y="3504" width="70" height="32"/>
  </objectgroup>
 </map>
