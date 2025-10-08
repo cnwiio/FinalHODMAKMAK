@@ -15,7 +15,7 @@ namespace game
         public float Duration { get; set; } = 0.6f;
 
         // Damage is calculated from player's AttackPower
-        public int Damage => (int)(_player.Stats.AttackPower.Value * 0.5f);
+        public int Damage => (int)(_player.Stats.AttackPower.Value);
 
         public PillarOfLight(Player player, CollisionComponent collisionComponent)
         {

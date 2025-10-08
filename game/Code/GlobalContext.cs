@@ -583,7 +583,7 @@ namespace game
         private void HandleMonsterDeath(IMonster monster, Texture2D _healTexture, Player _player)
         {
             var r = new Random();
-            if (r.Next(1, 101) <= 25) // 100% chance, tweak if needed
+            if (r.Next(1, 101) <= 20) // 100% chance, tweak if needed
             {
                 // Spawn heal pickup via DropManager
                 var healPickup = DropManager.DropHeal(
