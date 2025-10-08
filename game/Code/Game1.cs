@@ -112,9 +112,9 @@ namespace game
             skillTexture.CreateAnimation("Dark", "Active", false, 30, 0, 36);
             skillTexture.CreateAnimation("idle", "no", true, 30, 0, 36);
 
-            var skill2Texture = Content.Load<Texture2D>("Texture/DarkBullet");
 
             Player = new Player(_playerTexture, new Vector2(0));
+            var skill2Texture = Content.Load<Texture2D>("Texture/Skill2");
 
             Player.SetWorldReferences(Collision, CollisionComponent);
             Player.LoadSound(Content, audioController, attackSound, hurtSound, skill1Sound, skill2Sound, potionSound, dashSound);

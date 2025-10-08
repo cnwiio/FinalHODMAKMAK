@@ -44,6 +44,8 @@ namespace game
         private float _skill2Duration = 0.5f; // match ArclightCross.Duration
         public float Skill2Cooldown = 5f; // in seconds
         public float _skill2CooldownTimer = 0f;
+        public Texture2D Skill2Texture { get; private set; }
+
 
         // Audio
         private AudioController audioController;
@@ -92,10 +94,10 @@ namespace game
             potion = new Potion(this);
         }
 
-        public void LoadSkill(AnimController skill1, Texture2D skill2)
+        public void LoadSkill(AnimController skill1, Texture2D skill2Texture)
         {
             skillAnim = skill1;
-            skill2Tex = skill2;
+            Skill2Texture = skill2Texture;
         }
 
         public void LoadSound(ContentManager content,AudioController audioController, string attackSfxName, string hurtSfxName, string skill1SfxName, string skill2SfxName, string potionSfxName, string runningSfxName)
@@ -320,6 +322,15 @@ namespace game
             else
             {
                 skillAnim.SetAnimation("idle", "no");
+            }
+
+            // Draw Skill2 hitboxes
+            foreach (var hitbox in _activeHitboxes)
+            {
+                if (hitbox is ArclightCrossHitbox arcHitbox)
+                {
+                    arcHitbox.Draw(spriteBatch);
+                }
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using System;
@@ -12,6 +13,15 @@ namespace game
         private RectangleF _rect; // Moving rectangle
         public Vector2 Pos => _rect.Position;
 
+        private Texture2D _texture;
+        private ElementType _element;
+        private Rectangle _sourceRect; // Slice from texture
+
+        private const int TextureWidth = 512;
+        private const int TextureHeight = 256;
+        private const int Columns = 4;
+        private const int Rows = 2;
+
         public ArclightCrossHitbox(
             Player player,
             Vector2 startPosition,
@@ -23,7 +33,9 @@ namespace game
             CollisionComponent collisionComponent,
             int maxHitsPerMonster,
             float hitDelay,
-            int damage
+            int damage,
+            Texture2D texture,
+            ElementType element
         ) : base(player, new RectangleF(startPosition.X - width / 2, startPosition.Y - height / 2, width, height),
                 lifetime, collisionComponent, damage, maxHitsPerMonster, hitDelay)
         {
@@ -31,6 +43,18 @@ namespace game
             _speed = speed;
 
             _rect = new RectangleF(startPosition.X - width / 2, startPosition.Y - height / 2, width, height);
+
+            _texture = texture;
+            _element = element;
+
+            // Determine the column based on direction
+            int col = direction.X < 0 ? 0 : direction.X > 0 ? 1 : direction.Y < 0 ? 2 : 3;
+            int row = _element == ElementType.Dark ? 0 : 1;
+
+            int frameWidth = TextureWidth / Columns;
+            int frameHeight = TextureHeight / Rows;
+
+            _sourceRect = new Rectangle(col * frameWidth, row * frameHeight, frameWidth, frameHeight);
         }
 
         // Override Bounds so the collision system uses our moving rectangle
@@ -45,6 +69,14 @@ namespace game
 
             // Call base for lifetime & damage handling
             base.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            if (_texture != null)
+            {
+                spriteBatch.Draw(_texture, _rect.Position, _sourceRect, Color.White);
+            }
         }
     }
 }
