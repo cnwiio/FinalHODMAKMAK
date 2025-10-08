@@ -42,7 +42,7 @@ namespace game
             Position = startPosition;
             _stats = stats;
         }
-        public void Update(GameTime gameTime, Vector2 direction, bool dashTriggered ,PlayerAnimation texture)
+        public void Update(GameTime gameTime, Vector2 direction, bool dashTriggered ,PlayerAnimation texture, ElementType ele)
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -81,8 +81,7 @@ namespace game
             if (_isDashing && _canMove)
             {
                 speed *= 5f;
-                _animation.Dashing();
-
+                _animation.Dashing(ele);
             }
 
             Position += moveDir * speed * deltaTime;

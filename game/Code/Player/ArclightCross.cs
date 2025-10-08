@@ -29,9 +29,12 @@ namespace game
 
         public void Use()
         {
-            Vector2 dir = _player._movement.Direction != Vector2.Zero
+            // Determine direction (snap to horizontal or vertical)
+            Vector2 rawDir = _player._movement.Direction != Vector2.Zero
                 ? _player._movement.Direction
-                : _player.LastDirection; // default down
+                : _player.LastDirection;
+
+            Vector2 dir = SnapDirection(rawDir);
 
             Vector2 startPos = _player._movement.Position;
 
@@ -49,7 +52,9 @@ namespace game
                 _collisionComponent,
                 maxHitsPerMonster: 1,
                 HitDelay,
-                Damage
+                Damage,
+                _player.Skill2Texture,   // Texture2D
+                _player.CurrentElement
             );
 
             // Add to player’s active hitboxes and world entities
@@ -57,5 +62,15 @@ namespace game
             _player._entities?.Add(hitbox);
             _collisionComponent?.Insert(hitbox);
         }
+
+        // Helper to snap diagonal directions to pure horizontal or vertical
+        private Vector2 SnapDirection(Vector2 dir)
+        {
+            if (Math.Abs(dir.X) >= Math.Abs(dir.Y))
+                return new Vector2(Math.Sign(dir.X), 0); // horizontal
+            else
+                return new Vector2(0, Math.Sign(dir.Y)); // vertical
+        }
+
     }
 }

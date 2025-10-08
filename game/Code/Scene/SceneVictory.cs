@@ -33,7 +33,7 @@ namespace game
         public override void LoadContent()
         {
             BG = Content.Load<Texture2D>("Texture/End");
-            Button = new Button(new Vector2(1280 / 2, 720 - 96 * 2), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button = new Button(new Vector2(1920 / 2, 1080 - 96 * 2), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
             font = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
             game.Player.Stats.Heal(99999);
@@ -64,7 +64,7 @@ namespace game
             //_spriteBatch.DrawString(font, str, new Vector2(1280 / 2 - 250, 100), Color.Black, 
             //    0, Vector2.Zero, Vector2.One * 2, SpriteEffects.None, 0);
 
-            Button.Draw(_spriteBatch, 1);
+            //Button.Draw(_spriteBatch, 1);
             _spriteBatch.End();
         }
         public override void UnloadContent()
