@@ -661,7 +661,7 @@
   <object id="25" x="1984" y="1280" width="64" height="448"/>
   <object id="51" x="0" y="4224" width="64" height="128"/>
   <object id="132" x="0" y="3008" width="128" height="64"/>
-  <object id="137" x="576" y="1408" width="576" height="64"/>
+  <object id="137" x="576" y="1408" width="576" height="54.5"/>
   <object id="139" x="1216" y="1728" width="192" height="64"/>
   <object id="140" x="1152" y="1664" width="64" height="128"/>
   <object id="246" x="512" y="4288" width="64" height="64"/>
@@ -672,7 +672,7 @@
    </properties>
   </object>
   <object id="337" x="150.667" y="2932.67" width="70.6667" height="36"/>
-  <object id="340" x="576" y="1600" width="576" height="2880"/>
+  <object id="340" x="576" y="1618.67" width="576" height="2861.33"/>
   <object id="342" x="1152" y="1792" width="192" height="2688"/>
   <object id="346" x="256" y="2880" width="64" height="64"/>
   <object id="352" x="298.917" y="2853.83" width="69.3333" height="31.3333"/>
