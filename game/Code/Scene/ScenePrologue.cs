@@ -1,4 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Tracing;
+using System.Linq;
+using System.Threading;
+using Assimp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -132,7 +139,6 @@ namespace game
             if(player.Stats.CurrentHP == 0)
             {
                 ScreenManager.LoadScreen(new SceneDead(game1), new FadeTransition(GraphicsDevice, Color.Black, 3f));
-                return;
             }
             #endregion
 
@@ -144,7 +150,7 @@ namespace game
             var playerpos = player._movement.Position;
             preventMonster.UpdatePosition(playerpos);
 
-            globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
+            globalContext.UpdateCamera(playerpos - new Vector2(globalContext.Camera.cameraWidth / 2, globalContext.Camera.cameraHeight / 2));
             globalContext.UpdateParticle(gameTime);
             globalContext.UpdateMonster(gameTime, player, _healTexture);
             globalContext.UpdateChest(playerpos);

@@ -18,6 +18,7 @@ namespace game
         public bool AlwaysDraw => true;
         private float _invincibleTimer = 0f;
         private float _invincibleDuration = 0.3f; // 0.3 seconds i-frame
+        private bool canPlaySound = false;
         public PlayerHurtbox(Player player, float width, float height)
         {
             _player = player;
@@ -54,9 +55,20 @@ namespace game
 
                 // Start i-frames
                 _invincibleTimer = _invincibleDuration;
+                canPlaySound = true;
 
                 Debug.WriteLine($"Player took damage! HP: {_player.Stats.CurrentHP}");
             }
+        }
+
+        public bool PlaySound()
+        {
+            if (canPlaySound)
+            {
+                canPlaySound = false;
+                return true;
+            }
+            return false;
         }
     }
 

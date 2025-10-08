@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="33" nextobjectid="1897">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="33" nextobjectid="1915">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Water_tileset.tsx"/>
  <tileset firstgid="108" source="Cliff_Tileset.tsx"/>
@@ -1499,52 +1499,19 @@
   <object id="1735" type="Tree2" gid="170" x="4381.33" y="3558.67" width="192" height="256"/>
  </objectgroup>
  <objectgroup id="23" name="SpawnPoint">
-  <object id="1020" name="Melee" type="Light" x="2690.33" y="1872">
-   <point/>
-  </object>
-  <object id="1021" name="Melee" type="Dark" x="2076.67" y="1859.67">
-   <point/>
-  </object>
   <object id="472" name="Player" x="870.667" y="3873.33">
    <point/>
   </object>
-  <object id="986" name="Melee" type="Light" x="2640" y="3666">
+  <object id="1488" name="Melee" type="Light" x="2683.33" y="637.333">
    <point/>
   </object>
-  <object id="1016" name="Range" type="Dark" x="2851.33" y="1439.33">
+  <object id="1843" name="Slime" type="Light" x="2342" y="1706">
    <point/>
   </object>
-  <object id="1084" name="Range" type="Light" x="2318.24" y="1632.18">
+  <object id="1848" name="Slime" type="Dark" x="2435.82" y="3722.61">
    <point/>
   </object>
-  <object id="1487" name="Range" type="Dark" x="3586" y="702">
-   <point/>
-  </object>
-  <object id="1488" name="Melee" type="Light" x="3198" y="602">
-   <point/>
-  </object>
-  <object id="1491" name="Range" type="Light" x="1980.67" y="948.67">
-   <point/>
-  </object>
-  <object id="1493" name="Range" type="Dark" x="2318" y="1230">
-   <point/>
-  </object>
-  <object id="1843" name="Slime" type="Light" x="2391.33" y="2024">
-   <point/>
-  </object>
-  <object id="1846" name="Slime" type="Dark" x="2589.52" y="3861.58">
-   <point/>
-  </object>
-  <object id="1848" name="Slime" type="Dark" x="2303.82" y="3699.94">
-   <point/>
-  </object>
-  <object id="1849" name="Slime" type="Dark" x="2822" y="3658">
-   <point/>
-  </object>
-  <object id="1850" name="Slime" type="Dark" x="4078.79" y="2387.88">
-   <point/>
-  </object>
-  <object id="1851" name="Boss" x="4025.55" y="3881.61">
+  <object id="1850" name="Slime" type="Dark" x="4222.79" y="2486.55">
    <point/>
   </object>
   <object id="1852" name="Slime" type="Dark" x="671.333" y="849.394">
@@ -1553,7 +1520,7 @@
   <object id="1853" name="Slime" type="Dark" x="724" y="900.667">
    <point/>
   </object>
-  <object id="1854" name="Slime" type="Dark" x="462" y="884.667">
+  <object id="1854" name="Slime" type="Dark" x="464.667" y="884.667">
    <point/>
   </object>
   <object id="1855" name="Slime" type="Dark" x="458" y="701.333">
@@ -1610,7 +1577,46 @@
   <object id="1895" name="Chest" x="3168" y="4000">
    <point/>
   </object>
-  <object id="1896" name="Chest" x="2144" y="544">
+  <object id="1896" name="Chest" x="2888" y="1409.33">
+   <point/>
+  </object>
+  <object id="1900" name="Chest" x="288.666" y="676">
+   <point/>
+  </object>
+  <object id="1902" name="Slime" type="Light" x="2690.67" y="2676">
+   <point/>
+  </object>
+  <object id="1903" name="Slime" type="Dark" x="2536" y="1838">
+   <point/>
+  </object>
+  <object id="1905" name="Slime" type="Dark" x="2120.67" y="1886">
+   <point/>
+  </object>
+  <object id="1906" name="Slime" type="Dark" x="2405.33" y="1992">
+   <point/>
+  </object>
+  <object id="1907" name="Slime" type="Light" x="4070.67" y="2650.67">
+   <point/>
+  </object>
+  <object id="1908" name="Slime" type="Dark" x="2112" y="1088">
+   <point/>
+  </object>
+  <object id="1909" name="Slime" type="Dark" x="3975.33" y="3846">
+   <point/>
+  </object>
+  <object id="1910" name="Slime" type="Light" x="3908" y="4074">
+   <point/>
+  </object>
+  <object id="1911" name="Slime" type="Light" x="4122" y="4004">
+   <point/>
+  </object>
+  <object id="1912" name="Slime" type="Dark" x="2423" y="683">
+   <point/>
+  </object>
+  <object id="1913" name="Slime" type="Dark" x="2614" y="837">
+   <point/>
+  </object>
+  <object id="1914" name="Slime" type="Light" x="2855" y="610">
    <point/>
   </object>
  </objectgroup>
@@ -1792,5 +1798,6 @@
   <object id="1885" x="2944" y="2816" width="64" height="64"/>
   <object id="1891" x="192" y="704" width="64" height="64"/>
   <object id="1894" x="4452" y="576" width="28" height="190"/>
+  <object id="1899" x="3072" y="3712" width="128" height="192"/>
  </objectgroup>
 </map>

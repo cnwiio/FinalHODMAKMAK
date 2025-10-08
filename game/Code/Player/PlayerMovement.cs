@@ -1,6 +1,6 @@
 ﻿using Assimp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Tool;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +26,7 @@ namespace game
         private float _dashTimer = 0f;
         private float _cooldownTimer = 0f;
         public bool IsDashing => _isDashing;
+        public bool isPlaySound = false;
         private bool _isDashing = false;
 
         public void SetPosition(Vector2 newPosition)
@@ -55,6 +56,7 @@ namespace game
             if (dashTriggered && !_isDashing && _cooldownTimer <= 0f && direction != Vector2.Zero)
             {
                 _isDashing = true;
+                isPlaySound = true;
                 _dashTimer = _dashDuration;
             }
 
@@ -92,6 +94,15 @@ namespace game
             _isDashing = false;
             _dashTimer = 0f;
             _cooldownTimer = 0f; // optional: reset cooldown or not
+        }
+        public bool IsPlaySound()
+        {
+            if (isPlaySound)
+            {
+                isPlaySound = false;
+                return true;
+            }
+            return false;
         }
     }
 }

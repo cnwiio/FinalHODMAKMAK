@@ -146,7 +146,7 @@ namespace game
             var playerpos = player._movement.Position;
             preventMonster.UpdatePosition(playerpos);
 
-            globalContext.UpdateCamera(playerpos - new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2));
+            globalContext.UpdateCamera(playerpos - new Vector2(globalContext.Camera.cameraWidth / 2, globalContext.Camera.cameraHeight / 2));
             globalContext.UpdateParticle(gameTime);
             globalContext.UpdateMonster(gameTime, player, _healTexture); // รอ player
             globalContext.UpdateChest(playerpos);

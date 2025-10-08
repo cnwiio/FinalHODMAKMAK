@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Animations;
 using MonoGame.Extended.Collisions;
@@ -35,6 +36,10 @@ namespace game
         private float waveTimer = 0;
         public Telegraph[] telegraph;
         public MonsterAttackHitbox[] telegraphHitbox;
+        private SoundEffect fireSound;
+        private SoundEffect spikeSound;
+        private Song savedBGMSound;
+        private Song BGMSound;
         // ----------------Bool----------------
         public bool[] BulletVisible;
         // ----------------------------------
@@ -67,7 +72,7 @@ namespace game
                     _isHit = true;
                     ShakeViewport = true;
                     _hitTimer = 0.25f;
-                    _deadTimer = 1.2f;
+                    _deadTimer = 2f;
                     if (HP > 0)
                     {
                         var r = new Random();
@@ -115,12 +120,17 @@ namespace game
                 telegraph[i] = new Telegraph(telegraphTexture, individualSkillTexture);
             }
         }
-        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName)
+        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName, string fireSfxName, string spikeSfxName, string normalBgmSfxName, string bossBgmSfxName)
         {
             audioController = controller;
             hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
             deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
             parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
+            fireSound = content.Load<SoundEffect>("Audio/" + fireSfxName);
+            spikeSound = content.Load<SoundEffect>("Audio/" + spikeSfxName);
+            savedBGMSound = content.Load<Song>("Audio/" + normalBgmSfxName);
+            BGMSound = content.Load<Song>("Audio/" + bossBgmSfxName);
+            
         }
 
         public void loadBullet(ContentManager content, string lightBullet, string darkBullet)
@@ -146,8 +156,8 @@ namespace game
             animation.CreateAnimation("Casting", "left", true, 100, 0, 4);
             animation.CreateAnimation("Casting", "right", true, 100, 0, 4);
 
-            animation.CreateAnimation("Die", "right", false, 100, 0, 12);
-            animation.CreateAnimation("Die", "left", false, 100, 0, 12);
+            animation.CreateAnimation("Die", "right", false, 100, 0, 13);
+            animation.CreateAnimation("Die", "left", false, 100, 0, 13);
 
             animation.CreateAnimation("ChargeRapidFire", "left", false, 200, 0, 2);
             animation.CreateAnimation("ChargeRapidFire", "right", false, 200, 0, 2);
@@ -285,10 +295,13 @@ namespace game
             if (!isInActiveRadius && Vector2.Distance(Position, TargetPos) <= ActiveRadius)
             {
                 isInActiveRadius = true;
-            } else if (!isInRange) 
+                audioController.PlaySong(BGMSound, true);
+            } 
+            else if (!isInRange && isInActiveRadius) 
             {
                 Reset();
                 isInActiveRadius = false;
+                audioController.PlaySong(savedBGMSound, true);
             }
             //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
             isInAttackList = isInRange;
@@ -602,6 +615,7 @@ namespace game
                 bulletDirection[2] = RotateVector(DirectionToPlayer, angle45);
                 CreateBulletHitbox(2);
 
+                audioController.PlaySoundEffect(fireSound);
                 animation.SetAnimation("Fire3Ball", GetDirection(DirectionToPlayer), OnAnimationEvent);
             }
             #endregion
@@ -741,6 +755,7 @@ namespace game
                 if (telegraph[i].isFinished())
                 {
                     ShakeViewport = true;
+                    audioController.PlaySoundEffect(spikeSound);
                     CreateTelegraphHitbox(i);
                 }
             }
@@ -887,6 +902,7 @@ namespace game
             if (wave < waveAmout && waveTimer == 0f && isAttack)
             {
                 waveTimer = 0.35f;
+                audioController.PlaySoundEffect(fireSound);
                 CreateBulletHitbox(wave);
                 var dir = bulletHitbox[wave].Bounds.Position - TargetPos;
                 dir.Normalize();
