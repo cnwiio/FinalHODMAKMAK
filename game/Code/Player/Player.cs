@@ -134,14 +134,14 @@ namespace game
             _input.Update(gameTime);
 
             // Handle Element Toggle
-            if (_input.ElementToggleTriggered)
+            if (_input.ElementToggleTriggered && !_isAttacking && !_movement.IsDashing)
             {
                 ToggleElement();
                 _animation.PlayElementToggleAnimation(CurrentElement);
             }
             
 
-            if (_input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
+            if (!_animation._isPlayingElementToggle && _input.AttackTriggered && !_isAttacking && !_movement.IsDashing)
                 StartAttack();
 
             if (_input.PotionTriggered && !_isAttacking && !_movement.IsDashing)

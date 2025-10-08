@@ -11,7 +11,7 @@ namespace game
         private int _row = 3;
         private Vector2 _lastDirection = new Vector2(0, 1);
 
-        private bool _isPlayingElementToggle = false;
+        public bool _isPlayingElementToggle = false;
         public bool IsPlayingElementToggle => _isPlayingElementToggle;
         private double _elementToggleTimer = 0;
 
