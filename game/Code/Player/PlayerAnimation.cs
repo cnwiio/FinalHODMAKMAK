@@ -68,7 +68,7 @@ namespace game
             _isPlayingElementToggle = true;
             _elementToggleTimer = 0; // reset timer
 
-            string animName = element == ElementType.Light ? "ElementalShiftLight" : "ElementalShiftDark";
+            string animName = element == ElementType.Light ? "ElementalShiftDark" : "ElementalShiftLight";
             _animController.SetAnimation("ElementalShift", animName);
         }
 
