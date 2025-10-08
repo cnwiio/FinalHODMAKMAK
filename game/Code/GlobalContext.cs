@@ -582,16 +582,20 @@ namespace game
         // Handle monster death and spawn heal pickup
         private void HandleMonsterDeath(IMonster monster, Texture2D _healTexture, Player _player)
         {
-            // Spawn heal pickup via DropManager
-            var healPickup = DropManager.DropHeal(
-                _healTexture,
-                _player,
-                CollisionComponents,
-                monster.Position,
-                PendingRemove
-            );
-            PendingAdd.Add(healPickup);
-            Ysort.Add(healPickup);
+            var r = new Random();
+            if (r.Next(1, 101) <= 25) // 100% chance, tweak if needed
+            {
+                // Spawn heal pickup via DropManager
+                var healPickup = DropManager.DropHeal(
+                    _healTexture,
+                    _player,
+                    CollisionComponents,
+                    monster.Position,
+                    PendingRemove
+                );
+                PendingAdd.Add(healPickup);
+                Ysort.Add(healPickup);
+            }
 
             if (monster is MonsterBoss)
             {

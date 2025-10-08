@@ -114,7 +114,7 @@ namespace game
             SavedHP = (short)Player.Stats.CurrentHP; // checkpoint
             SavedPotion = Player.potion.Amout; // checkpoint
 
-            screenManager.LoadScreen(new SceneHomeNorth(this));
+            screenManager.LoadScreen(new SceneMenu(this));
             base.LoadContent();
         }
 
