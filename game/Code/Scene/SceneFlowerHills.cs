@@ -100,7 +100,23 @@ namespace game
         {
             globalContext.audioController.ToggleMute();
         }
-        if (player.Stats.CurrentHP == 0)
+            if (_ks.IsKeyDown(Keys.L) && !_oldKs.IsKeyDown(Keys.L))
+            {
+                if (player.Stats.Speed.Value <= 900)
+                {
+                    player.Stats.Speed.AddModifier(1500);
+                    player.Stats.AttackDamage.AddModifier(10000000);
+                    globalContext._Camera.MinimumZoom = 0.1f;
+                }
+                else
+                {
+                    player.Stats.Speed.RemoveModifier(1500);
+                    player.Stats.AttackDamage.RemoveModifier(10000000);
+                    globalContext._Camera.MinimumZoom = 1;
+                    globalContext._Camera.Zoom = 1;
+                }
+            }
+            if (player.Stats.CurrentHP == 0)
         {
             ScreenManager.LoadScreen(new SceneDead(game1), new FadeTransition(GraphicsDevice, Color.Black, 3f));
             return;
