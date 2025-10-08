@@ -13,7 +13,7 @@ namespace game
         public int CurrentHP { get; private set; }
         public Stat MP { get; } = new Stat() { BaseValue = 100 };
         public Stat AttackDamage { get; } = new Stat() { BaseValue = 10 };
-        public Stat AttackPower { get; } = new Stat() { BaseValue = 50 };
+        public Stat AttackPower { get; } = new Stat() { BaseValue = 10 };
         public Stat Defense { get; } = new Stat() { BaseValue = 10 };
         public Stat MagicResistance { get; } = new Stat() { BaseValue = 5 };
         public Stat Speed { get; } = new Stat() { BaseValue = 300 };

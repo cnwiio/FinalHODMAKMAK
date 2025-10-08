@@ -20,7 +20,7 @@ namespace game
         public float HitDelay { get; set; } = 0.2f;
 
         // Damage is calculated from player's AttackPower
-        public int Damage => (int)(_player.Stats.AttackPower.Value * 2f);
+        public int Damage => (int)(_player.Stats.AttackPower.Value * 2);
         public ArclightCross(Player player, CollisionComponent collisionComponent)
         {
             _player = player;
