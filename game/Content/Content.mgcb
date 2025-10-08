@@ -304,30 +304,6 @@
 /processorParam:TextureFormat=Color
 /build:Texture/2Budgetskill.png
 
-#begin Texture/2Budgetskill.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/2Budgetskill.png
-
-#begin Texture/BG_art.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/BG_art.png
-
 #begin Texture/BG_art.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -352,18 +328,6 @@
 /processorParam:TextureFormat=Color
 /build:Texture/BoneOfMySword.png
 
-#begin Texture/BoneOfMySword.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/BoneOfMySword.png
-
 #begin Texture/BoneOfMySwordButBlack.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -375,30 +339,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/BoneOfMySwordButBlack.png
-
-#begin Texture/BoneOfMySwordButBlack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/BoneOfMySwordButBlack.png
-
-#begin Texture/Button2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/Button2.png
 
 #begin Texture/Button2.png
 /importer:TextureImporter
@@ -628,18 +568,6 @@
 /processorParam:TextureFormat=Color
 /build:Texture/DarkSlimeDie.png
 
-#begin Texture/DarkSlimeDie.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/DarkSlimeDie.png
-
 #begin Texture/DarkSlimeIdle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -699,18 +627,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/EleChange_Final.png
-
-#begin Texture/End.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/End.png
 
 #begin Texture/End.png
 /importer:TextureImporter
@@ -784,18 +700,6 @@
 /processorParam:TextureFormat=Color
 /build:Texture/HealthBar7.png
 
-#begin Texture/HealthBar7.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/HealthBar7.png
-
 #begin Texture/KINGDOMCUM.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -807,30 +711,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/KINGDOMCUM.png
-
-#begin Texture/KINGDOMCUM.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/KINGDOMCUM.png
-
-#begin Texture/Light-VoidDevouer-Attack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/Light-VoidDevouer-Attack.png
 
 #begin Texture/Light-VoidDevouer-Attack.png
 /importer:TextureImporter
@@ -1108,30 +988,6 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Player_Attadck_Light.png
 
-#begin Texture/Player_Attack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/Player_Attack.png
-
-#begin Texture/Player_Dash.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/Player_Dash.png
-
 #begin Texture/Player_Dash.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1180,18 +1036,6 @@
 /processorParam:TextureFormat=Color
 /build:Texture/Potion.png
 
-#begin Texture/splash.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/splash.png
-
 #begin Texture/Skill2.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1216,7 +1060,7 @@
 /processorParam:TextureFormat=Color
 /build:Texture/splash.png
 
-#begin Texture/splash.png
+#begin Texture/Title_Screen.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1227,18 +1071,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture/Title_Screen.png
-
-#begin Texture/White-Circle.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Texture/White-Circle.png
 
 #begin Texture/White-Circle.png
 /importer:TextureImporter
