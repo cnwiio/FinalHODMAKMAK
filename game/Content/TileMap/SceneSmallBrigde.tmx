@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="10" nextobjectid="337">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="10" nextobjectid="364">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Water_tileset.tsx"/>
  <tileset firstgid="108" source="Rock&amp;Bush.tsx"/>
@@ -255,8 +255,8 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,150,151,153,151,152,151,153,151,149,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,157,158,160,158,159,158,160,158,156,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,164,165,167,165,166,165,167,165,163,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,157,160,158,158,160,159,159,160,156,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,164,165,167,166,165,166,167,165,163,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -303,6 +303,37 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="8" name="Shadow">
+  <object id="117" type="Tree_Shadow1" gid="174" x="238.666" y="2934" width="192" height="64"/>
+  <object id="118" type="Tree_Shadow1" gid="174" x="-61.3333" y="3017.33" width="192" height="64"/>
+  <object id="119" type="Tree_Shadow1" gid="174" x="142.667" y="4240" width="192" height="64"/>
+  <object id="120" type="Tree_Shadow1" gid="174" x="-49.3333" y="4230.67" width="192" height="64"/>
+  <object id="122" type="Tree_Shadow2" gid="175" x="248" y="3904" width="192" height="64"/>
+  <object id="123" type="Tree_Shadow2" gid="175" x="176" y="3993.33" width="192" height="64"/>
+  <object id="124" type="Tree_Shadow2" gid="175" x="253.333" y="3720" width="192" height="64"/>
+  <object id="125" type="Tree_Shadow1" gid="174" x="254.667" y="3630.67" width="192" height="64"/>
+  <object id="126" type="Tree_Shadow2" gid="175" x="92.667" y="2985.33" width="192" height="64"/>
+  <object id="128" type="Tree_Shadow1" gid="174" x="236" y="2424" width="192" height="64"/>
+  <object id="129" type="Tree_Shadow1" gid="174" x="262.667" y="2193.33" width="192" height="64"/>
+  <object id="130" type="Tree_Shadow2" gid="175" x="-53.3333" y="1668" width="192" height="64"/>
+  <object id="131" type="Tree_Shadow1" gid="174" x="-34.6667" y="1273.33" width="192" height="64"/>
+  <object id="226" type="Tree_Shadow1" gid="174" x="1083.5" y="1415.5" width="192" height="64"/>
+  <object id="227" type="Tree_Shadow1" gid="174" x="1247.83" y="1390.33" width="192" height="64"/>
+  <object id="228" type="Tree_Shadow1" gid="174" x="1408" y="1418" width="192" height="64"/>
+  <object id="229" type="Tree_Shadow1" gid="174" x="1229.33" y="1738.67" width="192" height="64"/>
+  <object id="232" type="Tree_Shadow2" gid="175" x="1575.67" y="1402.67" width="192" height="64"/>
+  <object id="233" type="Tree_Shadow2" gid="175" x="1701" y="1446.67" width="192" height="64"/>
+  <object id="241" type="Tree_Shadow1" gid="174" x="1274.67" y="2652" width="192" height="64"/>
+  <object id="242" type="Tree_Shadow1" gid="174" x="1288" y="2936" width="192" height="64"/>
+  <object id="243" type="Tree_Shadow1" gid="174" x="1100" y="3152" width="192" height="64"/>
+  <object id="244" type="Tree_Shadow2" gid="175" x="1184" y="3044" width="192" height="64"/>
+  <object id="245" type="Tree_Shadow1" gid="174" x="1291.88" y="3971.39" width="192" height="64"/>
+  <object id="356" type="Tree_Shadow1" gid="174" x="56.5" y="4148" width="192" height="64"/>
+  <object id="357" type="Tree_Shadow1" gid="174" x="-68" y="2827.33" width="192" height="64"/>
+  <object id="358" type="Tree_Shadow2" gid="175" x="96" y="2834" width="192" height="64"/>
+  <object id="360" type="Tree_Shadow1" gid="174" x="244.667" y="2786" width="192" height="64"/>
+  <object id="350" type="Tree_Shadow1" gid="174" x="-150.5" y="4371.5" width="192" height="64"/>
+ </objectgroup>
  <layer id="5" name="Rock" width="70" height="70">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -331,9 +362,13 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,108,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,108,110,111,111,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,113,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,111,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2147483761,108,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,2147483761,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -346,22 +381,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,111,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-108,110,111,0,113,0,109,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,111,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,110,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+108,110,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,112,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,110,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,113,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,108,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,109,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -377,36 +408,6 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="8" name="Shadow" visible="0">
-  <object id="117" type="Tree_Shadow1" gid="174" x="261.333" y="3031.33" width="192" height="64"/>
-  <object id="118" type="Tree_Shadow1" gid="174" x="-61.3333" y="3017.33" width="192" height="64"/>
-  <object id="119" type="Tree_Shadow1" gid="174" x="142.667" y="4240" width="192" height="64"/>
-  <object id="120" type="Tree_Shadow1" gid="174" x="-49.3333" y="4230.67" width="192" height="64"/>
-  <object id="121" type="Tree_Shadow2" gid="175" x="50.6667" y="4241.33" width="192" height="64"/>
-  <object id="122" type="Tree_Shadow2" gid="175" x="248" y="3904" width="192" height="64"/>
-  <object id="123" type="Tree_Shadow2" gid="175" x="176" y="3993.33" width="192" height="64"/>
-  <object id="124" type="Tree_Shadow2" gid="175" x="253.333" y="3720" width="192" height="64"/>
-  <object id="125" type="Tree_Shadow1" gid="174" x="254.667" y="3630.67" width="192" height="64"/>
-  <object id="126" type="Tree_Shadow2" gid="175" x="126.667" y="3037.33" width="192" height="64"/>
-  <object id="127" type="Tree_Shadow2" gid="175" x="25.3333" y="3034.67" width="192" height="64"/>
-  <object id="128" type="Tree_Shadow1" gid="174" x="236" y="2424" width="192" height="64"/>
-  <object id="129" type="Tree_Shadow1" gid="174" x="262.667" y="2193.33" width="192" height="64"/>
-  <object id="130" type="Tree_Shadow2" gid="175" x="-53.3333" y="1668" width="192" height="64"/>
-  <object id="131" type="Tree_Shadow1" gid="174" x="-34.6667" y="1273.33" width="192" height="64"/>
-  <object id="226" type="Tree_Shadow1" gid="174" x="1083.5" y="1415.5" width="192" height="64"/>
-  <object id="227" type="Tree_Shadow1" gid="174" x="1260.5" y="1415" width="192" height="64"/>
-  <object id="228" type="Tree_Shadow1" gid="174" x="1408" y="1418" width="192" height="64"/>
-  <object id="229" type="Tree_Shadow1" gid="174" x="1229" y="1734" width="192" height="64"/>
-  <object id="230" type="Tree_Shadow2" gid="175" x="1172" y="1382" width="192" height="64"/>
-  <object id="231" type="Tree_Shadow2" gid="175" x="1336" y="1384" width="192" height="64"/>
-  <object id="232" type="Tree_Shadow2" gid="175" x="1561" y="1418" width="192" height="64"/>
-  <object id="233" type="Tree_Shadow2" gid="175" x="1699" y="1448" width="192" height="64"/>
-  <object id="241" type="Tree_Shadow1" gid="174" x="1274.67" y="2652" width="192" height="64"/>
-  <object id="242" type="Tree_Shadow1" gid="174" x="1288" y="2936" width="192" height="64"/>
-  <object id="243" type="Tree_Shadow1" gid="174" x="1100" y="3152" width="192" height="64"/>
-  <object id="244" type="Tree_Shadow2" gid="175" x="1184" y="3044" width="192" height="64"/>
-  <object id="245" type="Tree_Shadow1" gid="174" x="1291.88" y="3971.39" width="192" height="64"/>
- </objectgroup>
  <objectgroup id="9" name="Object">
   <object id="28" type="Tree2" gid="170" x="261" y="3483" width="192" height="256"/>
   <object id="29" type="Tree2" gid="170" x="261" y="3619" width="192" height="256"/>
@@ -429,64 +430,58 @@
   <object id="46" type="Tree3" gid="172" x="176" y="3968" width="192" height="256"/>
   <object id="47" type="Tree3" gid="172" x="246" y="3884" width="192" height="256"/>
   <object id="49" type="Tree3" gid="172" x="-46" y="4080" width="192" height="256"/>
-  <object id="50" type="Tree3" gid="172" x="50" y="4222" width="192" height="256"/>
-  <object id="52" type="Tree1" gid="171" x="260" y="3014.67" width="192" height="256"/>
-  <object id="53" type="Tree3" gid="172" x="129.333" y="3014.67" width="192" height="256"/>
-  <object id="54" type="Tree3" gid="172" x="18.6667" y="3012" width="192" height="262.667"/>
-  <object id="59" type="Tree1" gid="171" x="-60" y="3004" width="192" height="256"/>
-  <object id="60" type="Tree1" gid="171" x="236" y="2876" width="192" height="256"/>
-  <object id="61" type="Tree3" gid="172" x="294.667" y="2672" width="192" height="256"/>
-  <object id="62" type="Tree4" gid="173" x="290.667" y="2516" width="192" height="256"/>
-  <object id="63" type="Tree4" gid="173" x="316" y="2844" width="192" height="256"/>
-  <object id="64" type="Tree2" gid="170" x="241.333" y="2410.67" width="192" height="256"/>
-  <object id="65" type="Tree4" gid="173" x="304" y="2292" width="192" height="256"/>
-  <object id="66" type="Tree1" gid="171" x="254.667" y="2172" width="192" height="256"/>
-  <object id="67" type="Tree4" gid="173" x="294.667" y="2020" width="192" height="256"/>
-  <object id="68" type="Tree1" gid="171" x="261.333" y="1880" width="192" height="256"/>
-  <object id="69" type="Tree2" gid="170" x="262.667" y="1728" width="192" height="256"/>
-  <object id="70" type="Tree3" gid="172" x="297.333" y="1573.33" width="192" height="256"/>
-  <object id="71" type="Tree4" gid="173" x="296" y="1452" width="192" height="256"/>
-  <object id="72" type="Tree3" gid="172" x="204" y="1348" width="192" height="256"/>
-  <object id="73" type="Tree1" gid="171" x="81.3333" y="1293.33" width="192" height="256"/>
-  <object id="74" type="Tree1" gid="171" x="-38.6667" y="1254.67" width="192" height="256"/>
-  <object id="75" type="Tree3" gid="172" x="82.6667" y="1372" width="192" height="256"/>
-  <object id="76" type="Tree3" gid="172" x="-41.3333" y="1469.33" width="192" height="256"/>
-  <object id="77" type="Tree3" gid="172" x="117.333" y="1577.33" width="192" height="256"/>
-  <object id="78" type="Tree3" gid="172" x="-56" y="1650.67" width="192" height="256"/>
-  <object id="79" type="Tree3" gid="172" x="141.333" y="1798.67" width="192" height="256"/>
-  <object id="80" type="Tree3" gid="172" x="-34.6667" y="2033.33" width="192" height="256"/>
-  <object id="81" type="Tree3" gid="172" x="-54.6667" y="2422.67" width="192" height="256"/>
-  <object id="84" type="Tree3" gid="172" x="-58.6667" y="2734.67" width="192" height="256"/>
-  <object id="85" type="Tree4" gid="173" x="-29.3333" y="2594.67" width="192" height="256"/>
-  <object id="86" type="Tree4" gid="173" x="114.667" y="2442.67" width="192" height="256"/>
-  <object id="87" type="Tree4" gid="173" x="112" y="1994.67" width="192" height="256"/>
-  <object id="88" type="Tree4" gid="173" x="-34.6667" y="1854.67" width="192" height="256"/>
-  <object id="89" type="Tree1" gid="171" x="84" y="1709.33" width="192" height="256"/>
-  <object id="90" type="Tree1" gid="171" x="-37.3333" y="1568" width="192" height="256"/>
-  <object id="91" type="Tree1" gid="171" x="118.667" y="1508" width="192" height="256"/>
-  <object id="92" type="Tree1" gid="171" x="125.333" y="2116" width="192" height="256"/>
-  <object id="93" type="Tree1" gid="171" x="-37.3333" y="2173.33" width="192" height="256"/>
-  <object id="94" type="Tree1" gid="171" x="120" y="2301.33" width="192" height="256"/>
-  <object id="95" type="Tree1" gid="171" x="24" y="2365.33" width="192" height="256"/>
-  <object id="96" type="Tree2" gid="170" x="116" y="2573.33" width="192" height="256"/>
-  <object id="97" type="Tree2" gid="170" x="61.3333" y="2690.67" width="192" height="256"/>
-  <object id="98" type="Tree2" gid="170" x="77.3333" y="2888" width="192" height="256"/>
-  <object id="99" type="Tree2" gid="170" x="-58.6667" y="2893.33" width="192" height="256"/>
-  <object id="100" type="Tree1" gid="171" x="174.667" y="2725.33" width="192" height="256"/>
-  <object id="101" type="Tree1" gid="171" x="49.3333" y="2764" width="192" height="256"/>
-  <object id="102" type="Tree1" gid="171" x="66.6667" y="2481.33" width="192" height="256"/>
-  <object id="106" type="Tree2" gid="170" x="-32" y="2269.33" width="192" height="256"/>
-  <object id="110" type="Tree4" gid="173" x="109.333" y="2185.33" width="192" height="256"/>
-  <object id="112" type="Tree3" gid="172" x="196" y="2014.67" width="192" height="256"/>
-  <object id="114" type="Tree1" gid="171" x="68" y="1933.33" width="192" height="256"/>
-  <object id="115" type="Tree2" gid="170" x="42.6667" y="1790.67" width="192" height="256"/>
-  <object id="116" type="Tree4" gid="173" x="217.333" y="1557.33" width="192" height="256"/>
+  <object id="53" type="Tree3" gid="172" x="82.6663" y="2794.67" width="192" height="256"/>
+  <object id="54" type="Tree3" gid="172" x="90" y="2964.67" width="192" height="262.667"/>
+  <object id="59" type="Tree1" gid="171" x="-58" y="2820" width="192" height="256"/>
+  <object id="60" type="Tree1" gid="171" x="244.333" y="2768.33" width="192" height="256"/>
+  <object id="61" type="Tree3" gid="172" x="292" y="2666.67" width="192" height="256"/>
+  <object id="62" type="Tree4" gid="173" x="292" y="2466.67" width="192" height="256"/>
+  <object id="64" type="Tree2" gid="170" x="253.333" y="2301.34" width="192" height="256"/>
+  <object id="67" type="Tree4" gid="173" x="275.334" y="1950.67" width="192" height="256"/>
+  <object id="68" type="Tree1" gid="171" x="246.666" y="1840" width="192" height="256"/>
+  <object id="69" type="Tree2" gid="170" x="246.667" y="1700" width="192" height="256"/>
+  <object id="70" type="Tree3" gid="172" x="282.666" y="1573.33" width="192" height="256"/>
+  <object id="71" type="Tree4" gid="173" x="285.333" y="1434.67" width="192" height="256"/>
+  <object id="72" type="Tree3" gid="172" x="197.333" y="1328" width="192" height="256"/>
+  <object id="73" type="Tree1" gid="171" x="34.6666" y="1274.66" width="192" height="256"/>
+  <object id="74" type="Tree1" gid="171" x="-116" y="1329.34" width="192" height="256"/>
+  <object id="75" type="Tree3" gid="172" x="53.3334" y="1381.33" width="192" height="256"/>
+  <object id="76" type="Tree3" gid="172" x="-57.3333" y="1468" width="192" height="256"/>
+  <object id="77" type="Tree3" gid="172" x="91.9997" y="1556" width="192" height="256"/>
+  <object id="78" type="Tree3" gid="172" x="-122.667" y="1672" width="192" height="256"/>
+  <object id="79" type="Tree3" gid="172" x="90.6663" y="1809.34" width="192" height="256"/>
+  <object id="80" type="Tree3" gid="172" x="-186" y="2001.66" width="192" height="256"/>
+  <object id="81" type="Tree3" gid="172" x="-73.3334" y="2433.34" width="192" height="256"/>
+  <object id="84" type="Tree3" gid="172" x="-110.667" y="2720" width="192" height="256"/>
+  <object id="86" type="Tree4" gid="173" x="185.334" y="2437.34" width="192" height="256"/>
+  <object id="87" type="Tree4" gid="173" x="101" y="1933" width="192" height="256"/>
+  <object id="88" type="Tree4" gid="173" x="-126.667" y="1854.67" width="192" height="256"/>
+  <object id="89" type="Tree1" gid="171" x="81.3333" y="1728" width="200" height="242.667"/>
+  <object id="90" type="Tree1" gid="171" x="-62.6666" y="1596" width="192" height="256"/>
+  <object id="91" type="Tree1" gid="171" x="132" y="1454.67" width="192" height="256"/>
+  <object id="92" type="Tree1" gid="171" x="2.66633" y="2085.67" width="192" height="256"/>
+  <object id="93" type="Tree1" gid="171" x="-169.333" y="2122.66" width="192" height="256"/>
+  <object id="94" type="Tree1" gid="171" x="218.667" y="2130.66" width="192" height="256"/>
+  <object id="95" type="Tree1" gid="171" x="28.6667" y="2284" width="192" height="256"/>
+  <object id="96" type="Tree2" gid="170" x="36.6667" y="2510.66" width="192" height="256"/>
+  <object id="97" type="Tree2" gid="170" x="-64.6667" y="2618" width="192" height="256"/>
+  <object id="98" type="Tree2" gid="170" x="57" y="2710.33" width="192" height="256"/>
+  <object id="99" type="Tree2" gid="170" x="-64" y="2998.66" width="192" height="256"/>
+  <object id="100" type="Tree1" gid="171" x="146.667" y="2629.33" width="192" height="256"/>
+  <object id="101" type="Tree1" gid="171" x="238.333" y="2912" width="192" height="256"/>
+  <object id="102" type="Tree1" gid="171" x="102.667" y="2390" width="192" height="256"/>
+  <object id="106" type="Tree2" gid="170" x="-158.667" y="2262" width="192" height="256"/>
+  <object id="110" type="Tree4" gid="173" x="113.666" y="2224.66" width="192" height="256"/>
+  <object id="112" type="Tree3" gid="172" x="172" y="2048" width="192" height="256"/>
+  <object id="114" type="Tree1" gid="171" x="-50" y="1951.33" width="192" height="256"/>
+  <object id="115" type="Tree2" gid="170" x="-24" y="1774.67" width="192" height="256"/>
+  <object id="116" type="Tree4" gid="173" x="193.333" y="1545.33" width="192" height="256"/>
   <object id="141" type="Tree1" gid="171" x="1085" y="1399" width="192" height="256"/>
-  <object id="142" type="Tree1" gid="171" x="1260" y="1397" width="192" height="256"/>
-  <object id="143" type="Tree2" gid="170" x="1405" y="1401" width="192" height="256"/>
-  <object id="145" type="Tree3" gid="172" x="1560" y="1398" width="192" height="256"/>
+  <object id="142" type="Tree1" gid="171" x="1246" y="1371" width="192" height="256"/>
+  <object id="143" type="Tree2" gid="170" x="1413.67" y="1397.67" width="192" height="256"/>
+  <object id="145" type="Tree3" gid="172" x="1575" y="1381" width="192" height="256"/>
   <object id="146" type="Tree4" gid="173" x="1548" y="1793" width="192" height="256"/>
-  <object id="147" type="Tree1" gid="171" x="1229" y="1719" width="192" height="256"/>
+  <object id="147" type="Tree1" gid="171" x="1231.67" y="1721.67" width="192" height="256"/>
   <object id="148" type="Tree3" gid="172" x="1390" y="1729" width="192" height="256"/>
   <object id="149" type="Tree1" gid="171" x="1400" y="1835" width="192" height="256"/>
   <object id="150" type="Tree4" gid="173" x="1539" y="1903" width="192" height="256"/>
@@ -500,35 +495,35 @@
   <object id="158" type="Tree4" gid="173" x="1940" y="1728" width="192" height="256"/>
   <object id="159" type="Tree1" gid="171" x="1925.33" y="1474.67" width="192" height="256"/>
   <object id="160" type="Tree3" gid="172" x="2085.33" y="1470.67" width="192" height="256"/>
-  <object id="161" type="Tree1" gid="171" x="2009.33" y="1340" width="192" height="256"/>
+  <object id="161" type="Tree1" gid="171" x="2014.66" y="1313.33" width="192" height="256"/>
   <object id="162" type="Tree3" gid="172" x="1908" y="1289.33" width="192" height="256"/>
-  <object id="163" type="Tree2" gid="170" x="1740" y="1280" width="192" height="256"/>
-  <object id="164" type="Tree1" gid="171" x="1602.67" y="1280" width="192" height="256"/>
+  <object id="163" type="Tree2" gid="170" x="1735.67" y="1296.33" width="192" height="256"/>
+  <object id="164" type="Tree1" gid="171" x="1569.67" y="1257" width="192" height="256"/>
   <object id="165" type="Tree3" gid="172" x="1821.33" y="1512" width="192" height="256"/>
   <object id="166" type="Tree1" gid="171" x="1800" y="1610.67" width="192" height="256"/>
   <object id="167" type="Tree4" gid="173" x="1720" y="1677.33" width="192" height="256"/>
   <object id="168" type="Tree1" gid="171" x="1993.33" y="1605.33" width="192" height="256"/>
-  <object id="169" type="Tree3" gid="172" x="1470.67" y="1232" width="192" height="256"/>
-  <object id="170" type="Tree4" gid="173" x="1309.33" y="1222.67" width="192" height="256"/>
-  <object id="171" type="Tree2" gid="170" x="1190.67" y="1273.33" width="192" height="256"/>
-  <object id="172" type="Tree1" gid="171" x="1202.67" y="1054.67" width="192" height="256"/>
-  <object id="173" type="Tree2" gid="170" x="1420" y="1124" width="192" height="256"/>
-  <object id="174" type="Tree3" gid="172" x="1302.67" y="1105.33" width="192" height="256"/>
-  <object id="175" type="Tree2" gid="170" x="1065.33" y="1165.33" width="192" height="256"/>
-  <object id="176" type="Tree3" gid="172" x="1330.67" y="1364" width="192" height="256"/>
-  <object id="177" type="Tree4" gid="173" x="1172" y="1358.67" width="192" height="256"/>
+  <object id="169" type="Tree3" gid="172" x="1448.67" y="1189" width="192" height="256"/>
+  <object id="170" type="Tree4" gid="173" x="1300.33" y="1211.67" width="192" height="256"/>
+  <object id="171" type="Tree2" gid="170" x="1111.67" y="1229.33" width="192" height="256"/>
+  <object id="172" type="Tree1" gid="171" x="1167.67" y="1047.67" width="192" height="256"/>
+  <object id="173" type="Tree2" gid="170" x="1380.33" y="1083" width="192" height="256"/>
+  <object id="174" type="Tree3" gid="172" x="1267.67" y="1121.33" width="192" height="256"/>
+  <object id="175" type="Tree2" gid="170" x="989.33" y="1067.33" width="192" height="256"/>
+  <object id="176" type="Tree3" gid="172" x="1356.67" y="1314" width="192" height="256"/>
+  <object id="177" type="Tree4" gid="173" x="1218" y="1293.67" width="192" height="256"/>
   <object id="178" type="Tree1" gid="171" x="1590.67" y="1114.67" width="192" height="256"/>
   <object id="179" type="Tree3" gid="172" x="1737.33" y="1113.33" width="192" height="256"/>
-  <object id="180" type="Tree1" gid="171" x="1894.67" y="1145.33" width="192" height="256"/>
-  <object id="181" type="Tree2" gid="170" x="2064" y="1165.33" width="192" height="256"/>
+  <object id="180" type="Tree1" gid="171" x="1865.34" y="1180" width="192" height="256"/>
+  <object id="181" type="Tree2" gid="170" x="2025.33" y="1153.33" width="192" height="256"/>
   <object id="182" type="Tree1" gid="171" x="2154.67" y="1260" width="192" height="256"/>
-  <object id="183" type="Tree3" gid="172" x="2170.67" y="1036" width="192" height="256"/>
-  <object id="185" type="Tree1" gid="171" x="2033.33" y="1001.33" width="192" height="256"/>
-  <object id="186" type="Tree2" gid="170" x="1848" y="1000" width="192" height="256"/>
+  <object id="183" type="Tree3" gid="172" x="2165.34" y="1057.33" width="192" height="256"/>
+  <object id="185" type="Tree1" gid="171" x="2029.33" y="1005.33" width="192" height="256"/>
+  <object id="186" type="Tree2" gid="170" x="1850.67" y="1014.67" width="192" height="256"/>
   <object id="187" type="Tree3" gid="172" x="1718.67" y="974.667" width="192" height="256"/>
   <object id="188" type="Tree4" gid="173" x="1593.33" y="964" width="192" height="256"/>
-  <object id="189" type="Tree2" gid="170" x="1449.33" y="968" width="192" height="256"/>
-  <object id="190" type="Tree1" gid="171" x="1284" y="953.333" width="192" height="256"/>
+  <object id="189" type="Tree2" gid="170" x="1454.33" y="969.667" width="192" height="256"/>
+  <object id="190" type="Tree1" gid="171" x="1273" y="962.333" width="192" height="256"/>
   <object id="191" type="Tree2" gid="170" x="2164" y="1454" width="192" height="256"/>
   <object id="192" type="Tree1" gid="171" x="2134" y="1600" width="192" height="256"/>
   <object id="193" type="Tree2" gid="170" x="2084" y="1724" width="192" height="256"/>
@@ -543,12 +538,12 @@
   <object id="202" type="Tree1" gid="171" x="1580" y="2080" width="192" height="256"/>
   <object id="203" type="Tree3" gid="172" x="1746" y="2092" width="192" height="256"/>
   <object id="205" type="Tree4" gid="173" x="1872" y="2078" width="192" height="256"/>
-  <object id="206" type="Tree1" gid="171" x="1368" y="1978" width="192" height="256"/>
-  <object id="207" type="Tree2" gid="170" x="1448" y="2112" width="192" height="256"/>
-  <object id="208" type="Tree1" gid="171" x="1322" y="2098" width="192" height="256"/>
+  <object id="206" type="Tree1" gid="171" x="1314" y="1976.67" width="192" height="256"/>
+  <object id="207" type="Tree2" gid="170" x="1417.33" y="2104" width="192" height="256"/>
+  <object id="208" type="Tree1" gid="171" x="1224" y="2096" width="192" height="256"/>
   <object id="209" type="Tree2" gid="170" x="1378" y="2224" width="192" height="256"/>
   <object id="210" type="Tree1" gid="171" x="1548" y="2188" width="192" height="256"/>
-  <object id="211" type="Tree3" gid="172" x="1708" y="2162" width="192" height="256"/>
+  <object id="211" type="Tree3" gid="172" x="1700" y="2208.67" width="192" height="256"/>
   <object id="212" type="Tree4" gid="173" x="2114" y="2160" width="192" height="256"/>
   <object id="213" type="Tree1" gid="171" x="1098" y="3132" width="192" height="256"/>
   <object id="215" type="Tree1" gid="171" x="1292" y="3956" width="192" height="256"/>
@@ -602,7 +597,7 @@
   <object id="319" type="Tree1" gid="171" x="2394.67" y="1197.33" width="192" height="256"/>
   <object id="320" type="Tree2" gid="170" x="2274" y="1195.33" width="192" height="256"/>
   <object id="321" type="Tree1" gid="171" x="2208.67" y="1756" width="192" height="256"/>
-  <object id="322" type="Tree3" gid="172" x="2252.67" y="978" width="192" height="256"/>
+  <object id="322" type="Tree3" gid="172" x="2240.67" y="979.333" width="192" height="256"/>
   <object id="323" type="Tree1" gid="171" x="2533.33" y="1053.33" width="192" height="256"/>
   <object id="324" type="Tree2" gid="170" x="2348" y="1052" width="192" height="256"/>
   <object id="325" type="Tree2" gid="170" x="2664" y="1506" width="192" height="256"/>
@@ -616,48 +611,56 @@
   <object id="333" type="Tree2" gid="170" x="2344" y="2038" width="192" height="256"/>
   <object id="334" type="Tree4" gid="173" x="2216" y="2022" width="192" height="256"/>
   <object id="335" type="Tree4" gid="173" x="2598" y="2206" width="192" height="256"/>
+  <object id="349" type="Tree1" gid="171" x="-145.5" y="4353" width="192" height="256"/>
+  <object id="351" type="Tree4" gid="173" x="330.667" y="1352" width="192" height="256"/>
  </objectgroup>
  <objectgroup id="6" name="SpawnPoint">
-  <object id="6" name="Melee" type="Light" x="512" y="2176">
+  <object id="6" name="Melee" type="Light" x="482.667" y="2173.33">
    <point/>
   </object>
-  <object id="7" name="Range" type="Dark" x="512" y="1664">
+  <object id="7" name="Range" type="Light" x="1116" y="1546.67">
    <point/>
   </object>
   <object id="11" name="Player" x="96" y="3168">
    <point/>
   </object>
-  <object id="19" name="Chest" x="96" y="4320">
+  <object id="19" name="Chest" x="98" y="4284">
    <point/>
   </object>
-  <object id="136" name="Slime" type="Light" x="448" y="4224">
+  <object id="136" name="Slime" type="Light" x="481.333" y="4277.33">
+   <point/>
+  </object>
+  <object id="348" name="Slime" type="Dark" x="389.333" y="4214.67">
+   <point/>
+  </object>
+  <object id="363" name="Range" type="Dark" x="484" y="1648">
+   <point/>
+  </object>
+  <object id="362" name="Slime" type="Light" x="774.667" y="1544">
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="7" name="Collision" locked="1">
+ <objectgroup id="7" name="Collision">
   <object id="8" x="0" y="3058" width="30" height="215.333"/>
-  <object id="9" x="0" y="1344" width="448" height="1664"/>
+  <object id="9" x="0" y="1329" width="400" height="1486.34"/>
   <object id="10" x="0" y="3264" width="320" height="960"/>
   <object id="12" x="0" y="1280" width="576" height="64"/>
   <object id="13" x="576" y="1280" width="64" height="128"/>
   <object id="14" x="384" y="3264" width="64" height="320"/>
   <object id="15" x="384" y="3712" width="64" height="128"/>
   <object id="16" x="320" y="3264" width="62" height="704"/>
-  <object id="17" name="Warp" type="SceneHome" x="1600" y="1408" width="26" height="192">
+  <object id="17" name="Warp" type="SceneHome" x="1600" y="1408" width="384" height="192">
    <properties>
     <property name="X" type="float" value="0"/>
     <property name="Y" type="float" value="0"/>
    </properties>
   </object>
-  <object id="21" x="576" y="1536" width="576" height="2944"/>
   <object id="22" x="0" y="4352" width="576" height="128"/>
-  <object id="23" x="640" y="1280" width="1152" height="128"/>
-  <object id="24" x="1280" y="1600" width="512" height="128"/>
-  <object id="25" x="1792" y="1280" width="64" height="448"/>
+  <object id="23" x="640" y="1280" width="1344" height="128"/>
+  <object id="24" x="1280" y="1600" width="704" height="128"/>
+  <object id="25" x="1984" y="1280" width="64" height="448"/>
   <object id="51" x="0" y="4224" width="64" height="128"/>
-  <object id="132" x="0" y="3008" width="192" height="64"/>
-  <object id="133" x="256" y="3008" width="64" height="64"/>
-  <object id="134" x="384" y="3008" width="64" height="64"/>
+  <object id="132" x="0" y="3008" width="128" height="64"/>
   <object id="137" x="576" y="1408" width="576" height="64"/>
   <object id="139" x="1216" y="1728" width="192" height="64"/>
   <object id="140" x="1152" y="1664" width="64" height="128"/>
@@ -668,5 +671,12 @@
     <property name="Y" type="float" value="600"/>
    </properties>
   </object>
+  <object id="337" x="150.667" y="2932.67" width="70.6667" height="36"/>
+  <object id="340" x="576" y="1600" width="576" height="2880"/>
+  <object id="342" x="1152" y="1792" width="192" height="2688"/>
+  <object id="346" x="256" y="2880" width="64" height="64"/>
+  <object id="352" x="298.667" y="2881.33" width="69.3333" height="31.3333"/>
+  <object id="353" x="0" y="2816" width="320" height="128"/>
+  <object id="355" x="0" y="2944" width="64" height="64"/>
  </objectgroup>
 </map>
