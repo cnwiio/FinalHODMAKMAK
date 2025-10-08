@@ -118,8 +118,8 @@ namespace game
             _playerTexture.CreateAnimation("DashDark", "up", false, 90, 6, 2); // row 3
 
             _playerTexture.LoadFrame(Content, "ElementalShift", "EleChange_Final", 288, 192);
-            _playerTexture.CreateAnimation("ElementalShift", "ElementalShiftLight", false, 100, 0, 8); // row 0
-            _playerTexture.CreateAnimation("ElementalShift", "ElementalShiftDark", false, 100, 8, 8); // row 1 (assuming it's row 1)
+            _playerTexture.CreateAnimation("ElementalShift", "ElementalShiftLight", false, 50, 0, 8); // row 0
+            _playerTexture.CreateAnimation("ElementalShift", "ElementalShiftDark", false, 50, 8, 8); // row 1 (assuming it's row 1)
 
 
             var skillTexture = new AnimController(Vector2.Zero);
