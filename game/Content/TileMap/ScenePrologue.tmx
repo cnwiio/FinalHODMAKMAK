@@ -1580,10 +1580,7 @@
   <object id="1896" name="Chest" x="2888" y="1409.33">
    <point/>
   </object>
-  <object id="1897" name="Chest" x="294.667" y="749.333">
-   <point/>
-  </object>
-  <object id="1900" name="Chest" x="287.333" y="669.333">
+  <object id="1900" name="Chest" x="288.666" y="676">
    <point/>
   </object>
   <object id="1902" name="Slime" type="Light" x="2690.67" y="2676">

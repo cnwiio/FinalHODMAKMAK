@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="13" nextobjectid="1243">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="13" nextobjectid="1241">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Water_tileset.tsx"/>
  <tileset firstgid="108" source="Bridge.tsx"/>
@@ -1351,7 +1351,7 @@
   <object id="1152" name="Chest" x="4056" y="3881.33">
    <point/>
   </object>
-  <object id="1153" name="Chest" x="3833.34" y="2009.33">
+  <object id="1153" name="Chest" x="3689.34" y="2032.83">
    <point/>
   </object>
   <object id="1181" name="Melee" type="Dark" x="3587" y="3966">
@@ -1405,10 +1405,10 @@
   <object id="1206" name="Slime" type="Dark" x="849.333" y="3946.67">
    <point/>
   </object>
-  <object id="1207" name="Chest" x="3926.67" y="2008">
+  <object id="1207" name="Chest" x="3936.67" y="2034">
    <point/>
   </object>
-  <object id="1208" name="Chest" x="4025.33" y="2012">
+  <object id="1208" name="Chest" x="4197.83" y="2039">
    <point/>
   </object>
   <object id="1240" name="Chest" x="2521" y="155">
@@ -1420,15 +1420,12 @@
   <object id="1185" name="Range" type="Light" x="3782.67" y="4044.33">
    <point/>
   </object>
-  <object id="1241" name="Player" x="193" y="3040">
-   <point/>
-  </object>
  </objectgroup>
  <objectgroup id="11" name="Collision">
   <object id="9" name="Warp" type="SceneWaterfall" x="383.887" y="21.2386" width="384.833" height="16.9167">
    <properties>
-    <property name="X" type="float" value="576"/>
-    <property name="Y" type="float" value="4349.33"/>
+    <property name="X" type="float" value="0"/>
+    <property name="Y" type="float" value="0"/>
    </properties>
   </object>
   <object id="10" x="385" y="0" width="383" height="20"/>
