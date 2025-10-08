@@ -1356,10 +1356,10 @@
   <object id="1719" name="Range" type="Light" x="996.97" y="3839.39">
    <point/>
   </object>
-  <object id="1720" name="Melee" type="Light" x="1336.36" y="3754.55">
+  <object id="1720" name="Melee" type="Light" x="1184.36" y="3730.55">
    <point/>
   </object>
-  <object id="1721" name="Melee" type="Light" x="1360.61" y="3978.79">
+  <object id="1721" name="Melee" type="Light" x="1195.61" y="3973.79">
    <point/>
   </object>
   <object id="1766" name="Chest" x="205.333" y="1178.67">

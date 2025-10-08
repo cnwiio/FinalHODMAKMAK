@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="15" nextobjectid="1002">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="15" nextobjectid="1003">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Cliff_Tileset.tsx"/>
  <tileset firstgid="59" source="Water_tileset.tsx"/>
@@ -1234,22 +1234,22 @@
   <object id="424" name="Chest" x="1696" y="355.5">
    <point/>
   </object>
-  <object id="900" name="Player" x="100" y="816">
+  <object id="900" name="Player" x="104.667" y="848">
    <point/>
   </object>
-  <object id="924" name="Range" type="Light" x="1945" y="329.496">
+  <object id="924" name="Range" type="Light" x="1982" y="285.496">
    <point/>
   </object>
-  <object id="925" name="Range" type="Dark" x="2338.5" y="337.667">
+  <object id="925" name="Range" type="Dark" x="2138.5" y="350.667">
    <point/>
   </object>
-  <object id="926" name="Range" type="Light" x="2080.16" y="447.167">
+  <object id="926" name="Range" type="Light" x="1986.16" y="451.167">
    <point/>
   </object>
   <object id="930" name="Range" type="Dark" x="2567.33" y="266.834">
    <point/>
   </object>
-  <object id="931" name="Range" type="Dark" x="2668" y="408.667">
+  <object id="931" name="Range" type="Dark" x="2579" y="439.667">
    <point/>
   </object>
   <object id="932" name="Range" type="Light" x="1570.86" y="2172.21">
@@ -1258,7 +1258,7 @@
   <object id="933" name="Range" type="Light" x="1571.36" y="2297.21">
    <point/>
   </object>
-  <object id="934" name="Melee" type="Light" x="502.663" y="2341.33">
+  <object id="934" name="Melee" type="Light" x="586.663" y="2343.33">
    <point/>
   </object>
   <object id="935" name="Melee" type="Light" x="770.667" y="2122.67">
@@ -1351,7 +1351,7 @@
   <object id="992" name="Chest" x="3174" y="1714">
    <point/>
   </object>
-  <object id="993" name="Slime" type="Dark" x="2304" y="308">
+  <object id="993" name="Slime" type="Dark" x="2309" y="351">
    <point/>
   </object>
   <object id="995" name="Chest" x="493.667" y="154.334">
@@ -1523,8 +1523,8 @@
   <object id="723" x="3328" y="1856" width="64" height="123.5"/>
   <object id="724" name="Warp" type="SceneFlowerHills" x="15.0757" y="641" width="13.8485" height="383.333">
    <properties>
-    <property name="X" type="float" value="125"/>
-    <property name="Y" type="float" value="2212"/>
+    <property name="X" type="float" value="4400"/>
+    <property name="Y" type="float" value="640"/>
    </properties>
   </object>
   <object id="725" x="0.666667" y="640" width="14.6667" height="385.333"/>
@@ -1536,8 +1536,8 @@
   <object id="731" x="2752" y="1600" width="64" height="64"/>
   <object id="901" name="Warp" type="SceneUnderWaterfall" x="370.917" y="4440.83" width="397.5" height="16.9167">
    <properties>
-    <property name="X" type="float" value="0"/>
-    <property name="Y" type="float" value="0"/>
+    <property name="X" type="float" value="560"/>
+    <property name="Y" type="float" value="130"/>
    </properties>
   </object>
   <object id="902" x="372.03" y="4459.59" width="395" height="20"/>

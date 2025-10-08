@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="18" nextobjectid="1202">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="18" nextobjectid="1204">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Cliff_Tileset.tsx"/>
  <tileset firstgid="59" source="Tree_1.tsx"/>
@@ -1142,7 +1142,7 @@
   <object id="1073" name="Chest" x="2847.33" y="4074.67">
    <point/>
   </object>
-  <object id="1081" name="Player" x="1575" y="4405">
+  <object id="1081" name="Player" x="1591" y="4339.67">
    <point/>
   </object>
   <object id="1107" name="Chest" x="675.152" y="2868.73">
@@ -1169,10 +1169,7 @@
   <object id="1115" name="Range" type="Dark" x="3698" y="4078">
    <point/>
   </object>
-  <object id="1116" name="Slime" type="Dark" x="2717.83" y="4031.83">
-   <point/>
-  </object>
-  <object id="1117" name="Slime" type="Dark" x="2663.83" y="4226.67">
+  <object id="1116" name="Slime" type="Dark" x="2724.83" y="4342.83">
    <point/>
   </object>
   <object id="1118" name="Slime" type="Dark" x="2914" y="3997.5">
@@ -1185,6 +1182,12 @@
    <point/>
   </object>
   <object id="1157" name="Chest" x="3415" y="2648">
+   <point/>
+  </object>
+  <object id="1202" name="Range" type="Dark" x="2711" y="4014">
+   <point/>
+  </object>
+  <object id="1203" name="Range" type="Dark" x="2665.33" y="4222">
    <point/>
   </object>
  </objectgroup>
@@ -1378,16 +1381,16 @@
   <object id="1080" x="3456" y="2584" width="320" height="104"/>
   <object id="1082" name="Warp" type="SceneHomeNorth" x="1217.08" y="4439.54" width="770.833" height="16.9167">
    <properties>
-    <property name="X" type="float" value="0"/>
-    <property name="Y" type="float" value="0"/>
+    <property name="X" type="float" value="1500"/>
+    <property name="Y" type="float" value="100"/>
    </properties>
   </object>
   <object id="1083" x="1217" y="4456" width="768" height="23"/>
   <object id="1084" x="4455.33" y="640.667" width="24.6667" height="382.667"/>
   <object id="1086" name="Warp" type="SceneWaterfall" x="4439.74" y="640.667" width="13.8485" height="383.333">
    <properties>
-    <property name="X" type="float" value="125"/>
-    <property name="Y" type="float" value="2212"/>
+    <property name="X" type="float" value="0"/>
+    <property name="Y" type="float" value="0"/>
    </properties>
   </object>
   <object id="1087" x="4224" y="576" width="64" height="64"/>
