@@ -15,6 +15,7 @@ namespace game
         public IShapeF Bounds { get; set; }
         public string LayerName { get; set; }
         public Player _player { get; set; }
+
         public bool AlwaysDraw => true;
         private float _invincibleTimer = 0f;
         private float _invincibleDuration = 0.3f; // 0.3 seconds i-frame
@@ -46,7 +47,7 @@ namespace game
 
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
-            if (_player._movement.IsDashing || _invincibleTimer > 0) return; // still invincible or dashing
+            if (_player._animation._isPlayingElementToggle || _player._movement.IsDashing || _invincibleTimer > 0) return; // still invincible or dashing
 
             if (collisionInfo.Other is MonsterAttackHitbox monster)
             {

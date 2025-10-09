@@ -16,7 +16,7 @@ namespace game
             _player = player;
 
             // Position above health bar (adjust Y offset as needed)
-            _position = new Vector2(graphicsDevice.Viewport.Width - 572, graphicsDevice.Viewport.Height - 125);
+            _position = new Vector2(graphicsDevice.Viewport.Width + 332, graphicsDevice.Viewport.Height - 125);
         }
 
         public void LoadContent(ContentManager content)

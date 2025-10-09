@@ -17,7 +17,7 @@ namespace game
     {
         private PlayerStats _stats;
         private PlayerInput _input;
-        private PlayerAnimation _animation;
+        public PlayerAnimation _animation;
         public PlayerMovement _movement;
 
         private bool _isAttacking = false;
