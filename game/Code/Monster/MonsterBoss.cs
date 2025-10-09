@@ -645,7 +645,7 @@ namespace game
                 currentBossAttack = (short)r.Next(1, 7);
                 _placeHolderDirection = DirectionToPlayer;
                 //currentBossAttack = currentBossAttack == 3 ? (short)(currentBossAttack + 1) : (short)currentBossAttack;
-                currentBossAttack = 3;
+                //currentBossAttack = 3;
                 if (currentBossAttack == 1)
                 {
                     //animation.SetAnimation("ChargeFollowSpike", GetDirection(DirectionToPlayer), OnAnimationEvent);
