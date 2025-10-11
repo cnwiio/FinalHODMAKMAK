@@ -96,6 +96,9 @@ namespace game
             var song = Content.Load<Song>("Audio/" + BGMSound);
             audioController.SongVolume = 0.3f;
             audioController.PlaySong(song, true);
+            //MediaPlayer.IsRepeating = true;
+            //MediaPlayer.Volume = 0.3f; //ปรับเสียง
+            //MediaPlayer.Play(song);
         }
 
         // ----------------------------------------------------------------------------------------------------- //
@@ -597,13 +600,13 @@ namespace game
                 Ysort.Add(healPickup);
             }
 
+            monster.UnLoad();
+            PendingMonsterRemove.Add(monster);
+
             if (monster is MonsterBoss)
             {
                 isGameEnd = true;
             }
-
-            monster.UnLoad();
-            PendingMonsterRemove.Add(monster);
         }
 
         /// <summary>
@@ -754,7 +757,10 @@ namespace game
             FireParticleDark = null;
             FireParticleLight = null;
 
+
+
             // AudioController
+            MediaPlayer.Stop();
             audioController.PauseAudio();
             audioController = null;
 

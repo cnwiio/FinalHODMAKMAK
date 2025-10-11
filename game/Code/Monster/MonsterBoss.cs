@@ -295,13 +295,20 @@ namespace game
             if (!isInActiveRadius && Vector2.Distance(Position, TargetPos) <= ActiveRadius)
             {
                 isInActiveRadius = true;
+                audioController.PauseAudio();
                 audioController.PlaySong(BGMSound, true);
+                audioController.ResumeAudio();
+                //Debug.WriteLine("Active");
             } 
             else if (!isInRange && isInActiveRadius) 
             {
+                //Debug.WriteLine("Not Active");
                 Reset();
                 isInActiveRadius = false;
+                audioController.PauseAudio();
                 audioController.PlaySong(savedBGMSound, true);
+                audioController.ResumeAudio();
+                //MediaPlayer.Play(savedBGMSound);
             }
             //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
             isInAttackList = isInRange;
@@ -720,6 +727,8 @@ namespace game
             _hitParticle = null;
             _fireParticle = null;
             _deadParticle = null;
+            BGMSound = null;
+            savedBGMSound = null;
         }
 
         public void RemoveCollision()

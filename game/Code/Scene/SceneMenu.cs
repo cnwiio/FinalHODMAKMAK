@@ -104,7 +104,7 @@ namespace game
             switch (scene)
             {
                 case ScreenScene.Menu:
-                    _spriteBatch.Draw(BG, Vector2.Zero, Color.White);
+                    _spriteBatch.Draw(BG, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White);
                     break;
                 case ScreenScene.Splash:
                     _spriteBatch.Draw(SP, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White * alpha);

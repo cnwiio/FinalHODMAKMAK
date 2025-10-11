@@ -63,6 +63,10 @@ namespace game
         {
             _animController.DrawFrame(spriteBatch);
         }
+        public void Draw(SpriteBatch spriteBatch, Color tint)
+        {
+            _animController.DrawFrame(spriteBatch, false, tint);
+        }
         public void PlayElementToggleAnimation(ElementType element)
         {
             _isPlayingElementToggle = true;
