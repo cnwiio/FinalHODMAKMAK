@@ -120,13 +120,13 @@ namespace game
             _fireParticle = fireParticle;
             ElementType = element;
         }
-        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName, string fireSfxName)
+        public void LoadSound(AudioController controller, SoundEffect hitSfx, SoundEffect deadSfx, SoundEffect parrySfx, SoundEffect fireSfx)
         {
             audioController = controller;
-            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
-            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
-            parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
-            fireSound = content.Load<SoundEffect>("Audio/" +  fireSfxName);
+            hitSound = hitSfx;
+            deadSound = deadSfx;
+            parrySound = parrySfx;
+            fireSound = fireSfx;
         }
         public void loadBullet(ContentManager content, string textureName)
         {

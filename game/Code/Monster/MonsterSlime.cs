@@ -26,7 +26,6 @@ namespace game
             get => _HP;
             set
             {
-                Debug.WriteLine(value);
                 _HP = value;
                 if (_HP <= 0)
                 {

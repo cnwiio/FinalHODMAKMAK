@@ -120,16 +120,19 @@ namespace game
                 telegraph[i] = new Telegraph(telegraphTexture, individualSkillTexture);
             }
         }
-        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName, string fireSfxName, string spikeSfxName, string normalBgmSfxName, string bossBgmSfxName)
+        public void LoadSound(AudioController controller, SoundEffect hitSfx, SoundEffect deadSfx, SoundEffect parrySfx, SoundEffect fireSfx, SoundEffect spikeSfx, Song normalBgmSfx, Song bossBgmSfx)
         {
-            audioController = controller;
-            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
-            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
-            parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
-            fireSound = content.Load<SoundEffect>("Audio/" + fireSfxName);
-            spikeSound = content.Load<SoundEffect>("Audio/" + spikeSfxName);
-            savedBGMSound = content.Load<Song>("Audio/" + normalBgmSfxName);
-            BGMSound = content.Load<Song>("Audio/" + bossBgmSfxName);
+            if (audioController == null)
+            {
+                audioController = controller;
+                hitSound = hitSfx;
+                deadSound = deadSfx;
+                parrySound = parrySfx;
+                fireSound = fireSfx;
+                spikeSound = spikeSfx;
+                savedBGMSound = normalBgmSfx;
+                BGMSound = bossBgmSfx;
+            }
             
         }
 
@@ -295,20 +298,13 @@ namespace game
             if (!isInActiveRadius && Vector2.Distance(Position, TargetPos) <= ActiveRadius)
             {
                 isInActiveRadius = true;
-                audioController.PauseAudio();
                 audioController.PlaySong(BGMSound, true);
-                audioController.ResumeAudio();
-                //Debug.WriteLine("Active");
             } 
             else if (!isInRange && isInActiveRadius) 
             {
-                //Debug.WriteLine("Not Active");
                 Reset();
                 isInActiveRadius = false;
-                audioController.PauseAudio();
                 audioController.PlaySong(savedBGMSound, true);
-                audioController.ResumeAudio();
-                //MediaPlayer.Play(savedBGMSound);
             }
             //isInActiveRadius = Vector2.Distance(Position, TargetPos) <= ActiveRadius;
             isInAttackList = isInRange;

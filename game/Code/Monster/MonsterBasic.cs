@@ -135,11 +135,11 @@ namespace game
             HealthUI = content.Load<Texture2D>("Texture/" + name);
         }
 
-        public virtual void LoadSound(ContentManager content, AudioController controller,string hitSfxName, string deadSfxName/*, string? jumpSfxName = null*/)
+        public virtual void LoadSound(AudioController controller, SoundEffect hitSfx, SoundEffect deadSfx)
         {
             audioController = controller;
-            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
-            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
+            hitSound = hitSfx;
+            deadSound = deadSfx;
         }
 
         private float _HPScale = 1;

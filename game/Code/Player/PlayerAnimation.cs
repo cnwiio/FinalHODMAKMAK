@@ -38,7 +38,7 @@ namespace game
             if (_isPlayingElementToggle)
             {
                 _elementToggleTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (_elementToggleTimer >= 800) // total animation length
+                if (_elementToggleTimer >= 400) // total animation length
                 {
                     _isPlayingElementToggle = false;
                 }
