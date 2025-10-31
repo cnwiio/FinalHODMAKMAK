@@ -28,6 +28,7 @@ namespace game
         private float alpha = 1f;
         private ScreenScene scene = ScreenScene.Splash;
         private Game1 game1;
+        private Button Button, Button2;
         enum ScreenScene
         {
             Splash,
@@ -48,6 +49,8 @@ namespace game
             SP = Content.Load<Texture2D>("Texture/splash");
             CR = Content.Load<Texture2D>("Texture/Credit");
             LOGOSFX = Content.Load<SoundEffect>("Audio/Logo");
+            Button = new Button(new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2 + 96 * 0.5f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button2 = new Button(new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2 + 96 * 2f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
             timer = SCREENTIME;
             base.LoadContent();
         }
@@ -85,16 +88,27 @@ namespace game
             _ks = Keyboard.GetState();
             _oms = _ms;
             _ms = Mouse.GetState();
-            if (scene == ScreenScene.Menu)
+            Button.Update();
+            Button2.Update();
+            if (Button.Active)
             {
-                var checkKs = _ks.GetPressedKeyCount() > 0 && _oldKs.GetPressedKeyCount() == 0;
-                var checkMS = (_ms.LeftButton == ButtonState.Pressed && _oms.LeftButton != ButtonState.Pressed) ||
-                    (_ms.RightButton == ButtonState.Pressed && _oms.RightButton != ButtonState.Pressed);
-                if (checkKs || checkMS)
-                {
-                    ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
-                } 
+                ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
             }
+            else if (Button2.Active)
+            {
+                Game.Exit();
+            }
+
+            //if (scene == ScreenScene.Menu)
+            //{
+            //    var checkKs = _ks.GetPressedKeyCount() > 0 && _oldKs.GetPressedKeyCount() == 0;
+            //    var checkMS = (_ms.LeftButton == ButtonState.Pressed && _oms.LeftButton != ButtonState.Pressed) ||
+            //        (_ms.RightButton == ButtonState.Pressed && _oms.RightButton != ButtonState.Pressed);
+            //    if (checkKs || checkMS)
+            //    {
+            //        ScreenManager.LoadScreen(new ScenePrologue(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+            //    } 
+            //}
             if (_ks.IsKeyDown(Keys.Enter) && !_oldKs.IsKeyDown(Keys.Enter)) scene = ScreenScene.Menu;
         }
         public override void Draw(GameTime gameTime)
@@ -105,6 +119,8 @@ namespace game
             {
                 case ScreenScene.Menu:
                     _spriteBatch.Draw(BG, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White);
+                    Button.Draw(_spriteBatch);
+                    Button2.Draw(_spriteBatch);
                     break;
                 case ScreenScene.Splash:
                     _spriteBatch.Draw(SP, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White * alpha);
@@ -121,6 +137,8 @@ namespace game
             SP = null;
             CR = null;
             LOGOSFX = null;
+            Button = null;
+            Button2 = null;
             base.UnloadContent();
         }
     }

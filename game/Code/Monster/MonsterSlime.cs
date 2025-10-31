@@ -139,6 +139,7 @@ namespace game
                     Hitbox.Bounds = rect;
                 }
 
+                UpdateUI();
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }

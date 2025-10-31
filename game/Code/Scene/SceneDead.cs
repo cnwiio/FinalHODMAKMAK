@@ -114,7 +114,7 @@ namespace game
         {
             BG = null;
             Button = null;
-            Button = null;
+            Button2 = null;
             base.UnloadContent();
         }
     }

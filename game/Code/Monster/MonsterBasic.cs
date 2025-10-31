@@ -145,10 +145,10 @@ namespace game
         private float _HPScale = 1;
         private float _followUpUI = 1;
         private float _frameCount = 0;
-        public void DrawUI(SpriteBatch spriteBatch)
+
+        public void UpdateUI()
         {
             // UI เลือด
-            var scale = new Vector2(1f, 1);
             var percent = (float)HP / (float)MAXHP; // เปอร์เซ็นเลือด
             if (_HPScale < percent - 0.05)
             {
@@ -183,6 +183,10 @@ namespace game
                 }
                 _frameCount += 1;
             }
+        }
+        public void DrawUI(SpriteBatch spriteBatch)
+        {
+            var scale = new Vector2(1f, 1);
             var offset = new Vector2(HealthUI.Width / 2 * scale.X, Height / 1.5f);
             spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _followUpUI), HealthUI.Height / 2), Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             spriteBatch.Draw(HealthUI, Position - offset, new Rectangle(0, HealthUI.Height / 2, (int)(HealthUI.Width * _HPScale), HealthUI.Height / 2), Color.Crimson, 0, Vector2.Zero, scale, SpriteEffects.None, 0);

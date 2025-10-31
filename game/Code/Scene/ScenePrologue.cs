@@ -137,6 +137,7 @@ namespace game
             }
             #endregion
 
+            if (isDebug) return;
             //Debug.WriteLine(game1.SavedHP);
             //Debug.WriteLine(game1.SavedPotion);
 
@@ -166,9 +167,9 @@ namespace game
             // Collision
             _collisionComponent.Update(gameTime);
 
-            // Debug FPS
-            int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds);
-            game1.Window.Title = $"FPS: {instantFps}";
+            //// Debug FPS
+            //int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds);
+            //game1.Window.Title = $"FPS: {instantFps}";
         }
 
 
