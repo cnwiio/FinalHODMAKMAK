@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -50,13 +51,16 @@ namespace game
         public bool playerInRadius;
         public bool isActive = true;
         public Wall Hitbox;
-        private KeyboardState ks;
+        private KeyboardState ks, oks;
         private Potion potion;
 
         private AudioController audioController;
         private SoundEffect soundEffect;
 
         private SpriteFont font;
+        private float fontAlpha = -1f;
+        private string fontMessage;
+        private Vector2 fontPosition;
         public float SortY { get => Position.Y; }
         public float SortX { get => Position.X; }
         public Chest() { }
@@ -67,13 +71,14 @@ namespace game
             Region = ChestAtlas[0];
             Position = position;
         }
-        public void Load(ContentManager content, string textureName, int textureWidth, int textureHeight, Vector2 position, string TextTextureName, string UITextureName, Potion potion, AudioController audioController, SoundEffect soundEffect)
+        public void Load(ContentManager content, string textureName, int textureWidth, int textureHeight, Vector2 position, string TextTextureName, string UITextureName, string FontName, Potion potion, AudioController audioController, SoundEffect soundEffect)
         {
             var texture2D = content.Load<Texture2D>("Texture/" + textureName);
             ChestAtlas = Texture2DAtlas.Create("Atlas/" + textureName, texture2D, textureWidth, textureHeight);
             Position = position;
             Text = content.Load<Texture2D>("Texture/" + TextTextureName);
             UI = content.Load<Texture2D>("Texture/" + UITextureName);
+            font = content.Load<SpriteFont>("Fonts/" + FontName);
             Region = ChestAtlas[0];
 
             // Important NOTE: change this in future
@@ -87,6 +92,7 @@ namespace game
         }
         public void Update(Vector2 targetpos)
         {
+            oks = ks;
             ks = Keyboard.GetState();
             if (isActive)
             {
@@ -102,17 +108,21 @@ namespace game
 
                 if (playerInRadius)
                 {
-                    if (ks.IsKeyDown(Keys.F))
+                    if (ks.IsKeyDown(Keys.F) && !oks.IsKeyDown(Keys.F))
                     {
                         if (!potion.IsFull())
                         {
                             isActive = false;
                             GiveReward();
-                            TriggerUI();
+                            TriggerPopupUI();
+                            var pos = new Vector2(UIPosition.X + UI.Width / 2, UIPosition.Y - 10);
+                            TriggerMessage(pos, "+ 1");
                         }
                         else
                         {
-                            Debug.WriteLine("[Chest] Potion is full, cannot open chest.");
+                            var pos = Position;
+                            pos += new Vector2( 0, -Region.Height * 2);
+                            TriggerMessage(pos, "Your Potion is full");
                         }
                     }
                 } 
@@ -125,6 +135,16 @@ namespace game
                     UIalpha -= 0.02f;
                     UIPosition.Y -= 1f;
                 }
+            }
+
+            if (fontAlpha >= 0f && isActive)
+            {
+                fontAlpha -= 0.02f;
+            }
+            else if (fontAlpha >= 0f && !isActive)
+            {
+                fontAlpha -= 0.02f;
+                fontPosition.Y = UIPosition.Y - 10;
             }
         }
         public void Draw(SpriteBatch spriteBatch)
@@ -153,6 +173,19 @@ namespace game
                 var textOrigin = new Vector2(UI.Width / 2, UI.Height / 2);
                 spriteBatch.Draw(UI, UIPosition, null, Color.White * UIalpha, 0f, textOrigin, Vector2.One, SpriteEffects.None, 0);
             }
+
+            if (fontAlpha >= 0f)
+            {
+                if (isActive)
+                {
+                    var textOrigin = new Vector2(fontMessage.Length * 5, 3);
+                    spriteBatch.DrawString(font, fontMessage, fontPosition, Color.Red * fontAlpha, 0f, textOrigin, Vector2.One, SpriteEffects.None, 0); 
+                } 
+                else 
+                {
+                    spriteBatch.DrawString(font, fontMessage, fontPosition, Color.White * fontAlpha);
+                }
+            }
         }
 
         public void GiveReward()
@@ -171,11 +204,18 @@ namespace game
             UI = null;
         }
 
-        public void TriggerUI()
+        public void TriggerPopupUI()
         {
             UIalpha = 1f;
             var offset = new Vector2(0, Region.Height);
             UIPosition = Position - offset;
+        }
+
+        public void TriggerMessage(Vector2 position, string message)
+        {
+            fontAlpha = 1f;
+            fontPosition = position;
+            fontMessage = message;
         }
     }
 }
