@@ -57,5 +57,10 @@ namespace game
                 }
             }
         }
+
+        public bool IsFull()
+        {
+            return Amout >= MAXAMOUT;
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace game
 
         private void Collect()
         {
-            if (!IsActive) return;
+            if (!IsActive || _player.potion.IsFull()) return;
 
             // Heal the player using PlayerStats.Heal
             //_player.Stats.Heal(_healAmount);
