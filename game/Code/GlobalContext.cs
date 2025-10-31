@@ -148,7 +148,7 @@ namespace game
                 {
                     var sfx = Content.Load<SoundEffect>("Audio/OpenChest");
                     var _chest = new Chest();
-                    _chest.Load(Content, "chest", 64, 64, obj.Position, "F", player.potion, audioController, sfx);
+                    _chest.Load(Content, "chest", 64, 64, obj.Position, "F", "Potion", player.potion, audioController, sfx);
                     Chests.Add(_chest);
                     Collisions.Add(_chest.Hitbox);
                     Ysort.Add(_chest);
