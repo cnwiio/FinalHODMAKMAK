@@ -156,6 +156,9 @@ namespace game
                 transformMatrix: globalContext._Camera.GetViewMatrix()
             );
 
+            string str1 = "Attack to parry bullet";
+            _spriteBatch.DrawString(spriteFont, str1, new Vector2(600, 1792), Color.White);
+
             globalContext.DrawAll(_spriteBatch);
 
             if (isDebug)
