@@ -43,7 +43,7 @@ namespace game
 
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
-        public short ScreenWidth = 1920, ScreenHeight = 1080;
+        public short ScreenWidth = 1280, ScreenHeight = 720;
 
         // Collision 
         public CollisionComponent CollisionComponent { get; set; }
