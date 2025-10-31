@@ -136,8 +136,6 @@ namespace game
                 ScreenManager.LoadScreen(new SceneDead(game1), new FadeTransition(GraphicsDevice, Color.Black, 3f));
             }
             #endregion
-
-            if (isDebug) return;
             //Debug.WriteLine(game1.SavedHP);
             //Debug.WriteLine(game1.SavedPotion);
 
