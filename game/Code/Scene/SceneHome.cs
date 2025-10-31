@@ -156,10 +156,6 @@ namespace game
 
             // Collision
             _collisionComponent.Update(gameTime);
-
-            // Debug FPS
-            int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds);
-            game1.Window.Title = $"FPS: {instantFps}";
         }
         public override void Draw(GameTime gameTime)
         {

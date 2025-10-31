@@ -136,7 +136,6 @@ namespace game
                 ScreenManager.LoadScreen(new SceneDead(game1), new FadeTransition(GraphicsDevice, Color.Black, 3f));
             }
             #endregion
-
             //Debug.WriteLine(game1.SavedHP);
             //Debug.WriteLine(game1.SavedPotion);
 
@@ -166,9 +165,9 @@ namespace game
             // Collision
             _collisionComponent.Update(gameTime);
 
-            // Debug FPS
-            int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds);
-            game1.Window.Title = $"FPS: {instantFps}";
+            //// Debug FPS
+            //int instantFps = (int)(1.0 / gameTime.ElapsedGameTime.TotalSeconds);
+            //game1.Window.Title = $"FPS: {instantFps}";
         }
 
 

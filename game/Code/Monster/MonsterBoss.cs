@@ -281,6 +281,7 @@ namespace game
                     Hitbox.Bounds = rect;
                 }
 
+                UpdateUI();
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
@@ -333,7 +334,7 @@ namespace game
                     {
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
-                    spriteBatch.Draw(_teleGraph, Position - offset, null, elementColor, 0, Vector2.Zero, Vector2.One * 5, SpriteEffects.None, 0);
+                    //spriteBatch.Draw(_teleGraph, Position - offset, null, elementColor, 0, Vector2.Zero, Vector2.One * 5, SpriteEffects.None, 0);
                 }
                 else
                 {

@@ -37,6 +37,7 @@ namespace game
                     PlaySound = true;
                 }
             }
+
             if ((collisionInfo.Other is PlayerHurtbox || collisionInfo.Other is PlayerAttackHitbox) && Monster is MonsterBoss)
             {
                 bulletVisible = false;
@@ -44,6 +45,11 @@ namespace game
                 {
                     PlaySound = true;
                 }
+            }
+
+            if (collisionInfo.Other is PlayerHurtbox && (Monster is MonsterMelee || Monster is MonsterSlime || Monster is MonsterBoss)) 
+            {
+                TimeToLiveSeconds = 0.001f;
             }
         }
     }

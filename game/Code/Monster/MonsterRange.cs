@@ -218,6 +218,7 @@ namespace game
                 }
 
                 PlayeParrySound(Hitbox);
+                UpdateUI();
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
