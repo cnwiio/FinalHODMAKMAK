@@ -87,7 +87,7 @@ namespace game
             Hurtbox = new PlayerHurtbox(this, 48, 72);
 
             // Manual collision size and offset
-            Vector2 collisionSize = new Vector2(40, 30); // width, height
+            Vector2 collisionSize = new Vector2(40, 32); // width, height
             Vector2 collisionOffset = new Vector2(-20, 10); // offset from top-left of sprite
             Collision = new PlayerCollisionBox(this, collisionSize, collisionOffset);
 
