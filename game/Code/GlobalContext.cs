@@ -63,13 +63,13 @@ namespace game
         public SpriteBatch SpriteBatch;
         public KeyboardState Ks, OldKs; // keyboard
         public bool isGameEnd = false;
-        private string hitSound = "MonHurt";
-        private string deadSound = "MonDead";
-        private string parrySound = "Parry";
-        private string fireSound = "MonShoot";
-        private string spikeSound = "BossSpike";
-        private string bossbgmSound = "BgmBoss";
-        private string BGMSound = "BgmNormal";
+        private SoundEffect monhurtSound;
+        private SoundEffect deadSound;
+        private SoundEffect parrySound;
+        private SoundEffect fireSound;
+        private SoundEffect spikeSound;
+        private Song bossbgmSound;
+        private Song BGMSound;
 
         public GlobalContext(Game game) {
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -84,6 +84,13 @@ namespace game
 
             // Audio
             audioController = _Game1.audioController;
+            monhurtSound = _Game1.monhurtSound;
+            deadSound = _Game1.deadSound;
+            parrySound = _Game1.parrySound;
+            fireSound = _Game1.fireSound;
+            spikeSound = _Game1.spikeSound;
+            bossbgmSound = _Game1.bossbgmSound;
+            BGMSound = _Game1.BGMSound;
 
             // Camera
             Camera = _Game1.camera;
@@ -93,9 +100,8 @@ namespace game
         public void PlayBGM()
         {
             var Content = _Game1.Content;
-            var song = Content.Load<Song>("Audio/" + BGMSound);
             audioController.SongVolume = 0.3f;
-            audioController.PlaySong(song, true);
+            audioController.PlaySong(BGMSound, true);
         }
 
         // ----------------------------------------------------------------------------------------------------- //
@@ -142,7 +148,7 @@ namespace game
                 {
                     var sfx = Content.Load<SoundEffect>("Audio/OpenChest");
                     var _chest = new Chest();
-                    _chest.Load(Content, "chest", 64, 64, obj.Position, "F", player.potion, audioController, sfx);
+                    _chest.Load(Content, "chest", 64, 64, obj.Position, "F", "Potion", "Pixeltype", player.potion, audioController, sfx);
                     Chests.Add(_chest);
                     Collisions.Add(_chest.Hitbox);
                     Ysort.Add(_chest);
@@ -254,7 +260,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkGoonFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, hitSound, deadSound);
+            monster.LoadSound(audioController, monhurtSound, deadSound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
@@ -294,7 +300,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkRegimogusFuckingDie", monster.Position, 128, 128, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound, fireSound);
+            monster.LoadSound(audioController, monhurtSound, deadSound, parrySound, fireSound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 75f,
@@ -342,7 +348,7 @@ namespace game
             monster.LoadAnim("Casting", "Light-VoidDevourer-gooning", monster.Position, 320, 384, Content);
 
             monster.loadBullet(Content, "LightBullet", "DarkBullet");
-            monster.LoadSound(Content, audioController, hitSound, deadSound, parrySound, fireSound, spikeSound, BGMSound, bossbgmSound);
+            monster.LoadSound(audioController, monhurtSound, deadSound, parrySound, fireSound, spikeSound, BGMSound, bossbgmSound);
             monster.LoadAssets(Content);
             monster.LoadUI(Content, "HealthBar7");
             monster.CreateAnimation();
@@ -383,7 +389,7 @@ namespace game
                 monster.LoadAnim("Die", "DarkSlimeDie", monster.Position, 64, 64, Content);
             }
             monster.LoadUI(Content, "HealthBar5");
-            monster.LoadSound(Content, audioController, hitSound, deadSound);
+            monster.LoadSound(audioController, monhurtSound, deadSound);
             monster.CreateAnimation();
             monster.SetProperty(
                 speed: 100f,
@@ -597,13 +603,13 @@ namespace game
                 Ysort.Add(healPickup);
             }
 
+            monster.UnLoad();
+            PendingMonsterRemove.Add(monster);
+
             if (monster is MonsterBoss)
             {
                 isGameEnd = true;
             }
-
-            monster.UnLoad();
-            PendingMonsterRemove.Add(monster);
         }
 
         /// <summary>
@@ -754,8 +760,11 @@ namespace game
             FireParticleDark = null;
             FireParticleLight = null;
 
+
+
             // AudioController
-            audioController.PauseAudio();
+            MediaPlayer.Stop();
+            //audioController.PauseAudio();
             audioController = null;
 
         }

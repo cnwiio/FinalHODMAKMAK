@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
 using MonoGame.Extended.Collisions.Layers;
@@ -18,6 +20,7 @@ namespace game
         public ScreenManager screenManager;
 
         // Audio
+        #region Player Sound
         public AudioController audioController;
         private string attackSound = "PlayerAttack";
         private string hurtSound = "PlayerHurt";
@@ -26,6 +29,17 @@ namespace game
         private string potionSound = "SipPotion";
         private string dashSound = "Dash";
         private string eleSound = "ChangeElement";
+        #endregion
+
+        #region Monster Sound
+        public SoundEffect monhurtSound;
+        public SoundEffect deadSound;
+        public SoundEffect parrySound;
+        public SoundEffect fireSound;
+        public SoundEffect spikeSound;
+        public Song bossbgmSound;
+        public Song BGMSound;
+        #endregion
 
         public GlobalCamera camera;
         public short MapWidth, MapHeight;
@@ -62,9 +76,11 @@ namespace game
             var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 1280, 720);
             camera = new GlobalCamera(viewportAdapter);
 
+            Window.Title = "The Lost Witch";
+
             _graphics.PreferredBackBufferWidth = ScreenWidth;
             _graphics.PreferredBackBufferHeight = ScreenHeight;
-            _graphics.IsFullScreen = true;
+            //_graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
                 
             base.Initialize();
@@ -72,6 +88,16 @@ namespace game
 
         protected override void LoadContent()
         {
+            // Audio
+            monhurtSound = Content.Load<SoundEffect>("Audio/MonHurt");
+            deadSound = Content.Load<SoundEffect>("Audio/MonDead");
+            parrySound = Content.Load<SoundEffect>("Audio/Parry");
+            fireSound = Content.Load<SoundEffect>("Audio/MonShoot");
+            spikeSound = Content.Load<SoundEffect>("Audio/BossSpike");
+            bossbgmSound = Content.Load<Song>("Audio/BgmBoss");
+            BGMSound = Content.Load<Song>("Audio/BgmNormal");
+
+
             // Player
             _playerTexture = new AnimController(new Vector2(400, 400));
             _playerTexture.LoadFrame(Content, "Walk", "Player_Walk", 288, 192);

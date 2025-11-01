@@ -320,7 +320,8 @@ namespace game
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            _animation.Draw(spriteBatch);
+            Color tint = Hurtbox.isIframe ? Color.White * 0.5f : Color.White;
+            _animation.Draw(spriteBatch, tint);
             if (IsSkill1Visible)
             {
                 skillAnim.DrawFrame(spriteBatch);

@@ -120,16 +120,19 @@ namespace game
                 telegraph[i] = new Telegraph(telegraphTexture, individualSkillTexture);
             }
         }
-        public void LoadSound(ContentManager content, AudioController controller, string hitSfxName, string deadSfxName, string parrySfxName, string fireSfxName, string spikeSfxName, string normalBgmSfxName, string bossBgmSfxName)
+        public void LoadSound(AudioController controller, SoundEffect hitSfx, SoundEffect deadSfx, SoundEffect parrySfx, SoundEffect fireSfx, SoundEffect spikeSfx, Song normalBgmSfx, Song bossBgmSfx)
         {
-            audioController = controller;
-            hitSound = content.Load<SoundEffect>("Audio/" + hitSfxName);
-            deadSound = content.Load<SoundEffect>("Audio/" + deadSfxName);
-            parrySound = content.Load<SoundEffect>("Audio/" + parrySfxName);
-            fireSound = content.Load<SoundEffect>("Audio/" + fireSfxName);
-            spikeSound = content.Load<SoundEffect>("Audio/" + spikeSfxName);
-            savedBGMSound = content.Load<Song>("Audio/" + normalBgmSfxName);
-            BGMSound = content.Load<Song>("Audio/" + bossBgmSfxName);
+            if (audioController == null)
+            {
+                audioController = controller;
+                hitSound = hitSfx;
+                deadSound = deadSfx;
+                parrySound = parrySfx;
+                fireSound = fireSfx;
+                spikeSound = spikeSfx;
+                savedBGMSound = normalBgmSfx;
+                BGMSound = bossBgmSfx;
+            }
             
         }
 
@@ -278,6 +281,7 @@ namespace game
                     Hitbox.Bounds = rect;
                 }
 
+                UpdateUI();
                 animation.UpdateFrame(gameTime, Position); // Draw  
             }
         }
@@ -330,7 +334,7 @@ namespace game
                     {
                         animation.DrawFrame(spriteBatch, false, tint);
                     }
-                    spriteBatch.Draw(_teleGraph, Position - offset, null, elementColor, 0, Vector2.Zero, Vector2.One * 5, SpriteEffects.None, 0);
+                    //spriteBatch.Draw(_teleGraph, Position - offset, null, elementColor, 0, Vector2.Zero, Vector2.One * 5, SpriteEffects.None, 0);
                 }
                 else
                 {
@@ -720,6 +724,8 @@ namespace game
             _hitParticle = null;
             _fireParticle = null;
             _deadParticle = null;
+            BGMSound = null;
+            savedBGMSound = null;
         }
 
         public void RemoveCollision()

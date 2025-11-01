@@ -33,8 +33,8 @@ namespace game
         public override void LoadContent()
         {
             BG = Content.Load<Texture2D>("Texture/DeadScene");
-            Button = new Button(new Vector2(1280 / 2, 720 - 96 * 3), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
-            Button2 = new Button(new Vector2(1280 / 2, 720 - 96 * 2), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 3), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button2 = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 2), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
 
             var player = game.Player;
             var stats = player.Stats;
@@ -105,7 +105,7 @@ namespace game
         {
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
-            _spriteBatch.Draw(BG, new Rectangle(0, 0, 1280, 720), Color.White);
+            _spriteBatch.Draw(BG, new Rectangle(0, 0, game.ScreenWidth, game.ScreenHeight), Color.White);
             Button.Draw(_spriteBatch);
             Button2.Draw(_spriteBatch, 1);
             _spriteBatch.End();
@@ -114,7 +114,7 @@ namespace game
         {
             BG = null;
             Button = null;
-            Button = null;
+            Button2 = null;
             base.UnloadContent();
         }
     }

@@ -38,7 +38,7 @@ namespace game
             if (_isPlayingElementToggle)
             {
                 _elementToggleTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (_elementToggleTimer >= 800) // total animation length
+                if (_elementToggleTimer >= 400) // total animation length
                 {
                     _isPlayingElementToggle = false;
                 }
@@ -62,6 +62,10 @@ namespace game
         public void Draw(SpriteBatch spriteBatch)
         {
             _animController.DrawFrame(spriteBatch);
+        }
+        public void Draw(SpriteBatch spriteBatch, Color tint)
+        {
+            _animController.DrawFrame(spriteBatch, false, tint);
         }
         public void PlayElementToggleAnimation(ElementType element)
         {
