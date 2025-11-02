@@ -33,8 +33,8 @@ namespace game
         public override void LoadContent()
         {
             BG = Content.Load<Texture2D>("Texture/DeadScene");
-            Button = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 3), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
-            Button2 = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 2), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 4), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button2 = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 3), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
 
             var player = game.Player;
             var stats = player.Stats;
