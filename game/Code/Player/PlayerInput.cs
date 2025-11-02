@@ -62,7 +62,7 @@ namespace game
             MouseState mouseState = Mouse.GetState();
             bool justClicked = mouseState.LeftButton == ButtonState.Pressed && _oldMouseState.LeftButton == ButtonState.Released;
             AttackTriggered = justClicked;
-            _oldMouseState = mouseState;
+            
 
             // Element Toggle: press Q
             ElementToggleTriggered = _keyboardState.IsKeyDown(Keys.Q) && !_oldkeyboardState.IsKeyDown(Keys.Q);
@@ -70,8 +70,8 @@ namespace game
             // Skill 1 (E)
             Skill1Triggered = _keyboardState.IsKeyDown(Keys.E) && !_oldkeyboardState.IsKeyDown(Keys.E);
 
-            // Skill 2 (R)
-            Skill2Triggered = _keyboardState.IsKeyDown(Keys.R) && !_oldkeyboardState.IsKeyDown(Keys.R);
+            // Skill 2 (M2)
+            Skill2Triggered = mouseState.RightButton == ButtonState.Pressed && _oldMouseState.RightButton == ButtonState.Released;
 
 
             PotionTriggered = _keyboardState.IsKeyDown(Keys.LeftShift) && !_oldkeyboardState.IsKeyDown(Keys.LeftShift);
@@ -79,6 +79,7 @@ namespace game
 
             Direction = dir;
             _oldkeyboardState = _keyboardState;
+            _oldMouseState = mouseState;
         }
         //private bool IsKeyDoubleTapped(Keys key, ref double lastTapTime, double now)
         //{
