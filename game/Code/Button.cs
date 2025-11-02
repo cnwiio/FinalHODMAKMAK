@@ -59,12 +59,15 @@ namespace game
             //Debug.WriteLineIf(Active, "Click");
         }
 
-        public void Draw(SpriteBatch spriteBatch, short index = 0)
+        public void Draw(SpriteBatch spriteBatch, short index = 0, Color normal = default, Color hover = default, Color click = default)
         {
-            Color hover = IsClick ? Color.Gray : IsHover ? Color.DarkGray : Color.White;
+            if (normal == default) normal = Color.White;
+            if (hover == default) hover = Color.DarkGray;
+            if (click == default) click = Color.Gray;
+            Color _hover = IsClick ? click : IsHover ? hover : normal;
             var origin = new Vector2(width / 2, height / 2);
-            spriteBatch.Draw(Texture, Position, new Rectangle(0, height * index, width, height),hover
-                ,0, origin, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, Position, new Rectangle(0, height * index, width, height), _hover
+                , 0, origin, 1, SpriteEffects.None, 0);
             //spriteBatch.Draw(Texture, Rect,hover);
         }
 

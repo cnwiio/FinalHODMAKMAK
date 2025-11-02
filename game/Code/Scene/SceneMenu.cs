@@ -119,8 +119,8 @@ namespace game
             {
                 case ScreenScene.Menu:
                     _spriteBatch.Draw(BG, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White);
-                    Button.Draw(_spriteBatch);
-                    Button2.Draw(_spriteBatch);
+                    Button.Draw(_spriteBatch, 3);
+                    Button2.Draw(_spriteBatch, 2);
                     break;
                 case ScreenScene.Splash:
                     _spriteBatch.Draw(SP, new Rectangle(0, 0, game1.ScreenWidth, game1.ScreenHeight), Color.White * alpha);

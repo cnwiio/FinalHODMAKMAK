@@ -70,8 +70,8 @@ namespace game
             //_spriteBatch.DrawString(font, str, new Vector2(1280 / 2 - 250, 100), Color.Black, 
             //    0, Vector2.Zero, Vector2.One * 2, SpriteEffects.None, 0);
 
-            Button.Draw(_spriteBatch, 1);
-            Button2.Draw(_spriteBatch);
+            Button.Draw(_spriteBatch, 1, Color.LightGray, Color.DarkGray, Color.Gray);
+            Button2.Draw(_spriteBatch, 4, Color.LightGray, Color.DarkGray, Color.Gray);
             _spriteBatch.End();
         }
         public override void UnloadContent()

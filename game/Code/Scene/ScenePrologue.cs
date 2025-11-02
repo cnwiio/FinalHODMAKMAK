@@ -215,11 +215,11 @@ namespace game
             _spriteBatch.DrawString(spriteFont, str1, new Vector2(979, 3717), Color.White);
             string str2 = "SPACE to dash";
             _spriteBatch.DrawString(spriteFont, str2, new Vector2(1422, 3543), Color.White);
-            string str3 = "Left Click to attack";
+            string str3 = "Left-Click to attack";
             _spriteBatch.DrawString(spriteFont, str3, new Vector2(2186, 3520), Color.White);
             string str4 = "Left-Shift to use potion\nPotion cannot be used during Attack and Dash";
             _spriteBatch.DrawString(spriteFont, str4, new Vector2(2366, 1757), Color.White);
-            string str5 = "E R to use skill";
+            string str5 = "E to use skill Pillar Of Light\nRight-Click to use skill Arclight Cross";
             _spriteBatch.DrawString(spriteFont, str5, new Vector2(2450, 454), Color.White);
             string str6 = "Q to Change element";
             _spriteBatch.DrawString(spriteFont, str6, new Vector2(2636, 2778), Color.White);
