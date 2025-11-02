@@ -145,6 +145,10 @@ namespace game
             _playerTexture.CreateAnimation("ElementalShift", "ElementalShiftLight", false, 50, 0, 8); // row 0
             _playerTexture.CreateAnimation("ElementalShift", "ElementalShiftDark", false, 50, 8, 8); // row 1 (assuming it's row 1)
 
+            // Faint animation
+            _playerTexture.LoadFrame(Content, "Faint", "Faint_Final", 288, 192); // frame width/height
+            _playerTexture.CreateAnimation("Faint", "no", false, 170, 0, 10); // 10 frames, 170ms each
+
 
             var skillTexture = new AnimController(Vector2.Zero);
             skillTexture.LoadFrame(Content, "Light", "BoneOfMySword", 192, 384);
