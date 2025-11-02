@@ -12,8 +12,10 @@ namespace game
         private Vector2 _lastDirection = new Vector2(0, 1);
 
         public bool _isPlayingElementToggle = false;
+        public bool _isFainting = false;
         public bool IsPlayingElementToggle => _isPlayingElementToggle;
         private double _elementToggleTimer = 0;
+        public bool IsFainting => _isFainting;
 
         public float TextureWidth { get; private set; }
         public float TextureHeight { get; private set; }
@@ -25,6 +27,15 @@ namespace game
 
         public void Update(GameTime gameTime, Vector2 direction, Vector2 position, bool isAttacking, bool isDashing)
         {
+            // Faint animation overrides everything
+            if (_isFainting)
+            {
+                _animController.UpdateFrame(gameTime, position);
+                TextureWidth = _animController.TextureWidth;
+                TextureHeight = _animController.TextureHeight;
+                return;
+            }
+
             if (direction != Vector2.Zero) _lastDirection = direction;
 
             if (Math.Abs(_lastDirection.X) >= Math.Abs(_lastDirection.Y))
@@ -87,5 +98,11 @@ namespace game
             string elt = ele == ElementType.Light ? "Light" : "Dark";
             _animController.SetAnimation("Dash" + elt, _row switch { 1 => "left", 2 => "right", 3 => "down", 4 => "up", _ => "down" });
         }
+        public void TriggerFaint()
+        {
+            _isFainting = true;
+            _animController.SetAnimation("Faint", "no"); // "no" is the row for non-directional faint animation
+        }
+        public void StopFaint() => _isFainting = false; // optional in case you wanna recover)
     }
 }

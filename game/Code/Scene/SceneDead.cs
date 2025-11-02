@@ -58,6 +58,10 @@ namespace game
             Button2.Update();
             if (Button.Active)
             {
+                // Reset faint animation
+                game.Player._animation.StopFaint();
+                game.Player._movement.SetCanMove(true);
+
                 var scene = game.Player.CurrentScene;
                 if (scene == "SceneHome")
                 {

@@ -133,6 +133,14 @@ namespace game
         {
             _input.Update(gameTime);
 
+            // Check for fainting
+            if (_stats.CurrentHP <= 0 && !_animation.IsFainting)
+            {
+                _movement.SetCanMove(false); // stop player from moving
+                _isAttacking = false;        // stop attack
+                _animation.TriggerFaint();
+            }
+
             // Handle Element Toggle
             if (_input.ElementToggleTriggered && !_isAttacking && !_movement.IsDashing)
             {
