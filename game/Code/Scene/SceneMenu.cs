@@ -49,8 +49,8 @@ namespace game
             SP = Content.Load<Texture2D>("Texture/splash");
             CR = Content.Load<Texture2D>("Texture/Credit");
             LOGOSFX = Content.Load<SoundEffect>("Audio/Logo");
-            Button = new Button(new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 3f + 96 * 0.5f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
-            Button2 = new Button(new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 3f + 96 * 2f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button = new Button(new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2.5f + 96 * 0.5f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button2 = new Button(new Vector2(game1.ScreenWidth / 2, game1.ScreenHeight / 2.5f + 96 * 2f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
             timer = SCREENTIME;
             base.LoadContent();
         }

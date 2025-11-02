@@ -33,7 +33,7 @@ namespace game
         public override void LoadContent()
         {
             BG = Content.Load<Texture2D>("Texture/End");
-            Button = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 3.5f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
+            Button = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 2.75f), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
             Button2 = new Button(new Vector2(game.ScreenWidth / 2, game.ScreenHeight - 96 * 2), 384, 96, Content.Load<Texture2D>("Texture/Button2"));
             font = Content.Load<SpriteFont>("Fonts/Pixeltype");
 
@@ -70,8 +70,8 @@ namespace game
             //_spriteBatch.DrawString(font, str, new Vector2(1280 / 2 - 250, 100), Color.Black, 
             //    0, Vector2.Zero, Vector2.One * 2, SpriteEffects.None, 0);
 
-            Button.Draw(_spriteBatch, 1, Color.LightGray, Color.DarkGray, Color.Gray);
-            Button2.Draw(_spriteBatch, 4, Color.LightGray, Color.DarkGray, Color.Gray);
+            Button.Draw(_spriteBatch, 1, Color.IndianRed, Color.DarkRed, Color.Red);
+            Button2.Draw(_spriteBatch, 4, Color.IndianRed, Color.DarkRed, Color.Red);
             _spriteBatch.End();
         }
         public override void UnloadContent()
