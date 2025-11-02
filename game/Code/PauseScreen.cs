@@ -43,7 +43,7 @@ namespace game
             ResumeClicked = MainMenuClicked = QuitClicked = false;
 
             // toggle pause 
-            if (oks.IsKeyDown(Keys.U) && ks.IsKeyUp(Keys.U))
+            if (oks.IsKeyDown(Keys.Escape) && ks.IsKeyUp(Keys.Escape))
                 paused = !paused;
 
             if (!paused) return;
