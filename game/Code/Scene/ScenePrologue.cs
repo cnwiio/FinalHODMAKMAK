@@ -53,6 +53,10 @@ namespace game
         private PotionHUD _potionHUD;
         private SkillHUD _skillHUD;
 
+        // Pause Screen
+        private PauseScreen pauseScreen;
+        private Texture2D pauseTexture;
+
 
         public ScenePrologue(Game game) : base(game)
         {
@@ -89,6 +93,9 @@ namespace game
             _skillHUD = new SkillHUD(player, GraphicsDevice);
             _skillHUD.LoadContent(Content);
 
+            pauseTexture = Content.Load<Texture2D>("HUD/PauseScreen");
+            pauseScreen = new PauseScreen(pauseTexture);
+
             globalContext.LoadAll(Content, "ScenePrologue", preventMonster, player);
 
             // Insert collision entities
@@ -103,6 +110,25 @@ namespace game
 
         public override void Update(GameTime gameTime)
         {
+            pauseScreen.Update(gameTime);
+
+            if (pauseScreen.IsPaused)
+            {
+                if (pauseScreen.ResumeClicked)
+                {
+                    pauseScreen.Resume(); // resume game
+                }
+                else if (pauseScreen.MainMenuClicked)
+                {
+                    ScreenManager.LoadScreen(new SceneMenu(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+                }
+                else if (pauseScreen.QuitClicked)
+                {
+                    Game.Exit();
+                }
+                return; // skip gameplay updates while paused
+            }
+
             // Keyboard input
             _oldKs = _ks;
             _ks = Keyboard.GetState();
@@ -214,6 +240,9 @@ namespace game
             _elementHUD.Draw(_spriteBatch);
             _potionHUD.Draw(_spriteBatch);
             _skillHUD.Draw(_spriteBatch);
+
+            // Draw pause screen if paused
+            pauseScreen.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         private void DebugDraw()

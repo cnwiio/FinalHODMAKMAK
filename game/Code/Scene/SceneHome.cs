@@ -43,6 +43,11 @@ namespace game
         private PotionHUD _potionHUD;
         private SkillHUD _skillHUD;
 
+        // Pause Screen
+        private PauseScreen pauseScreen;
+        private Texture2D pauseTexture;
+
+
         public SceneHome(Game game) : base(game)
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -75,6 +80,9 @@ namespace game
             _skillHUD = new SkillHUD(player, GraphicsDevice);
             _skillHUD.LoadContent(Content);
 
+            pauseTexture = Content.Load<Texture2D>("Texture/PauseMenu");
+            pauseScreen = new PauseScreen(pauseTexture);
+
             //globalContext.LoadCamera();
             //globalContext.LoadParticle();
             //globalContext.LoadTiledMap(Content, "SceneHome");
@@ -102,6 +110,25 @@ namespace game
         }
         public override void Update(GameTime gameTime)
         {
+            pauseScreen.Update(gameTime);
+
+            if (pauseScreen.IsPaused)
+            {
+                if (pauseScreen.ResumeClicked)
+                {
+                    pauseScreen.Resume(); // resume game
+                }
+                else if (pauseScreen.MainMenuClicked)
+                {
+                    ScreenManager.LoadScreen(new SceneMenu(Game), new FadeTransition(GraphicsDevice, Color.Black, 1f));
+                }
+                else if (pauseScreen.QuitClicked)
+                {
+                    Game.Exit();
+                }
+                return; // skip gameplay updates while paused
+            }
+
             // Keyboard input
             _oldKs = _ks;
             _ks = Keyboard.GetState();
@@ -186,6 +213,8 @@ namespace game
             _potionHUD.Draw(_spriteBatch);
             _skillHUD.Draw(_spriteBatch);
 
+            // Draw pause screen if paused
+            pauseScreen.Draw(_spriteBatch);
             _spriteBatch.End();
         }
         public override void UnloadContent()
