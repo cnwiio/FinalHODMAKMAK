@@ -1237,19 +1237,19 @@
   <object id="900" name="Player" x="104.667" y="848">
    <point/>
   </object>
-  <object id="924" name="Range" type="Light" x="1982" y="285.496">
+  <object id="924" name="Range" type="Light" x="1861" y="281.829">
    <point/>
   </object>
   <object id="925" name="Range" type="Dark" x="2138.5" y="350.667">
    <point/>
   </object>
-  <object id="926" name="Range" type="Light" x="1986.16" y="451.167">
+  <object id="926" name="Range" type="Light" x="1865.16" y="447.5">
    <point/>
   </object>
-  <object id="930" name="Range" type="Dark" x="2567.33" y="266.834">
+  <object id="930" name="Range" type="Dark" x="2461.66" y="283.167">
    <point/>
   </object>
-  <object id="931" name="Range" type="Dark" x="2579" y="439.667">
+  <object id="931" name="Range" type="Dark" x="2460.33" y="446.334">
    <point/>
   </object>
   <object id="932" name="Range" type="Light" x="1570.86" y="2172.21">
@@ -1267,28 +1267,28 @@
   <object id="936" name="Slime" type="Dark" x="552" y="1969.33">
    <point/>
   </object>
-  <object id="938" name="Melee" type="Light" x="3251.28" y="1063.15">
+  <object id="938" name="Melee" type="Light" x="3404.61" y="626.856">
    <point/>
   </object>
-  <object id="939" name="Melee" type="Light" x="3876.61" y="1059.49">
+  <object id="939" name="Melee" type="Light" x="3798.28" y="624.552">
    <point/>
   </object>
-  <object id="941" name="Melee" type="Dark" x="3559.94" y="1113.82">
+  <object id="941" name="Melee" type="Dark" x="3598.92" y="658.754">
    <point/>
   </object>
-  <object id="942" name="Slime" type="Dark" x="3414.11" y="1256.65">
+  <object id="942" name="Slime" type="Dark" x="3466.11" y="761.023">
    <point/>
   </object>
-  <object id="944" name="Slime" type="Dark" x="3750.61" y="1255.82">
+  <object id="944" name="Slime" type="Dark" x="3701.61" y="760.442">
    <point/>
   </object>
-  <object id="945" name="Range" type="Dark" x="3372.27" y="875.485">
+  <object id="945" name="Range" type="Dark" x="3473.74" y="521.17">
    <point/>
   </object>
-  <object id="947" name="Range" type="Dark" x="3731.27" y="871.151">
+  <object id="947" name="Range" type="Dark" x="3741.8" y="517.934">
    <point/>
   </object>
-  <object id="948" name="Range" type="Light" x="3564" y="776.667">
+  <object id="948" name="Range" type="Light" x="3616.9" y="447.383">
    <point/>
   </object>
   <object id="949" name="Range" type="Light" x="360" y="3260.67">
@@ -1345,7 +1345,7 @@
   <object id="979" name="Slime" type="Light" x="3616.09" y="2096.52">
    <point/>
   </object>
-  <object id="980" name="Chest" x="2366.67" y="936.667">
+  <object id="980" name="Chest" x="2368.67" y="886.667">
    <point/>
   </object>
   <object id="992" name="Chest" x="3174" y="1714">
@@ -1357,7 +1357,7 @@
   <object id="995" name="Chest" x="493.667" y="154.334">
    <point/>
   </object>
-  <object id="997" name="Chest" x="3880" y="169.333">
+  <object id="997" name="Chest" x="3900" y="189.333">
    <point/>
   </object>
  </objectgroup>
@@ -1523,8 +1523,8 @@
   <object id="723" x="3328" y="1856" width="64" height="123.5"/>
   <object id="724" name="Warp" type="SceneFlowerHills" x="15.0757" y="641" width="13.8485" height="383.333">
    <properties>
-    <property name="X" type="float" value="4400"/>
-    <property name="Y" type="float" value="640"/>
+    <property name="X" type="float" value="4300"/>
+    <property name="Y" type="float" value="790"/>
    </properties>
   </object>
   <object id="725" x="0.666667" y="640" width="14.6667" height="385.333"/>
@@ -1536,8 +1536,8 @@
   <object id="731" x="2752" y="1600" width="64" height="64"/>
   <object id="901" name="Warp" type="SceneUnderWaterfall" x="370.917" y="4440.83" width="397.5" height="16.9167">
    <properties>
-    <property name="X" type="float" value="560"/>
-    <property name="Y" type="float" value="130"/>
+    <property name="X" type="float" value="550"/>
+    <property name="Y" type="float" value="115"/>
    </properties>
   </object>
   <object id="902" x="372.03" y="4459.59" width="395" height="20"/>

@@ -627,13 +627,7 @@
   <object id="19" name="Chest" x="98" y="4284">
    <point/>
   </object>
-  <object id="136" name="Slime" type="Light" x="481.333" y="4277.33">
-   <point/>
-  </object>
-  <object id="348" name="Slime" type="Dark" x="389.333" y="4214.67">
-   <point/>
-  </object>
-  <object id="363" name="Range" type="Dark" x="484" y="1648">
+  <object id="363" name="Range" type="Dark" x="484" y="1720">
    <point/>
   </object>
   <object id="362" name="Slime" type="Light" x="774.667" y="1544">

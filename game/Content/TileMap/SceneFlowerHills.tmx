@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="18" nextobjectid="1204">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="18" nextobjectid="1207">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Cliff_Tileset.tsx"/>
  <tileset firstgid="59" source="Tree_1.tsx"/>
@@ -1142,7 +1142,7 @@
   <object id="1073" name="Chest" x="2847.33" y="4074.67">
    <point/>
   </object>
-  <object id="1081" name="Player" x="1591" y="4339.67">
+  <object id="1081" name="Player" x="1594.33" y="4372.33">
    <point/>
   </object>
   <object id="1107" name="Chest" x="675.152" y="2868.73">
@@ -1172,9 +1172,6 @@
   <object id="1116" name="Slime" type="Dark" x="2724.83" y="4342.83">
    <point/>
   </object>
-  <object id="1118" name="Slime" type="Dark" x="2914" y="3997.5">
-   <point/>
-  </object>
   <object id="1119" name="Slime" type="Dark" x="2781.83" y="4348.33">
    <point/>
   </object>
@@ -1188,6 +1185,12 @@
    <point/>
   </object>
   <object id="1203" name="Range" type="Dark" x="2665.33" y="4222">
+   <point/>
+  </object>
+  <object id="1204" name="Chest" x="3362" y="4085.33">
+   <point/>
+  </object>
+  <object id="1205" name="Range" type="Dark" x="2945.33" y="4007.33">
    <point/>
   </object>
  </objectgroup>

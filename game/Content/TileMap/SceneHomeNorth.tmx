@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="1959">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="64" tileheight="64" infinite="0" nextlayerid="14" nextobjectid="1969">
  <tileset firstgid="1" source="Grass_Tileset_1.tsx"/>
  <tileset firstgid="17" source="Tree_1.tsx"/>
  <tileset firstgid="21" source="Cliff_Tileset.tsx"/>
@@ -1530,8 +1530,8 @@
   <object id="1692" x="2625" y="4466.5" width="599.5" height="13.5"/>
   <object id="1693" name="Warp" type="SceneFlowerHills" x="1226.08" y="17.5417" width="566.5" height="16.9167">
    <properties>
-    <property name="X" type="float" value="0"/>
-    <property name="Y" type="float" value="0"/>
+    <property name="X" type="float" value="1600"/>
+    <property name="Y" type="float" value="4370"/>
    </properties>
   </object>
   <object id="1694" x="1228" y="0" width="563.333" height="16.6667"/>
@@ -1540,7 +1540,7 @@
   <object id="1708" x="4453.46" y="2816.17" width="24.6667" height="383.667"/>
   <object id="1709" name="Warp" type="SceneUnderWaterfall" x="4437.87" y="2816.17" width="13.8485" height="383.333">
    <properties>
-    <property name="X" type="float" value="170"/>
+    <property name="X" type="float" value="150"/>
     <property name="Y" type="float" value="3000"/>
    </properties>
   </object>
@@ -1627,103 +1627,37 @@
   <object id="1714" name="Melee" type="Light" x="960" y="3136">
    <point/>
   </object>
-  <object id="1718" name="Melee" type="Light" x="2756.67" y="2092">
+  <object id="1718" name="Melee" type="Light" x="2794.34" y="1916.33">
    <point/>
   </object>
-  <object id="1719" name="Melee" type="Light" x="2854.67" y="1995.33">
+  <object id="1719" name="Melee" type="Light" x="2846.67" y="1796.66">
    <point/>
   </object>
-  <object id="1720" name="Melee" type="Light" x="3174.67" y="1994.33">
+  <object id="1720" name="Melee" type="Light" x="3166.67" y="1795.66">
    <point/>
   </object>
-  <object id="1721" name="Melee" type="Light" x="3272.67" y="2091.33">
+  <object id="1721" name="Melee" type="Light" x="3233.34" y="1913.66">
    <point/>
   </object>
-  <object id="1722" name="Melee" type="Dark" x="3027.67" y="1925.33">
+  <object id="1722" name="Melee" type="Dark" x="3019.67" y="1726.66">
    <point/>
   </object>
-  <object id="1723" name="Slime" type="Dark" x="2946.67" y="2099.33">
+  <object id="1723" name="Slime" type="Dark" x="2931.34" y="1883.66">
    <point/>
   </object>
-  <object id="1724" name="Slime" type="Dark" x="3010.67" y="2006.33">
+  <object id="1724" name="Slime" type="Dark" x="3002.67" y="1807.66">
    <point/>
   </object>
-  <object id="1725" name="Slime" type="Dark" x="3109.67" y="2093.33">
+  <object id="1725" name="Slime" type="Dark" x="3094.34" y="1877.66">
    <point/>
   </object>
-  <object id="1726" name="Range" type="Dark" x="2894.67" y="1856.33">
+  <object id="1726" name="Range" type="Dark" x="2886.67" y="1689.66">
    <point/>
   </object>
-  <object id="1727" name="Range" type="Dark" x="3019.67" y="1794.33">
+  <object id="1727" name="Range" type="Dark" x="3011.67" y="1627.66">
    <point/>
   </object>
-  <object id="1728" name="Range" type="Dark" x="3155.67" y="1859.33">
-   <point/>
-  </object>
-  <object id="1729" name="Range" type="Dark" x="2560" y="876">
-   <point/>
-  </object>
-  <object id="1730" name="Range" type="Dark" x="2720" y="756">
-   <point/>
-  </object>
-  <object id="1731" name="Range" type="Dark" x="2872" y="618">
-   <point/>
-  </object>
-  <object id="1742" name="Melee" type="Dark" x="3286" y="871.333">
-   <point/>
-  </object>
-  <object id="1743" name="Melee" type="Dark" x="3006" y="668.667">
-   <point/>
-  </object>
-  <object id="1744" name="Melee" type="Dark" x="2866" y="1038">
-   <point/>
-  </object>
-  <object id="1745" name="Melee" type="Dark" x="3075.33" y="1050">
-   <point/>
-  </object>
-  <object id="1750" name="Melee" type="Light" x="3134" y="814">
-   <point/>
-  </object>
-  <object id="1752" name="Slime" type="Dark" x="3416" y="1236">
-   <point/>
-  </object>
-  <object id="1753" name="Slime" type="Dark" x="2374" y="542">
-   <point/>
-  </object>
-  <object id="1754" name="Slime" type="Dark" x="2724.67" y="1250">
-   <point/>
-  </object>
-  <object id="1758" name="Slime" type="Dark" x="3344" y="1010">
-   <point/>
-  </object>
-  <object id="1759" name="Slime" type="Dark" x="2168" y="846">
-   <point/>
-  </object>
-  <object id="1760" name="Slime" type="Dark" x="3207.33" y="1279.33">
-   <point/>
-  </object>
-  <object id="1762" name="Slime" type="Light" x="2852" y="414">
-   <point/>
-  </object>
-  <object id="1763" name="Slime" type="Light" x="2692" y="400">
-   <point/>
-  </object>
-  <object id="1764" name="Slime" type="Light" x="2610" y="516">
-   <point/>
-  </object>
-  <object id="1766" name="Slime" type="Light" x="2948.67" y="502">
-   <point/>
-  </object>
-  <object id="1767" name="Slime" type="Light" x="2326" y="924">
-   <point/>
-  </object>
-  <object id="1768" name="Slime" type="Light" x="2426" y="712">
-   <point/>
-  </object>
-  <object id="1769" name="Slime" type="Light" x="3572" y="1106">
-   <point/>
-  </object>
-  <object id="1770" name="Slime" type="Light" x="2504" y="1128">
+  <object id="1728" name="Range" type="Dark" x="3147.67" y="1692.66">
    <point/>
   </object>
   <object id="1771" name="Range" type="Dark" x="896" y="3051.33">
@@ -1745,6 +1679,39 @@
    <point/>
   </object>
   <object id="1924" name="Chest" x="3792" y="398.667">
+   <point/>
+  </object>
+  <object id="1956" name="Range" type="Light" x="4015.58" y="3630.67">
+   <point/>
+  </object>
+  <object id="1957" name="Range" type="Light" x="3741.33" y="3621.33">
+   <point/>
+  </object>
+  <object id="1958" name="Range" type="Light" x="2152.67" y="1091.33">
+   <point/>
+  </object>
+  <object id="1959" name="Range" type="Light" x="3684" y="1253.33">
+   <point/>
+  </object>
+  <object id="1960" name="Range" type="Light" x="2159.33" y="568.667">
+   <point/>
+  </object>
+  <object id="1961" name="Range" type="Light" x="2270.67" y="948">
+   <point/>
+  </object>
+  <object id="1962" name="Range" type="Light" x="2265.33" y="696">
+   <point/>
+  </object>
+  <object id="1963" name="Melee" type="Dark" x="3612" y="1102">
+   <point/>
+  </object>
+  <object id="1964" name="Chest" x="3822.67" y="1213.33">
+   <point/>
+  </object>
+  <object id="1965" name="Range" type="Light" x="3778.67" y="1113.33">
+   <point/>
+  </object>
+  <object id="1966" name="Range" type="Dark" x="1948" y="818.667">
    <point/>
   </object>
  </objectgroup>
