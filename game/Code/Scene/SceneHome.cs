@@ -80,7 +80,7 @@ namespace game
             _skillHUD = new SkillHUD(player, GraphicsDevice);
             _skillHUD.LoadContent(Content);
 
-            pauseTexture = Content.Load<Texture2D>("Texture/PauseMenu");
+            pauseTexture = Content.Load<Texture2D>("HUD/PauseScreen");
             pauseScreen = new PauseScreen(pauseTexture);
 
             //globalContext.LoadCamera();
