@@ -130,11 +130,16 @@ namespace game
             else
             {
                 playerInRadius = false;
-                if (UIalpha >= 0f)
-                {
-                    UIalpha -= 0.02f;
-                    UIPosition.Y -= 1f;
-                }
+            }
+
+            if (UIalpha >= 0f && !isActive)
+            {
+                UIalpha -= 0.02f;
+                UIPosition.Y -= 1f;
+            } 
+            else if (UIalpha >= 0f && isActive)
+            {
+                UIalpha = -1f;
             }
 
             if (fontAlpha >= 0f && isActive)
