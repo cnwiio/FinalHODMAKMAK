@@ -355,8 +355,8 @@ namespace game
             monster.SetProperty(
                 speed: 100f,
                 sreachRadius: 2000f,
-                hp: 1000,
-                damage: 10,
+                hp: 1500,
+                damage: 20,
                 attackRange: (int)(monster.Width * 5),
                 activeRadius: (int)(monster.Width * 2),
                 dashForce: monster.Width * 4,
