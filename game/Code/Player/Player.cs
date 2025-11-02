@@ -42,7 +42,7 @@ namespace game
         private bool _isUsingSkill2 = false;
         private float _skill2Timer = 0f;
         private float _skill2Duration = 0.5f; // match ArclightCross.Duration
-        public float Skill2Cooldown = 10f; // in seconds
+        public float Skill2Cooldown = 7f; // in seconds
         public float _skill2CooldownTimer = 0f;
         public Texture2D Skill2Texture { get; private set; }
 

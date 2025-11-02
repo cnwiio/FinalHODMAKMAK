@@ -16,11 +16,11 @@ namespace game
         public float VerticalWidth { get; set; } = 120f;
         public float VerticalHeight { get; set; } = 60f;
         public float Speed { get; set; } = 3000f;
-        public float Duration { get; set; } = 0.125f;
+        public float Duration { get; set; } = 0.2f;
         public float HitDelay { get; set; } = 0.2f;
 
         // Damage is calculated from player's AttackPower
-        public int Damage => (int)(_player.Stats.AttackPower.Value + 65);
+        public int Damage => (int)(_player.Stats.AttackPower.Value + 40);
         public ArclightCross(Player player, CollisionComponent collisionComponent)
         {
             _player = player;
