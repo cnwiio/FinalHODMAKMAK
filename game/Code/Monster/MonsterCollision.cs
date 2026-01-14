@@ -27,14 +27,14 @@ namespace game
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            var rect = (RectangleF)Bounds;
+            /*var rect = (RectangleF)Bounds;
             spriteBatch.DrawRectangle(rect, Color.Red, 3);
 
             // Draw a small cross at the origin (center) 
             var center = rect.Center;
             float crossSize = 4f;
             spriteBatch.DrawLine(center - new Vector2(crossSize, 0), center + new Vector2(crossSize, 0), Color.BlueViolet, 2);
-            spriteBatch.DrawLine(center - new Vector2(0, crossSize), center + new Vector2(0, crossSize), Color.BlueViolet, 2);
+            spriteBatch.DrawLine(center - new Vector2(0, crossSize), center + new Vector2(0, crossSize), Color.BlueViolet, 2);*/
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {

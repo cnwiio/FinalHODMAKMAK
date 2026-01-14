@@ -35,7 +35,7 @@ namespace game
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Yellow, 2);
+            //spriteBatch.DrawRectangle((RectangleF)Bounds, Color.Yellow, 2);
         }
 
         public void OnCollision(CollisionEventArgs collisionInfo)

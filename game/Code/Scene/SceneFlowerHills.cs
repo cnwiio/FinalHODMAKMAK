@@ -242,13 +242,13 @@ namespace game
     private void DrawMonsterDebug(IMonster monster)
     {
         //_spriteBatch.DrawCircle(new CircleF(monster.SpawnPosition, monster.AwaySpawnRadius), 16, Color.DarkViolet, 2);
-        _spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
+        //_spriteBatch.DrawCircle(new CircleF(monster.Position, monster.SreachRadius), 16, Color.RoyalBlue, 2);
 
-        switch (monster)
+            switch (monster)
         {
             case MonsterMelee mm:
-                _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.ActiveRadius), 16, Color.DeepSkyBlue, 2);
-                _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.AttackRange), 16, Color.Aqua, 2);
+                //_spriteBatch.DrawCircle(new CircleF(mm.Position, mm.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    _spriteBatch.DrawCircle(new CircleF(mm.Position, mm.AttackRange), 16, Color.Aqua, 2);
                 break;
             case MonsterRange mr:
                 _spriteBatch.DrawCircle(new CircleF(mr.Position, mr.AttackRange), 16, Color.Aqua, 2);
@@ -256,12 +256,12 @@ namespace game
             case MonsterBoss mb:
                 if (!mb.IsDead)
                 {
-                    _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                    //_spriteBatch.DrawCircle(new CircleF(mb.Position, mb.ActiveRadius), 16, Color.DeepSkyBlue, 2);
                     _spriteBatch.DrawCircle(new CircleF(mb.Position, mb.AttackRange), 16, Color.Aqua, 2);
                 }
                 break;
             case MonsterSlime ms:
-                _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.ActiveRadius), 16, Color.DeepSkyBlue, 2);
+                //_spriteBatch.DrawCircle(new CircleF(ms.Position, ms.ActiveRadius), 16, Color.DeepSkyBlue, 2);
                 _spriteBatch.DrawCircle(new CircleF(ms.Position, ms.AttackRange), 16, Color.Aqua, 2);
                 break;
         }

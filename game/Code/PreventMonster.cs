@@ -29,7 +29,7 @@ namespace game
         }
         public virtual void Draw(SpriteBatch spritebatch)
         {
-            spritebatch.DrawCircle((CircleF)Bounds, 16, Color.Coral, 3);
+            //spritebatch.DrawCircle((CircleF)Bounds, 16, Color.Coral, 3);
         }
         public void OnCollision(CollisionEventArgs collisionInfo)
         {
